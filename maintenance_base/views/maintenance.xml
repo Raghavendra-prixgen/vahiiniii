@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="equipment_category_maintenance_integ_with_mrp" model="ir.ui.view">
+        <field name="name">Equipment Category</field>
+        <field name="model">maintenance.equipment.category</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_category_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='group_alias']" position="before">
+                <group>
+                    <group>
+                        <field name='sequence' options="{'no_create': True, 'no_create_edit':True}"/>
+                        <field name="working_schedule_id"/>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="equipment_maintenance_integ_with_mrp" model="ir.ui.view">
+        <field name="name">Maintenance Equipment</field>
+        <field name="model">maintenance.equipment</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr='//form/sheet' position='before'>
+                <header>
+                    <field name="state" widget="statusbar" options="{'clickable': '1'}"/>
+                </header>
+            </xpath>
+            <xpath expr="//div[hasclass('oe_button_box')]" position="after">
+                <field name="image_equ" widget="image" class="oe_avatar" options="{'preview_image': 'image_equ'}"/>
+            </xpath>
+            <xpath expr="//div[hasclass('oe_title')]//label[@for='name']" position="before">
+                <h3>
+                    <field name="equipment_number" readonly="1"/>
+                </h3>
+            </xpath>
+            <field name="location" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="location" position="after">
+                <field name="location_id" string="Stored Location"
+                       options="{'no_create': True, 'no_create_edit':True}"/>
+                <field name="sub_category_1" domain="[('parent_equipment_categ','=',category_id)]"
+                       options="{'no_create': True, 'no_create_edit':True}"/>
+                <field name="sub_category_2" domain="[('parent_sub_equipment_categ_1','=',sub_category_1)]"
+                       options="{'no_create': True, 'no_create_edit':True}"/>
+                <field name="sub_category_3" domain="[('parent_sub_equipment_categ_2','=',sub_category_2)]"
+                       options="{'no_create': True, 'no_create_edit':True}"/>
+            </field>
+            <field name="category_id" position="before">
+                <field name="is_seq" invisible="1"/>
+                <!-- <field name="equipment_number" readonly="is_seq" force_save="1" /> -->
+            </field>
+            <!-- <field name="category_id" position="after">
+              <field name="sub_category_1" domain="[('parent_equipment_categ','=',category_id)]" options="{'no_create': True, 'no_create_edit':True}"/>
+              <field name="sub_category_2" domain="[('parent_sub_equipment_categ_1','=',sub_category_1)]" options="{'no_create': True, 'no_create_edit':True}"/>
+              <field name="sub_category_3" domain="[('parent_sub_equipment_categ_2','=',sub_category_2)]" options="{'no_create': True, 'no_create_edit':True}"/>
+            </field> -->
+            <field name="serial_no" position="after">
+                <field name="dimension"/>
+            </field>
+            <xpath expr="//notebook" position="inside">
+                <page name="Schedule">
+                    <group>
+                        <group>
+                            <field name="state_date"/>
+                            <field name="end_date"/>
+                            <field name="frequency" required="1"/>
+                            <field name="working_schedule_id"/>
+                        </group>
+                        <group>
+                            <!-- <field name="is_every"/> -->
+                            <!-- <field name="manual_input_date"/> -->
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- <record id="equipment_maintenance_kanban_inherit" model="ir.ui.view">
+      <field name="name">Manintenance Equipment</field>
+      <field name="model">maintenance.equipment</field>
+      <field name="inherit_id" ref="maintenance.hr_equipment_view_kanban"/>
+      <field name="arch" type="xml">
+        <xpath expr="//templates//div[hasclass('oe_kanban_content')]" position="replace">
+            <div class="oe_kanban_content" tooltip="kanban-tooltip">
+            <div class="row">
+            <div class="col-3">
+              <field name="image_equ" widget="image" class="o_image_64_contain"/>
+              <t t-if="record.location_id.raw_value"><span style="color:green"><field name="location_id"/></span></t>
+            </div>
+            <div class="col-9">
+                  <div class="o_kanban_record_top">
+                      <b class="o_kanban_record_title">
+                        <t t-if="record.equipment_number.raw_value"><field name="equipment_number"/><br/></t>
+                        <field name="name"/><small><span t-if="record.model.raw_value"> (<field name="model"/>)</span></small></b>
+                  </div>
+                  <div class="o_kanban_record_body">
+                      <div t-if="record.serial_no.raw_value"><field name="serial_no"/></div>
+                  </div>
+                  <div class="o_kanban_record_bottom">
+                      <div class="oe_kanban_bottom_left">
+                          <div class="badge text-bg-danger" t-if="!selection_mode and record.maintenance_open_count.raw_value">
+                              <t t-out="record.maintenance_open_count.raw_value"/> Request
+                          </div>
+                          <div class="badge text-bg-secondary" t-if="!selection_mode and record.next_action_date.raw_value">
+                              <t t-esc="luxon.DateTime.fromISO(record.next_action_date.raw_value).toFormat('d MMMM')"/>
+                          </div>
+                      </div>
+                      <div class="oe_kanban_bottom_right">
+                          <div class="o_kanban_inline_block" t-if="!selection_mode">
+                              <field name="activity_ids" widget="kanban_activity"/>
+                          </div>
+                          <field name="owner_user_id" widget="many2one_avatar_user"/>
+                      </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </xpath>
+      </field>
+    </record>
+   -->
+    <record id="hr_equipment_view_tree_inherit" model="ir.ui.view">
+        <field name="name">Manintenance Equipment tree view</field>
+        <field name="model">maintenance.equipment</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_view_tree"/>
+        <field name="arch" type="xml">
+            <field name="category_id" position="after">
+                <field name="sub_category_1"/>
+                <field name="sub_category_2"/>
+                <field name="sub_category_3"/>
+                <field name="location_id"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="hr_equipment_view_search_inherit" model="ir.ui.view">
+        <field name="name">equipment.search</field>
+        <field name="model">maintenance.equipment</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_view_search"/>
+        <field name="arch" type="xml">
+            <field name="name" position="before">
+                <field string="Equipment Number" name="equipment_number"/>
+            </field>
+            <field name="category_id" position="after">
+                <field string="Sub-Category 1" name="sub_category_1"/>
+                <field string="Sub-Category 2" name="sub_category_2"/>
+                <field string="Sub-Category 3" name="sub_category_3"/>
+                <field string="Stored Location" name="location_id"/>
+            </field>
+            <xpath expr="//group" position="inside">
+                <filter string="Sub-Category 1" name="sub_category_1" domain="[]"
+                        context="{'group_by': 'sub_category_1'}"/>
+                <filter string="Sub-Category 2" name="sub_category_2" domain="[]"
+                        context="{'group_by': 'sub_category_2'}"/>
+                <filter string="Sub-Category 3" name="sub_category_3" domain="[]"
+                        context="{'group_by': 'sub_category_3'}"/>
+                <filter string="Stored Location" name="location_id" domain="[]" context="{'group_by': 'location_id'}"/>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="hr_equipment_stage_view_tree_inherit" model="ir.ui.view">
+        <field name="name">Manintenance stage tree view</field>
+        <field name="model">maintenance.stage</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_stage_view_tree"/>
+        <field name="arch" type="xml">
+            <field name="done" position="after">
+                <field name="job_work"/>
+                <field name="y_color" widget="color_picker"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="inherit_view_id_inherit_hr_equ_view_calendar" model="ir.ui.view">
+        <field name="name">maintenance.request.calendar.view.form.inherit</field>
+        <field name="model">maintenance.request</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_view_calendar"/>
+        <field name="arch" type="xml">
+
+            <field name="user_id" position="before">
+                <field name="equipment_id"/>
+
+            </field>
+
+            <xpath expr="//calendar" position="attributes">
+                <attribute name="color">y_color</attribute>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="maintenance_team_view_tree_inherit" model="ir.ui.view">
+        <field name="name">Manintenance team tree view</field>
+        <field name="model">maintenance.team</field>
+        <field name="inherit_id" ref="maintenance.maintenance_team_view_tree"/>
+        <field name="arch" type="xml">
+            <field name="member_ids" position="after">
+                <field name="sequence_id"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="maintenance_equipment_view_inherited_form_quantity" model="ir.ui.view">
+        <field name="name">maintenance.equipment.view.inherited.form.quantity</field>
+        <field name="model">maintenance.equipment</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='cost']" position="after">
+                <field name="quantity"/>
+            </xpath>
+            <xpath expr="//field[@name='employee_id']" position="after">
+                <field name="y_type" widget="radio"/>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="hr_equipment_request_view_form_inherit" model="ir.ui.view">
+        <field name="name">Maintenance request form view</field>
+        <field name="model">maintenance.request</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_request_view_form"/>
+        <field name="arch" type="xml">
+            <field name="schedule_date" position="attributes">
+                <attribute name="required">1</attribute>
+            </field>
+            <field name="schedule_date" position="before">
+                <field name="member_ids" widget="many2many_tags"
+                       options="{'no_create': True, 'no_create_edit':True,'no_open': True}"/>
+            </field>
+            <field name="schedule_date" position="after">
+                <field name="jobwork_challan_no"/>
+                <field name="y_allowed_equipment_ids" invisible="1"/>
+            </field>
+            <field name="equipment_id" position="after">
+                <field name="y_parent_equipment_id" invisible="not y_parent_equipment_id"
+                       options="{'no_create': True, 'no_create_edit': True, 'no_open': True}"/>
+            </field>
+            <xpath expr="//page[2]" position="after">
+                <page string="Tasks">
+                    <field name="maintenance_task_ids">
+                        <list editable="bottom">
+                            <field name="serial_no" width="2px;"/>
+                            <field name="name" widget="section_and_note_text" width="10%"/>
+                            <field name="planned_start_date"/>
+                            <field name="planned_end_date"/>
+                            <field name="actual_start_date"/>
+                            <field name="actual_end_date"/>
+                            <field name="lead_type" required="1"/>
+
+                            <field name="y_resposible_person"/>
+                            <field name="y_observation"/>
+                            <field name="y_remark"/>
+
+                            <field name="lead_time" column_invisible="1"/>
+                            <field name="lead_period" column_invisible="1"/>
+                            <field name="technician_user_id" column_invisible="1"
+                                   options="{'no_create': True, 'no_create_edit':True,'no_open': True}"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="maintenance_request_action_generate_tasks" model="ir.actions.server">
+        <field name="name">Generate Tasks</field>
+        <field name="model_id" ref="model_maintenance_request"/>
+        <field name="binding_model_id" ref="model_maintenance_request"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="code">
+            if records:
+            action = records.action_generate_tasks()
+        </field>
+    </record>
+
+    <record id="maintenance_equipment_action_generate_schudule" model="ir.actions.server">
+        <field name="name">Generate Schedule</field>
+        <field name="model_id" ref="model_maintenance_equipment"/>
+        <field name="binding_model_id" ref="model_maintenance_equipment"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="code">
+            if records:
+            action = records.action_generate_schudule()
+        </field>
+    </record>
+
+
+    <record id="maintenance_request_task_tree_view" model="ir.ui.view">
+        <field name="name">maintenance_request_task_tree_view</field>
+        <field name="model">maintenance.request.task</field>
+        <field name="arch" type="xml">
+            <list delete="0">
+                <field name="name" string="Description" required="1"/>
+                <field name="equipment_id"/>
+                <field name="category_id"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+            </list>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="maintenance_request_task_form">
+        <field name="name">maintenance.request.task.form</field>
+        <field name="model">maintenance.request.task</field>
+        <field name="arch" type="xml">
+            <form delete="0">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" required="1"/>
+                            <field name="ttype" widget="radio"/>
+                            <field name="equipment_id"
+                                   options="{'no_create': True, 'no_create_edit':True,'no_open': True}"
+                                   invisible="ttype != 'equipment'" required="ttype == 'equipment'"/>
+                            <field name="category_id"
+                                   options="{'no_create': True, 'no_create_edit':True,'no_open': True}"
+                                   invisible="ttype != 'equipment_category'" required="ttype == 'equipment_category'"/>
+                            <field name="start_date" required="1"/>
+                        </group>
+                        <group>
+                            <field name="maintenance_type" widget="radio"/>
+                            <field name="end_date" required="1"/>
+
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="Tasks">
+                            <field name="maintenance_request_task_line_ids">
+                                <list editable="bottom">
+                                    <field name="serial_no" width="2px;"/>
+                                    <field name="name" widget="section_and_note_text" width="50%"/>
+                                    <field name="lead_type" required="1"/>
+                                    <field name="lead_time"/>
+                                    <field name="lead_period" required="1"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+
+
+            </form>
+        </field>
+    </record>
+
+
+    <record id="maintenance_request_task_action" model="ir.actions.act_window">
+        <field name="name">Request Tasks</field>
+        <field name="res_model">maintenance.request.task</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_maintenance_request_task"
+              name="Request Task Config."
+              action="maintenance_request_task_action"
+              parent="maintenance.menu_maintenance_configuration"
+              sequence="10"/>
+
+
+</odoo>

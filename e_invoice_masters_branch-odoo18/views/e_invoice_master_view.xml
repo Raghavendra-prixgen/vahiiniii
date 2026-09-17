@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+         <record model="res.groups" id="group_acess_cancel_irn">
+            <field name="name">Access to cancel IRN</field>
+        </record>
+
+
+
+    <!-- Adding the field for irn -->
+    <record id="view_partner_form_view_form_irn" model="ir.ui.view">
+        <field name="name">res.partner.form.inherit.irn</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <!-- <xpath expr="//field[@name='zip']" position="replace" > -->
+                <!-- <field name ='zip' required="vat == False" readonly="type == 'contact' or parent_id != False"  class="o_address_zip"/>
+            </xpath> -->
+            <xpath expr="//sheet/group/group" position="inside" >
+                <field name="owner_id"/>
+                <field name='supply_type'/>
+            </xpath>
+        </field>
+    </record>
+
+
+
+    <record id="view_move_form_inherit_form" model="ir.ui.view">
+    <field name="name">account.move.form</field>
+    <field name="model">account.move</field>
+    <field name="inherit_id" ref="account.view_move_form"/>
+    <field name="arch" type="xml">
+        <xpath expr="/form/header/button[@name='action_post']" position="after">
+            <button name="generate_irn" string="IRN" type="object" class="oe_highlight" invisible="state == 'draft' or Irn != False"/>
+            <!-- <button name="generate_ewb" string="EWB" type="object" class="oe_highlight" attrs="{'invisible': ['|',('state', '=', 'draft'),('Irn', '=', False)]}"/> -->
+           
+        </xpath>
+
+         <xpath expr="//header" position="inside">
+                 <button name="cancel_irn" groups="e_invoice_masters_branch-odoo18.group_acess_cancel_irn" string="Cancel IRN" type="object" class="oe_highlight" invisible="state == 'draft' or Irn == False"/>
+            </xpath>
+         <notebook position="inside">
+            <page string='GST Info'>
+                <group>
+                <group string='E-way Bill'>
+                    <field name='vehicle_type'/>
+                    <field name='vehicle_number'/>
+                    <field name='transporter_id'/>
+                    <field name='transporter_name'/>
+                    <field name='transporter_mode'/>
+                    <field name='transporter_doc_num'/>
+                    <field name='transporter_doc_date'/>
+                    <field name='distance'/>
+                    <!-- <hr></hr>
+                    <field name='EwbNo'/>
+                    <field name='EwbDt'/>
+                    <field name='EwbValidTill'/>
+                    <field name='Remarks'/> -->
+                </group>
+                <group  string='E-Invoice'>
+                    <field name='place_of_supply' options="{'no_create': True, 'no_create_edit':True}" force_save="1"/>
+                    <field name='igst_on_intra' />
+
+                    <field name='Irn' />
+                    <!-- <field name='CancelDate' attrs="{'invisible':[('CancelDate','=',False)]}"/> -->
+                    <field name='CancelDate' invisible="CancelDate == False"/>
+                    <field name='AckDt' />
+                    <field name='AckNo' />
+                    <field name='SignedQRCode' widget='image' style="width:200px;height:auto"/>
+                </group>
+            </group>
+                
+            </page>
+        </notebook>
+    </field>
+</record>
+
+
+
+    <record model="ir.ui.view" id="view_country_state_tree_gst_state_code_irn">
+      <field name="name">view country state tree irn</field>
+      <field name="model">res.country.state</field>
+      <field name="inherit_id" ref="base.view_country_state_tree"/>
+      <field name="arch" type="xml">
+        <xpath expr="//field[@name='code']" position="after">
+          <field name="gst_state_code" required="country_id == 104"/>
+        </xpath>
+      </field>
+    </record>
+
+
+ 
+    
+    
+</odoo>

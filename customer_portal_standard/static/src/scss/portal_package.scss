@@ -1,0 +1,149 @@
+.pkg-select-dialog {
+    position: absolute;
+    top: 0%;
+    left: -20px;
+    width: 250px;
+    background: antiquewhite;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    margin-top: 4px;
+    font-size: 14px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+
+.pkg-select-footer {
+    padding: 12px 16px;
+    border-top: 1px solid #e5e5e5;
+    text-align: right;
+}
+
+.pkg-select-save {
+    background-color: #008784;
+    color: white;
+    border: none;
+    padding: 6px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.pkg-select-save:hover {
+    background-color: #006d6a;
+}
+
+.quantity-controls {
+    display: none;
+    /* Initially hidden */
+}
+
+.pkg-select-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.pkg-select-title {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 500;
+    color: #333;
+}
+
+.pkg-select-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px 8px;
+    font-size: 18px;
+    color: #666;
+    line-height: 1;
+}
+
+.pkg-select-content {
+    padding: 12px 16px;
+}
+
+.pkg-select-list {
+    max-height: 200px;
+    overflow-y: auto;
+    margin-bottom: 12px;
+}
+
+.pkg-select-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.pkg-select-quantity input {
+    width: 100%;
+    padding: 6px 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.pkg-select-quantity {
+    padding: 16px;
+    border-top: 1px solid #ddd;
+}
+
+.pkg-select-quantity label {
+    display: block;
+    margin-bottom: 6px;
+    color: #666;
+}
+
+.pkg-select-total {
+    color: #666;
+    font-size: 13px;
+}
+
+.pkg-options-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    color: #666;
+    font-size: 20px;
+    margin-left: 8px;
+    line-height: 1;
+}
+
+.product-card-foot {
+    display: flex;
+    align-items: center;
+}
+
+/* Add custom radio button styling */
+.pkg-select-item input[type="radio"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #ddd;
+    border-radius: 50%;
+    margin-right: 10px;
+    position: relative;
+}
+
+.pkg-select-item input[type="radio"]:checked {
+    border-color: #008784;
+}
+
+.pkg-select-item input[type="radio"]:checked::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    background: #008784;
+    border-radius: 50%;
+}

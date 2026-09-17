@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo> 
+    
+    <record id="view_mrp_workcenter_search_inherited_sale_number" model="ir.ui.view">
+            <field name="name">mrp.workorder.search.inherited</field>
+            <field name="model">mrp.workorder</field>
+            <field name="inherit_id" ref="mrp.view_mrp_production_work_order_search"/>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="y_sale_order_id"/>
+                </search>
+            </field>
+        </record>
+
+     <record id="mrp_workorder_salenumber_form_inherit_search_view" model="ir.ui.view">
+        <field name="name">mrp.production.form.view.inherit.sale.number.search.view</field>
+        <field name="model">mrp.workorder</field>
+        <field name="inherit_id" ref="mrp.view_mrp_production_workorder_form_view_filter"/>
+        <field name="arch" type="xml">
+            <search>
+                <field name="y_sale_order_id"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="mrp_workorder_salenumber_form_inherit_" model="ir.ui.view">
+        <field name="name">mrp.production.form.view.inherit.sale.no.view</field>
+        <field name="model">mrp.workorder</field>
+        <field name="inherit_id" ref="mrp.mrp_production_workorder_tree_view"/>
+        <field name="arch" type="xml">
+            <field name="state" position="after">
+                <field name="y_sale_order_id" />
+                <field name="y_customer_id" />
+            </field>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_mrp_stock_picking_form_inherit_">
+        <field name="name">stock.picking.stock.picking.view</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <field name="group_id" position="after">
+                <field name="y_sale_order_id" invisible='1'/>
+               
+            </field>
+        </field>
+    </record>
+
+    <record id="mrp_workcenter_line_kanban_view_inherit" model="ir.ui.view">
+        <field name="name">mrp.workcenter.line.kanban.inherit.view</field>
+        <field name="model">mrp.workorder</field>
+        <field name="inherit_id" ref="mrp.workcenter_line_kanban"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='state']" position="after">
+                <field name="y_total_output_quantity"/>
+                <field name="y_sale_order_id"/>
+                <field name="y_customer_id"/>
+            </xpath>
+            <xpath expr="//templates//footer" position="inside">
+                <div class="o_kanban_record_bottom_after">
+                    <h5 class="oe_kanban_bottom_left_addition">
+                        <t t-if="record.y_total_output_quantity.raw_value > 0">
+                            <span>Total Output Quantity : <t t-esc="record.y_total_output_quantity.value"/> </span><br/>
+                        </t>
+                        <t t-if="record.y_customer_id.raw_value">
+                            <span><t t-esc="record.y_customer_id.value"/></span>             
+                        </t>
+                        <t t-if="record.y_sale_order_id.raw_value">
+                            <span>, <t t-esc="record.y_sale_order_id.value"/></span>             
+                        </t>                  
+                    </h5>
+                </div>
+                
+            </xpath>
+        </field>
+    </record>
+
+    <!-- <record id="view_stock_picking_search_inherited_sale_number" model="ir.ui.view">
+            <field name="name">stock.picking.search.inherited</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_internal_search"/>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="y_sale_order_id" string="Sale Order"/>
+                </search>
+            </field>
+        </record> -->
+
+
+    <record id="stock_picking_salenumber_tree_inherit_" model="ir.ui.view">
+        <field name="name">stock.picking.list.view.inherit.sale.no.view</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.vpicktree"/>
+        <field name="arch" type="xml">
+            <field name="origin" position="after">
+                <field name="y_sale_order_id" string="Sale Order"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- <record model="ir.actions.server" id="action_update_so_number_production">
+        <field name="name">Update Sale Order</field>
+        <field name="model_id" ref="mrp.model_mrp_production"/>
+        <field name="binding_model_id" ref="mrp.model_mrp_production"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">
+                if records:
+                    action = records.update_sale_order_number()
+          </field>
+    </record> -->
+    
+    <!-- <record model="ir.actions.server" id="action_update_so_number_workorder">
+        <field name="name">Update SO Number</field>
+        <field name="model_id" ref="mrp.model_mrp_workorder"/>
+        <field name="binding_model_id" ref="mrp.model_mrp_workorder"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">
+                if records:
+                    action = records.get_sale_order()
+          </field>
+    </record>
+ -->
+
+    <!-- <record model="ir.actions.server" id="action_bulk_update_so_action">
+      <field name="name">Update SO</field>
+      <field name="model_id" ref="manufacturing_base_18.model_purchase_order"/>
+      <field name="binding_model_id" ref="manufacturing_base_18.model_purchase_order" />
+      <field name="state">code</field>
+      <field name="code">
+        if records:
+          action = records.update_sale_order()
+      </field>
+    </record>
+ -->
+    <!-- <record model="ir.actions.server" id="action_bulk_update_so_action_picking">
+      <field name="name">Update SO</field>
+      <field name="model_id" ref="manufacturing_base_18.model_stock_picking"/>
+      <field name="binding_model_id" ref="manufacturing_base_18.model_stock_picking" />
+      <field name="state">code</field>
+      <field name="code">
+        if records:
+          action = records.update_sale_order()
+      </field>
+    </record>
+ -->
+    <!-- <record model="ir.actions.server" id="action_bulk_check_availablity">
+      <field name="name">Check availability</field>
+      <field name="model_id" ref="mrp.model_mrp_production"/>
+      <field name="binding_model_id" ref="mrp.model_mrp_production" />
+      <field name="state">code</field>
+      <field name="code">
+        if records:
+          action = records.action_check_availibility()
+      </field>
+    </record>
+ -->
+
+ 
+   <!--  <record id="view_mrp_workorder_pivot_inherit" model="ir.ui.view">
+            <field name="name">mrp.workorder.pivot.view.inherit</field>
+            <field name="model">mrp.workorder</field>
+            <field name="inherit_id" ref="mrp.workcenter_line_pivot"/>
+            <field name="arch" type="xml">
+                <field name='operation_id' position='after'>
+                    <field name="shift_ids" type="row"/>
+                </field>
+            </field>
+        </record>
+ -->
+</odoo>

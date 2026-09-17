@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        
+        <record model="ir.ui.view" id="view_maintenance_equipmemts_form_inheritance">
+            <field name="name">equipment.form</field>
+            <field name="model">maintenance.equipment</field>
+            <field name="inherit_id" ref="maintenance.hr_equipment_view_form"/>
+            <field name="arch" type="xml">
+                <field name="location" position="after">
+                	<field name="y_weight"/>
+                    <field name="y_trolley" string="Is Trolley"/>
+                </field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_maintenance_inheritance_fleet_form">
+            <field name="name">fleet.vehicle.formz</field>
+            <field name="model">fleet.vehicle</field>
+            <field name="inherit_id" ref="fleet.fleet_vehicle_view_form"/>
+            <field name="arch" type="xml">
+                <field name="acquisition_date" position="after">
+                	<field name="y_vehicle"/>
+                    <field name="y_weight"/>
+                </field>
+            </field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="equipment_request_rited_tree" model="ir.ui.view">
+        <field name="name">equipment.req.inherited.tree</field>
+        <field name="model">equipment.request</field>
+        <field name="arch" type="xml">
+            <list string="Equipment List">
+                <field name="name" />
+                <field name="date" />
+                <field name="origin" />
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+    <record id="equipment_request_delivinherited_form" model="ir.ui.view">
+        <field name="name">equipment.req.form</field>
+        <field name="model">equipment.request</field>
+        <field name="arch" type="xml">
+            <form string="Equipment">
+            <header>
+                <field name="state" widget="statusbar" statusbar_visible="draft,to_approve,approved,closed"/>
+            </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="e.g. Screen not working" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="origin" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="requested_by"/>
+                            <field name="date" readonly="state == 'done'" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Equipments">
+                            <field name="equipment_request_line_ids" widget="one2many" mode="tree" readonly="state == 'done'">
+                                <list editable="bottom">
+                                <!-- <field name="request_id"/> -->
+                                <field name="equipment_id" width="20%"/>
+                                <field name="quantity" string="Qty"/>
+                                <field name="done"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+
+                
+            </form>
+        </field>
+    </record>
+
+    <record id="equipment_request_action" model="ir.actions.act_window">
+        <field name="name">Equipment Request</field>
+        <field name="res_model">equipment.request</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+   <!--  <menuitem id="equipment_request_menu" name="Equipment Request" action="equipment_request_action"
+        parent="maintenance.menu_equipment_form" sequence="1" />
+ -->
+</odoo>

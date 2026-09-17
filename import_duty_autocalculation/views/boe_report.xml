@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_boe_report_list"  model="ir.ui.view" >
+            <field name="name">boe.report.list</field>
+            <field name="model">boe.report</field>
+            <field name="type">list</field>
+            <field name="arch" type="xml">
+                <list create="false" >
+                    <!-- <field name="name" string="Product"/> -->
+                    <field name="y_sl_no"/>
+                    <field name="y_boe_id" column_invisible="True"/>
+                    <field name="y_purchase_id"/>
+                    <field name="y_partner_id" />
+                    <field name="y_bill_of_entry_no"/>
+                    <field name="y_bill_of_entry_date" />
+                    <field name="y_product_id" invisible="1"/>
+                    <field name="y_default_code"/>
+                    <field name="y_product_name" />
+                    <field name="y_with_service_value_included"/>
+                    <field name="y_product_qty"/>
+                    <field name="y_price_unit"/>
+                    <field name="y_total_assessable_value"/>
+                    <field name="y_calculate_value_for_additional"/>
+                    <field name="y_bill_of_entry_rate"/>
+                    <field name="y_addtional_duty1" optional="hide"/>
+                    <field name="y_addtional_duty2" optional="hide"/>
+                    <field name="y_addtional_duty3" optional="hide"/>
+                    <field name="y_addtional_duty4" optional="hide"/>
+                    <field name="y_addtional_duty5" optional="hide"/>
+                    <field name="y_service_imports1" optional="hide"/>
+                    <field name="y_service_imports2" optional="hide"/>
+                    <field name="y_service_imports3" optional="hide"/>
+                    <field name="y_service_imports4" optional="hide"/>
+                    <field name="y_service_imports5" optional="hide"/>
+                    <field name="y_importy_duty_structure_calculated_value1" optional="hide"/>
+                    <field name="y_importy_duty_structure_calculated_amount1" optional="hide"/>
+                    <field name="y_importy_duty_structure_calculated_value2" optional="hide"/>
+                    <field name="y_importy_duty_structure_calculated_amount2" optional="hide"/>
+                    <field name="y_importy_duty_structure_calculated_value3" optional="hide"/>
+                    <field name="y_importy_duty_structure_calculated_amount3" optional="hide"/>
+                    <field name="y_importy_duty_structure_calculated_value4" optional="hide"/>
+                    <field name="y_importy_duty_structure_calculated_amount4" optional="hide"/>
+                    <field name="y_importy_duty_structure_calculated_value5" optional="hide"/>
+                    <field name="y_importy_duty_structure_calculated_amount5" optional="hide"/>
+
+                </list>
+            </field>
+        </record>
+
+        <record id="view_boe_register_report_search" model="ir.ui.view">
+            <field name="name">boe.report.report.search</field>
+            <field name="model">boe.report</field>
+            <field name="arch" type="xml">
+                <search string="Search Boe Report">
+                    <field name="y_boe_id" />
+                    <field name="y_partner_id"/>
+                    <field name="y_purchase_id"/>
+                    <field name="y_product_id"/>
+                    
+                    <separator/>
+                    <group expand="1" string="Group By">
+                        <filter string="Boe" name="y_boe_id" context="{'group_by':'y_boe_id'}"/>
+                        <filter string="Supplier Name" name="y_partner_id" context="{'group_by':'y_partner_id'}"/>
+                        <filter string="Purchase Order No" name="y_purchase_id" context="{'group_by':'y_purchase_id'}"/>
+                        <filter string="Product" name="product" context="{'group_by':'y_product_id'}"/>
+                    </group>                        
+                </search>
+            </field>               
+        </record>
+
+
+
+    <record id="action_boe_report_wizard" model="ir.actions.act_window">
+        <field name="name">Boe Report</field>
+        <field name="res_model">boe.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="import_duty_autocalculation.view_boe_report_wizard1"/>
+    </record> 
+
+     <menuitem id="menu_boe_register_report"
+        name="Boe Report"
+        action="action_boe_report_wizard"
+        parent="purchase.purchase_report_main"
+        sequence="105"/>
+</odoo>

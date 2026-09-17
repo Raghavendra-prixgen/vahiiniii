@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_india_msme,access_account_india_msme_report,model_india_msme_wiz,base.group_user,1,1,1,1
+access_res_partner_msme_details,res_partner_msme_details,model_res_partner_msme_details,base.group_user,1,1,1,1
+

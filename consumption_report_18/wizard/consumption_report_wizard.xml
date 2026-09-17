@@ -1,0 +1,38 @@
+<odoo>
+
+    <record id="view_consumption_report_wizard" model="ir.ui.view">
+        <field name="name">consumption.report.wizard.form</field>
+        <field name="model">consumption.report.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group>
+                        <field name="y_date_start"/>
+                        <field name="y_company_id" string="Company" required="1" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                    </group>
+                    <group>
+                        <field name="y_date_end"/>
+                    </group>                  
+                </group>
+                <footer>
+                    <button string="Get Consumption Report" type="object" name="retrive_consumption_report" class="oe_highlight"/>
+                    <button string="Cancel" special="cancel" type="object" class="btn btn-secondary oe_inline"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_consumption_report_wizard" model="ir.actions.act_window">
+        <field name="name">Consumption Report</field>
+        <field name="res_model">consumption.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="view_consumption_report_wizard"/>
+    </record> 
+
+    <menuitem id="menu_consumption_report_wizard" name="Consumption Report" action="action_consumption_report_wizard" parent="mrp.menu_mrp_reporting" sequence="100"/>
+
+
+    
+   
+</odoo>

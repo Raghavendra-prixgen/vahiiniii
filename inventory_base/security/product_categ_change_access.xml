@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+    <record id="transfer_lock_unlock_access" model="res.groups">
+        <field name="name">Transfer Lock/Unlock Access</field>
+    </record>
+    <record id="group_prod_categ_change" model="res.groups">
+        <field name="name">Product Catagory Change Access</field>
+    </record>
+
+    <record id="group_adjust_valuation_access" model="res.groups">
+        <field name="name">Adjust Valuation Access</field>
+    </record>
+    </data>
+</odoo>

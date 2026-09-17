@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="ir_action_update_update_create_yield_analysis" model="ir.actions.server">
+        <field name="name">Update Yield Analysis</field>
+        <field name="model_id" ref="model_mrp_production" />
+        <field name="binding_model_id" ref="model_mrp_production" />
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">
+            if records:
+            action = records.yield_analysis_values_server_action()
+        </field>
+    </record>
+
+
+    <record model="ir.ui.view" id="manufacturing_report_list_with_dashboard_view">
+        <field name="name">manufacturing.report.list</field>
+        <field name="model">prix.mrp.report</field>
+        <field name="arch" type="xml">
+            <list create="false" edit="false" sample="1" js_class="production_analytics_list_view">
+                <field name="y_currency_id" column_invisible="1"/>
+                <field name="y_mo_id" required='1'/>
+                <field name="y_mo_date"/>
+                <field name="y_fgproduct_id" optional="show" required='1'/>
+                <field name="y_product_id" optional="show" required='1'/>
+                <field name="y_planned_qty" optional="show"/>
+                <field name="y_purchase_consum_cost"/>
+                <field name="y_planned_cost" widget="monetary" options="{'currency_field': 'y_currency_id'}" optional="show"/>
+                <field name="y_actual_qty" optional="show"/>
+                <field name="y_actual_cost" widget="monetary" options="{'currency_field': 'y_currency_id'}" optional="show"/>
+                <field name="y_variance_qty" optional="show"/>
+                <field name="y_variance_cost" widget="monetary" options="{'currency_field': 'y_currency_id'}" optional="show"/>
+                <field name="y_variance_qty_percent" optional="show"/>
+                <field name="y_variance_cost_percent" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="manufacturing_report_list_view">
+        <field name="name">manufacturing.report.list</field>
+        <field name="model">prix.mrp.report</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="y_currency_id" column_invisible="1"/>
+                <field name="y_mo_id" required='1'/>
+                <field name="y_mo_date"/>
+                <field name="y_sale_order_id" column_invisible="1"/>
+                <field name="y_fgproduct_id" optional="show" required='1'/>
+                <field name="y_product_id" optional="show" required='1'/>
+                <field name="y_planned_qty" optional="show"/>
+                <field name="y_purchase_consum_cost" optional="show"/>
+                <field name="y_planned_cost" widget="monetary" options="{'currency_field': 'y_currency_id'}" optional="show"/>
+                <field name="y_actual_qty" optional="show"/>
+                <field name="y_actual_cost" widget="monetary" options="{'currency_field': 'y_currency_id'}" optional="show"/>
+                <field name="y_variance_qty" optional="show"/>
+                <field name="y_variance_cost" widget="monetary" options="{'currency_field': 'y_currency_id'}" optional="show"/>
+                <field name="y_variance_qty_percent" optional="show"/>
+                <field name="y_variance_cost_percent" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+
+
+    <record id="mrp_production_form_view_inherit" model="ir.ui.view">
+        <field name="name">mrp.production.form.inherit</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form//div[@name='button_box']" position="inside">
+                <field name="y_prod_analysis_count" invisible="1"/>
+                <button name="action_view_action_mrp_reports_records" type="object" string="Yield Management" class="oe_stat_button" icon="fa-line-chart" invisible="state == 'draft'"/>
+            </xpath>
+        </field>
+    </record>
+
+
+
+</odoo>

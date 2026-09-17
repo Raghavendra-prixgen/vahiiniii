@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+    <template id="external_layout_standard_ravago">
+      <div class="header" style="border: 1px solid black;border-bottom:none;">
+        <div class="col-12 d-flex px-2 py-1">
+                    <div class="" style="margin-top:2%;width: 20%;">
+                        <img t-if="doc.company_id.parent_id.logo"
+                            t-att-src="image_data_uri(doc.company_id.parent_id.logo)" width="140"
+                            height="110" alt="Logo" />
+                        <img t-else="" t-att-src="image_data_uri(doc.company_id.logo)" width="140"
+                            height="110" alt="Logo" />
+                    </div>
+                    <div style="width:80%;">
+                        <div style="border-bottom:1px solid black;">
+                            <span class="fw-bold fs-5 p-1" t-if="doc.company_id.parent_id"
+                                t-field="doc.company_id.parent_id.name" />
+                            <span class="fw-bold fs-5 p-1" t-else="" t-field="doc.company_id.name" />
+                        </div>
+                        <div class="p-1" style="width: 80%;font-size: 12px;">
+                                <div>
+                                    <span
+                                        t-esc="journal_address.street" />
+                                    <span
+                                        t-esc="journal_address.street2" /><br/>
+                                    <t t-if="journal_address.city">
+                                    <span
+                                        t-esc="journal_address.city" />,
+                                    </t>
+                                    <t t-if="journal_address.state_id">
+                                    <span
+                                        t-esc="journal_address.state_id.name" />,
+                                    </t>
+                                    <span
+                                        t-esc="journal_address.country_id.name" />
+                                    <span>-</span>
+                                    <span
+                                        t-esc="journal_address.zip" />
+                                </div>
+                                <div>
+                                    <span class="fw-bold">GSTIN: </span>
+                                    <span t-field="doc.company_id.vat" />
+                                    <span style="color:white;">.</span>
+                                    <span class="fw-bold">CIN: </span>
+                                    <span
+                                        t-field="doc.company_id.company_registry" />
+                                    <span class="fw-bold">PAN: </span>
+                                    <span t-if="doc.company_id.l10n_in_pan"
+                                        t-field="doc.company_id.l10n_in_pan"></span>
+
+                                </div>
+
+                                <div style="font-size: 12px;">
+                                    <t t-if="doc.company_id.parent_id">
+                                        <span class="fw-bold">Regd. office : </span>
+                                        <span t-field="doc.company_id.parent_id.street" />
+                                        <span t-field="doc.company_id.parent_id.street2" /><br/>
+                                        <t t-if="doc.company_id.parent_id.city">
+                                        <span t-field="doc.company_id.parent_id.city" />,
+                                        </t>
+                                        <t t-if="doc.company_id.parent_id.state_id">
+                                        <span t-field="doc.company_id.parent_id.state_id.name" />,
+                                        </t>
+                                        <span
+                                            t-field="doc.company_id.parent_id.country_id.name" />
+                                        <span>-</span>
+                                        <span t-field="doc.company_id.parent_id.zip" />
+                                    </t>
+
+                                </div>
+
+                                <div>
+                                    <span class="fw-bold">Contact : </span>
+                                    <span style="font-size: 12px;"
+                                        t-if="doc.company_id.phone"
+                                        t-field="doc.company_id.phone" />
+
+                                    <span style="color:white;">.</span>
+                                    <span class="fw-bold">Email : </span>
+                                    <span style="font-size: 12px;"
+                                        t-if="doc.company_id.email"
+                                        t-field="doc.company_id.email" />
+                                    <br/>
+                                    <span class="fw-bold">Website : </span>
+                                    <span style="font-size: 12px;"
+                                        t-if="doc.company_id.website"
+                                        t-field="doc.company_id.website" />
+                                </div>
+                            
+                        </div>
+                    </div>
+                </div>
+        <table class="table table-borderless table-sm"
+          style="width: 100%;  font-size: 12px; margin: 0;border-bottom: 1px solid black;border-top: 1px solid black;">
+          <tr>
+            <t t-if="doc.y_payment_type">
+              <td colspan="2" class="fs-6 text-center py-1">
+                <t t-if="doc.y_payment_type == 'outbound'">
+                  <t t-if="doc.journal_id.type == 'bank'">
+                    <span class="fs-6 fw-bold">Bank Payment Voucher</span>
+                  </t>
+                  <t t-if="doc.journal_id.type == 'cash'">
+                    <span class="fs-6 fw-bold">Cash Payment Voucher</span>
+
+                  </t>
+                </t>
+                <!-- <t t-else="">
+                                    <span>Journal Voucher</span>
+                                </t> -->
+
+                <t t-if="doc.y_payment_type == 'inbound'">
+                  <t t-if="doc.journal_id.type == 'bank'">
+                    <span class="fs-6 fw-bold">Bank Receipt Voucher</span>
+                  </t>
+                  <t t-if="doc.journal_id.type == 'cash'">
+                    <span class="fs-6 fw-bold">Cash Receipt Voucher</span>
+                  </t>
+                </t>
+              </td>
+            </t>
+            <t t-else="">
+              <td colspan="2" class="fw-bold fs-6 text-center py-1"
+              >
+                Journal Voucher
+              </td>
+            </t>
+          </tr>
+        </table>
+      </div>
+      <div class="article o_report_layout_standard" t-att-data-oe-model="doc and doc._name"
+        t-att-data-oe-id="doc and doc.id"
+        t-att-data-oe-lang="doc and doc.env.context.get('lang')">
+        <t t-call="web.address_layout" />
+        <t t-raw="0" />
+      </div>
+      <div class="footer">
+        <div class="row" style="border-top:1px solid black">
+
+          <div class="col-6"
+            style="text-align:center;padding:1px;margin-top:none !important;font-color:gray">
+            <p style="float:right;color:black;font-size:13px;" class="text-muted">
+              <span class="">Page: </span>
+              <span class="page" />
+              <span class="">/</span>
+              <span class="topage" />
+            </p>
+          </div>
+        </div>
+      </div>
+
+
+    </template>
+  </data>
+</odoo>

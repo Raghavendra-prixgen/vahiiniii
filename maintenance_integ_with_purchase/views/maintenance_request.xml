@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="hr_equipment_request_view_form_inherit_purchase" model="ir.ui.view">
+        <field name="name">Manintenance request form view</field>
+        <field name="model">maintenance.request</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_request_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="/form/sheet/notebook/page[2]" position="after">
+                <page name="maintenance_info" string="Maintenance Info">
+                    <form>
+                        <group>
+                            <group>
+                                <field name="y_purchase_order" readonly="1"
+                                    options="{'no_create': True, 'no_create_edit':True}"
+                                    invisible="y_purchase_order == False" />
+                            </group>
+                            <group>
+                                <field name="y_material_purchase_order" readonly="1"
+                                    options="{'no_create': True, 'no_create_edit':True}"
+                                    invisible="y_material_purchase_order == False" />
+                                <field name="y_vendor" readonly="1"
+                                    options="{'no_create': True, 'no_create_edit':True}"
+                                    widget="many2many_tags"
+                                    invisible="(y_material_purchase_order == False),(y_purchase_order == False)" />
+                            </group>
+                        </group>
+
+                    </form>
+                </page>
+
+            </xpath>
+
+            <!--       
+      <field name="maintenance_type" position="after">
+         <field name="y_purchase_order" readonly="1" options="{'no_create': True, 'no_create_edit':True}"
+            invisible="y_purchase_order == False"/>
+        <field name="y_material_purchase_order" readonly="1" options="{'no_create': True,
+            'no_create_edit':True}" invisible ="y_material_purchase_order == False"/>
+        <field name="y_vendor" readonly="1" options="{'no_create': True, 'no_create_edit':True}"
+            widget="many2many_tags" invisible ="(y_material_purchase_order ==
+            False),(y_purchase_order == False)"/>
+
+       
+      </field> -->
+        </field>
+    </record>
+
+
+    <record id="maintenance_equipment_view_form_hsn_uom" model="ir.ui.view">
+        <field name="name">maintenance.equipment.form.hsn.uom</field>
+        <field name="model">maintenance.equipment</field>
+        <field name="inherit_id"
+            ref="maintenance_base.maintenance_equipment_view_inherited_form_quantity" />
+        <field name="arch" type="xml">
+            <field name="y_type" position="after">
+                <field name="y_hsn_code" />
+                <field name="y_uom_id" />
+            </field>
+        </field>
+    </record>
+
+    <!-- views/purchase_doc_type_views.xml -->
+    <record id="purchase_doc_type_view_form_inherit_maintenance" model="ir.ui.view">
+        <field name="name">purchase.doc.type.view.form.inherit.maintenance</field>
+        <field name="model">purchase.doc.type</field>
+        <field name="inherit_id" ref="purchase_base_18.purchase_doc_type_view_form" />
+        <field name="arch" type="xml">
+            <field name="y_description" position="after">
+                <field name="y_is_maintenance_request" />
+            </field>
+        </field>
+    </record>
+
+
+    <record id="res_config_settings_view_form_jobwork" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.jobwork</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="maintenance.res_config_settings_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='module_maintenance_worksheet']/../.." position="after">
+                <div class="col-12 col-lg-6 o_setting_box">
+                    <div class="o_setting_left_pane">
+                    </div>
+                    <div class="o_setting_right_pane">
+                        <label for="job_work_sequence_id" string="Job Work Sequence" />
+                        <div class="text-muted">
+                            Set the sequence format for Jobwork
+                        </div>
+                        <div class="content-group">
+                            <div class="row mt8">
+                                <field name="job_work_sequence_id"
+                                    class="oe_inline"
+                                    options="{'no_create': True, 'no_open': False}" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="jobwork_sequence" model="ir.sequence">
+        <field name="name">Job Work Challan</field>
+        <field name="code">maintenance.jobwork.challan.number</field>
+        <field name="prefix">JWC</field>
+        <field name="padding">5</field>
+    </record>
+
+    <record id="maintenance_base.jobwork_challan" model="ir.actions.report">
+        <field name="binding_model_id" eval="False" />
+    </record>
+
+
+</odoo>
+  

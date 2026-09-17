@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		
+		<record id="weighment_button_inherit_button" model="ir.ui.view">
+			<field name="name">stock.picking.form</field>
+			<field name="model">stock.picking</field>
+			<field name="inherit_id" ref="stock.view_picking_form"/>
+			<field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                 	<field name="y_weighment_id" options="{'no_create': True, 'no_create_edit':True}" invisible="picking_type_code not in ('incoming','outgoing')" domain="[('id','in',y_weighment_ids)]"/>
+                </field>
+            </field>
+		</record>
+	
+	</data>
+</odoo>

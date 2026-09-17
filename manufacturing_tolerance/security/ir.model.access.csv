@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_manufacturing_tolerance_approval,manufacturing.tolerance.approval,model_manufacturing_tolerance_approval,,1,1,1,0
+access_manufacturing_tolerance_approval_line,manufacturing.tolerance.approval.line,model_manufacturing_tolerance_approval_line,,1,1,1,1
+access_mrp_product_approval,mrp.product.approval,model_mrp_product_approval,,1,1,1,1
+access_mo_tolerance_approve,mo.tolerance.approve,model_mo_tolerance_approve,,1,1,1,0

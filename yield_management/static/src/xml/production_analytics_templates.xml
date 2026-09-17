@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="production_analytics.ProductionAnalyticsDashboard">
+        <div class="o_purchase_dashboard container">
+
+            
+                <div class="row">
+                <div class="col-sm-6">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <td class="o_text">
+                                </td>
+                                <td class="o_text" >
+                                    Quantity
+                                </td>
+                                <td class="o_text" >
+                                    Cost Per Unit
+                                </td>
+                                <td class="o_text">
+                                   Total Cost
+                                </td>
+                            </tr>    
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="o_text">
+                                    <div>Planned</div>
+                                </td>
+                                <td class="o_text" >
+                                    <a ><t t-esc="dashboardData['planned_qty']"/></a>
+                                </td>
+                                <td class="o_text" >
+                                    <a ><t t-esc="dashboardData['cost_per_unit_planned']"/></a>
+                                </td>
+                                <td class="o_text" >
+                                    <a ><t t-esc="dashboardData['planned_fg_cost']"/>&#160;<t t-esc="dashboardData['company_currency_symbol']"/></a>
+                                </td>   
+                            </tr>
+                            
+                            <tr>
+                                <td class="o_text">
+                                    <div>Actual</div>
+                                </td>
+                                <td class="o_text" >
+                                    <a ><t t-esc="dashboardData['actual_qty']"/></a>
+                                </td>
+                                 <td class="o_text" >
+                                    <a ><t t-esc="dashboardData['cost_per_unit_actual']"/></a>
+                                </td> 
+                                <td class="o_text">
+                                    <a ><t t-esc="dashboardData['actual_fg_cost']"/>&#160;<t t-esc="dashboardData['company_currency_symbol']"/></a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-sm-6">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <td class="o_text">
+                                </td>
+                                <td class="o_text" >
+                                    Cost Per Unit
+                                </td>
+                                <td class="o_text">
+                                 Percentage(%)
+                                </td>
+                            </tr>    
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="o_text">
+                                    <div>Cost Variance Per Unit</div>
+                                </td>
+                                <td class="o_text" >
+                                    <t t-if="dashboardData['yield_val'] &gt; 0"><span style="color:red;font-size: 2rem;"><i class="fa fa-caret-up"/>&#160;<t t-esc="dashboardData['yield_val']"/></span></t>
+                                    <t t-else=""><span style="color:green;font-size: 2rem;"><i class="fa fa-caret-down"/>&#160;<t t-esc="(dashboardData['yield_val']*-1)"/></span></t>
+                                </td>
+                                <td class="o_text" >
+                                    <t t-if="dashboardData['yield_percentage'] &gt; 0"><span style="color:red;font-size: 2rem;"><i class="fa fa-caret-up"/>&#160;<t t-esc="dashboardData['yield_percentage']"/></span></t>
+                                    <t t-else=""><span style="color:green;font-size: 2rem;"><i class="fa fa-caret-down"/>&#160;<t t-esc="(dashboardData['yield_percentage']*-1)"/></span></t>                                   
+                                </td>   
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            
+                    </div>
+                
+        </div>
+    </t>
+
+    <t t-name="production_analytics.ProductionAnalyticsListView" t-inherit="web.ListRenderer" t-inherit-mode="primary">
+        <xpath expr="//div[hasclass('o_list_renderer')]" position="before">
+            <ProductionAnalyticsWidget />
+        </xpath>
+    </t>
+
+</templates>

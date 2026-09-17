@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <data>
+    <!-- <record id="export_views" model="ir.ui.view">
+      <field name="name">Export form view</field>
+      <field name="model">port.order</field>
+      <field name="arch" type="xml">
+        <form string="Port">
+          <sheet>
+            <group>
+              <group>
+                <field name="y_name" />
+                <field name="y_city" />
+                <field name="y_country" />
+              </group>
+              <group>
+              </group>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record> -->
+  </data>
+</odoo>        
+            

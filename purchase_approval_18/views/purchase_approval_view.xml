@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <!-- ===================# Purchase Approval Configuration #======================= -->
+
+    <record id="purchase.purchase_rfq" model="ir.actions.act_window">
+      <field name="domain">[('state','in',('sent', 'draft','cancel','reject','to approve'))]</field>
+    </record>
+
+    <record id="purchase_doc_teype_view_tree_is_approval_required" model="ir.ui.view">
+        <field name="name">purchase.doc.type.view.list.inherited</field>
+        <field name="model">purchase.doc.type</field>
+        <field name="inherit_id" ref="purchase_base_18.purchase_doc_type_view_tree"/>
+        <field name="arch" type="xml">
+            <field name="y_company_id" position="after">
+                <field name="y_is_approval_required" widget="boolean_toggle" string="Approval Required"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="purchase_doc_type_view_form_is_approval_required" model="ir.ui.view">
+        <field name="name">purchase.doc.type.view.form.approval.required</field>
+        <field name="model">purchase.doc.type</field>
+        <field name="inherit_id" ref="purchase_base_18.purchase_doc_type_view_form"/>
+        <field name="arch" type="xml">
+            <field name="y_company_id" position="after">
+                <field name="y_is_approval_required" widget="boolean_toggle" string="Approval Required"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_purchase_approval_form" model="ir.ui.view">
+        <field name="name">purchase.approval.form</field>
+        <field name="model">purchase.approval</field>
+        <field name="arch" type="xml">
+            <form string="Purchase Approval">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="y_company_id" invisible="1"/>
+                            <field name="y_parent_company_id" invisible="1"/>
+                            <field name="y_document_type_id" required='1' options="{'no_create': True, 'no_open': True}" domain="['|','|','|',('y_company_id', '=', False),('y_company_id', 'child_of', y_company_id),('y_company_id', '=', y_company_id),('y_company_id', '=', y_parent_company_id)]"/>
+                            <field name="y_name" />
+                            <field name="y_procurement_group_id" options="{'no_create': True, 'no_create_edit':True,'no_open':True}"/>
+                        </group>
+                        <group>
+                            <field name="y_company_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}" groups="base.group_multi_company"/>
+                            <field name="y_currency_id" options="{'no_create': True, 'no_create_edit':True,'no_open':True}" required="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Approvals" name="lvlandamount">
+                            <field name="y_lvl_amt_approval_lines" widget="section_and_note_one2many" >
+                                <list string="Lvl and Amt Approval Lines" editable="bottom">
+                                    <field name='y_approval_level' required="1"/>
+                                    <field name='y_approval_amount_from' required="1"/>
+                                    <field name='y_approval_amount_to' required="1"/>
+                                    <field name='y_lvl1_user_id' options="{'no_create': True, 'no_open': True}" required ="y_approval_level in ('1stlvlapproval','2ndlvlapproval','3rdlvlapproval','4thlvlapproval','5thlvlapproval')"/>
+                                    <field name='y_lvl2_user_id'   options="{'no_create': True, 'no_open': True}" readonly ="y_approval_level == '1stlvlapproval'" required="y_approval_level in ('3rdlvlapproval','2ndlvlapproval','4thlvlapproval','5thlvlapproval')" force_save="1"/>
+                                    <field name='y_lvl3_user_id'   options="{'no_create': True, 'no_open': True}" readonly ="y_approval_level in ('1stlvlapproval','2ndlvlapproval')" required ="y_approval_level in ('3rdlvlapproval','4thlvlapproval','5thlvlapproval')" force_save="1"/>
+                                    <field name='y_lvl4_user_id'   options="{'no_create': True, 'no_open': True}" readonly ="y_approval_level in ('1stlvlapproval','2ndlvlapproval','3rdlvlapproval')" required ="y_approval_level in ('4thlvlapproval','5thlvlapproval')" force_save="1"/>
+                                    <field name='y_lvl5_user_id'   options="{'no_create': True, 'no_open': True}" readonly ="y_approval_level in ('1stlvlapproval','2ndlvlapproval','3rdlvlapproval','4thlvlapproval')" required="y_approval_level == '5thlvlapproval'" force_save="1"/>
+                                                                            
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="search_view_purchase_approval">
+        <field name="name">purchase.approval.search</field>
+        <field name="model">purchase.approval</field>
+        <field name="arch" type="xml">
+            <search>
+              <field name="y_document_type_id"/>
+              <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_purchase_approval_form_tree" model="ir.ui.view">
+        <field name="name">purchase.approval.list</field>
+        <field name="model">purchase.approval</field>
+        <field name="priority" eval="1"/>
+        <field name="arch" type="xml">
+            <list string="Purchase Approval" >
+                <field name="y_name"/>
+                <field name="y_document_type_id"/>
+                <!-- <field name="y_warehouse_id"/> -->
+                <field name="y_company_id"/>
+                <field name="y_currency_id" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record model="ir.rule" id="purchase_approval_record_restricted_company_rule">
+        <field name="name">Purchase Approval Restricted Record: multi-company</field>
+        <field name="model_id" ref="model_purchase_approval"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">
+            ['|', ('y_company_id', '=', False), ('y_company_id', 'parent_of', company_ids)]
+        </field>
+    </record>
+
+    <record id="action_purchase_approval" model="ir.actions.act_window">
+        <field name="name">Approval Setting PO</field>
+        <field name="res_model">purchase.approval</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem 
+        id="menu_purchase_approval" 
+        name="Approval Setting PO" 
+        parent="purchase_base_18.menu_product_in_config_purchase_others"
+        action="action_purchase_approval" sequence="150"
+    />
+
+    <!-- ===================# Purchase Approval Configuration END #======================= -->
+
+
+    <!-- ===================# Purchase Approval in Purchase Order #======================= -->
+
+    <record id="purchase.purchase_rfq" model="ir.actions.act_window">
+      <field name="domain">[('state','in',('sent', 'draft','cancel','to approve'))]</field>
+    </record>
+
+    <record id="view_order_form_doc_type_id" model="ir.ui.view">
+        <field name="name">purchase.order.form.doc.type.attrs</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase_base_18.view_order_form"/>
+        <field name="arch" type="xml">
+            <field name="y_doc_type_id" position="attributes">
+                <attribute name="readonly">state in ['cancel','to approve','done','purchase']</attribute>
+            </field>
+        </field>
+    </record>
+
+
+
+
+    <record model="ir.ui.view" id="purchase_order_approval">
+        <field name="name">purchase.order.form</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <button name="button_draft" position="after" >
+                <button name="get_approval_data" type="object" class="oe_highlight" invisible="state not in ('sent','draft') or y_is_approval_required == False" string="Request for Approval" context="{'validate_analytic': True}"/>
+                <button name="confirm_approval"  type="object" class="oe_highlight" invisible="state != 'to approve' or y_is_approval_required ==  False or state != 'to approve'" string="Approve" context="{'validate_analytic': True}"/>
+                <field name="y_is_approval_required" invisible="1"/>
+                <button name="%(purchase_approval_18.action_purchase_approval_remarks)d" type="action" class="oe_highlight" string="Reject" invisible="state != 'to approve' or y_is_approval_required == False"/>
+            </button>
+            <button name="button_draft" position="attributes">
+                <attribute name="invisible">state not in ('to approve','reject')</attribute>
+            </button>
+            <button name="button_approve" position="attributes">
+                <attribute name="invisible">y_is_approval_required != False or state != 'to approve'</attribute>
+            </button>
+            <field name="order_line" position="attributes">
+                <attribute name="readonly">state in ('done','purchase','to approve','cancel','reject')</attribute>
+            </field>
+            <field name="currency_id" position='after'>
+                <field name="y_to_approve_states"  invisible='1'/>
+                <field name="y_is_approval_required" invisible="1"/>
+                <field name="y_is_approval_show" invisible="1"/>
+            </field>
+
+            <!-- Readonly Fields -->
+            <button name="action_rfq_send" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </button>
+            <field name="partner_id" position="attributes">
+                <attribute name="readonly">state in ('done','purchase','to approve','cancel','reject')</attribute>
+            </field>
+
+            <field name="date_order" position="attributes">
+                <attribute name="readonly">state in ('done','purchase','to approve','cancel','reject')</attribute>
+            </field>
+
+            <field name="date_planned" position="attributes">
+                <attribute name="readonly">state in ('done','purchase','to approve','cancel','reject')</attribute>
+            </field>
+
+            <field name="picking_type_id" position="attributes">
+                <attribute name="readonly">state in ('done','purchase','to approve','cancel','reject')</attribute>
+            </field>
+
+            <field name="currency_id" position="attributes">
+                <attribute name="readonly">state in ('done','purchase','to approve','cancel','reject')</attribute>
+            </field>
+
+            <field name="user_id" position="attributes">
+                <attribute name="readonly">state in ('done','purchase','to approve','cancel','reject')</attribute>
+            </field>
+
+            <field name="company_id" position="attributes">
+                <attribute name="readonly">state in ('done','purchase','to approve','cancel','reject')</attribute>
+            </field>
+
+            <field name="payment_term_id" position="attributes">
+                <attribute name="readonly">state in ('done','purchase','to approve','cancel','reject')</attribute>
+            </field>
+
+            <field name="fiscal_position_id" position="attributes">
+                <attribute name="readonly">state in ('done','purchase','to approve','cancel','reject')</attribute>
+            </field>
+
+            <notebook position="inside">
+                <page string="Approvals" invisible="y_is_approval_show == False">
+                    <field name='y_purchase_lvl_amt_approval_line' widget="section_and_note_one2many" readonly="1">
+                        <list>
+                            <field name='y_approval_level'/>
+                            <field name='y_lvl_user_id' widget="badge" decoration-success="1"/>
+                            <button name="view_code_users" type="object" string="" icon="fa-eye" class="btn-secondary" help="View Users"/>
+                            <field name="y_approved_date"/>
+                            <field name="y_approver_id"/>
+                            <field name='y_purchase_lvl_id' column_invisible="True" string="Purchase lvl"/>
+                            <field name="y_approval_status" widget="badge" decoration-success="y_approval_status == 'approved'" decoration-primary="y_approval_status == 'approval_pending'" decoration-info="y_approval_status == 'rejected'"/>
+                            <field name="y_is_approval_completed" string="Approval Completed" column_invisible="True"/>
+                            <field name="y_remarks"/>
+                        </list>
+                    </field>
+                </page>
+            </notebook>
+        </field>
+    </record>
+
+    
+    <record id="purchase_order_tree_view_new" model="ir.ui.view">
+        <field name="name">purchase.order.list.view</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_kpis_tree"/>
+        <field name="arch" type="xml">
+            <field name="state" position="before">
+                <field name="y_to_approve_states" widget="badge"/>
+            </field>
+        </field>
+    </record>
+
+
+</odoo>

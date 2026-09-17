@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_department_stock,department.stocks,model_department_stocks,base.group_user,1,1,1,1
+access_expense_stocks,expense.stocks,model_expense_stocks,base.group_user,1,1,1,1

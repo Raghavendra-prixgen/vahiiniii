@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record model="product.group.config" id="product_groups">
+          <field name="y_name">Item Group</field>
+          <field name="y_product_group_1">Product Group 1</field>
+          <field name="y_product_group_2">Product Group 2</field>
+          <field name="y_product_group_3">Product Group 3</field>
+          <field name="y_is_item_group_invisible">True</field>
+          <field name="y_is_product_group_1_invisible">True</field>
+          <field name="y_is_product_group_2_invisible">True</field>
+          <field name="y_is_product_group_3_invisible">True</field>
+        </record>
+    </data>
+</odoo>

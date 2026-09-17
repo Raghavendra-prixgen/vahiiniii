@@ -1,0 +1,18 @@
+{
+    'name': "E Invoice Bug Fix",
+    'summary': """ E Invoice Bug Fix """,
+    'description':""" """,
+    'module_type':'official',
+    'author': 'Prixgen Tech Solutions Pvt. Ltd.',
+    'company': 'Prixgen Tech Solutions Pvt. Ltd.',
+    'website': 'https://www.prixgen.com',    
+    'category': 'Sales',
+    'version': '18.0.0.1',
+    'App origin':'Base',
+    'license': 'LGPL-3',
+    'depends': ['l10n_in_edi'],    
+    'data': [],
+    'auto_install': False,
+    'installable' : True,
+    'application': True,
+}

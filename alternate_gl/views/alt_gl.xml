@@ -1,0 +1,94 @@
+<odoo>
+  <data>
+
+    <record model="ir.rule" id="alternative_gl_record_restricted_company_rule">
+        <field name="name">Alternative Gl Restricted Record: multi-company</field>
+        <field name="model_id" ref="model_alternative_gl"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">
+            ['|', ('y_company_id', '=', False), ('y_company_id', 'parent_of', company_ids)]
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="alternative_gl_tree">
+      <field name="name">List View For Alternative GL</field>
+      <field name="model">alternative.gl</field>
+      <field name="arch" type="xml">
+        <list>
+          <field name="y_name"/>
+          <field name="y_document_type"/>
+          <field name="y_release" widget="boolean_toggle" readonly="1"/>
+          <field name="y_company_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}" groups="base.group_multi_company"/>
+        </list>              
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="alternative_gl_form">
+      <field name="name">Form View For Alternative GL</field>
+      <field name="model">alternative.gl</field>
+      <field name="arch" type="xml">
+        <form>
+          <sheet>
+            <group>
+              <group>
+                <field name="y_name" required="1"/>
+                <field name="y_description" invisible="1"/>
+                <field name="y_company_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}" groups="base.group_multi_company"/>
+              </group>
+              <group>
+                <field name="y_document_type" required="1" widget="radio" options="{'horizontal': True}"/>                
+                <field name="y_release" widget="boolean_toggle"/>
+              </group>
+            </group>
+            <notebook>
+              <page string="Account Mapping">
+                <field name="y_alt_id" invisible="1"/>
+                <field name="y_gl_lines_ids">
+                  <list editable="bottom">
+                    <field name="y_account_on_partner_id" options="{'no_create': True, 'no_create_edit':True,'no_open': True}"/>
+                    <field name="y_account_to_use_instead_id" options="{'no_create': True, 'no_create_edit':True,'no_open': True}" required="1"/>
+                  </list>
+                  <form>
+                    <sheet>
+                      <group>
+                        <group>
+                          <field name="y_account_on_partner_id" options="{'no_create': True, 'no_create_edit':True,'no_open': True}"/>
+                          <field name="y_account_to_use_instead_id" options="{'no_create': True, 'no_create_edit':True,'no_open': True}"/>
+                        </group>
+                      </group>
+                    </sheet>
+                  </form>
+                </field>
+              </page>
+            </notebook>
+          </sheet>
+          <chatter/>
+        </form>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="search_alternative_gl_delete_button">
+        <field name="name">delete.button.search.alternative.gl</field>
+        <field name="model">alternative.gl</field>
+        <field name="arch" type="xml">
+            <search>
+              <field name="y_name"/>
+                <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+
+    <record id="alternative_gl_action" model="ir.actions.act_window">
+      <field name="name">Alternative GL</field>
+      <field name="res_model">alternative.gl</field>
+      <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem
+      name="Alternative GL" id="alternative_gl_menu"
+      parent="account.account_invoicing_menu"
+      action="alternative_gl_action" sequence="4"/>
+
+  </data>
+</odoo>

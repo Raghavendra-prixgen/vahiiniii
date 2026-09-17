@@ -1,0 +1,83 @@
+<odoo>
+    <data>     
+        <record id="purchase_order_view_form_product_procuremnet_group" model="ir.ui.view">
+            <field name="name">purchase.oder.view.product.procuremnt.group</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml">
+                <field name="company_id" position="after">
+                    <field name="y_procurement_group_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}" readonly="state != 'draft'"/>
+                </field>
+            </field>
+        </record>
+
+        <!-- <record id="view_purchase_request_procurement_group_form" model="ir.ui.view">
+            <field name="name">purchase.request.procurement.group.form</field>
+            <field name="model">purchase.request</field>
+            <field name="inherit_id" ref="purchase_base_18.view_purchase_request_form"/>
+            <field name="arch" type="xml">
+                <field name="request_type_id" position="after">
+                    <field name="y_procurement_group_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}" readonly="not is_editable"/>
+                </field>
+            </field>
+        </record>
+ -->
+
+        <record id="product_template_form_view_product_procurement_group" model="ir.ui.view">
+            <field name="name">product_template_form_view_procurement_group</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="purchase_base_18.purchase_tolerance_inventry_inherited"/>
+            <field name="arch" type="xml">
+                <field name="y_purchase_tol_reqd" position="before">
+                    <field name="y_procurement_group_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                </field>
+            </field>
+        </record>
+
+        <!-- shipment master form view -->
+        <record id="view_product_procurement_groupt_from" model="ir.ui.view">
+            <field name="name">Procurement Group Form</field>
+            <field name="model">product.procurement.group</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>                        
+                        <group>
+                            <group>
+                                <field name="y_name" required="1"/>
+                            </group>
+                            <group>
+                                <field name="y_is_critical" widget="boolean_toggle"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_product_procurement_group_tree_view" model="ir.ui.view">
+            <field name="name">Procurement Group Tree</field>
+            <field name="model">product.procurement.group</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="y_name"/>
+                    <field name="y_is_critical"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="action_product_procurement_group" model="ir.actions.act_window">
+            <field name="name">Procurement Group</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.procurement.group</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+        <menuitem 
+            id="menu_product_procurement_group"
+            action="action_product_procurement_group"
+            name="Procurement Group"  
+            sequence="170" 
+            parent="purchase_base_18.menu_product_in_config_purchase_others"/>
+
+    </data>
+</odoo>

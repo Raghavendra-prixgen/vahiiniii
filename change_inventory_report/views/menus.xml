@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem
+        id="menu_change_inventory_report"
+        name="Change Inventory Report"
+        parent="account_additional_reports.menu_additional_reports"
+        action="action_change_inventory_wizard"
+        sequence="10"/>
+
+</odoo>

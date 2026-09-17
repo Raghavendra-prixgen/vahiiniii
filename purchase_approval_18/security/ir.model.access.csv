@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_purchase_approval,purchase.approval,model_purchase_approval,purchase.group_purchase_user,1,1,1,0
+access_purchase_approval_manager,purchase.approval,model_purchase_approval,purchase.group_purchase_manager,1,1,1,0
+
+access_purchase_approval_lvl_amt,purchase.approval.lvl.amt,model_purchase_lvlamt_approval,,1,1,1,1
+access_purchase_approval_lvl_amt123,purchase.approval.lvl.amt1,model_purchase_order_approval_lvlsamt,,1,1,1,1
+
+access_purchase_approval_remarks,purchase_approval_remarks,model_purchase_approval_remarks,,1,1,1,1
+

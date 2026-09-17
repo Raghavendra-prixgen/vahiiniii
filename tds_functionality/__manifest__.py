@@ -1,0 +1,20 @@
+{
+    'name': 'TDS Functionality -Version',
+    'version': '18.0.0.8',
+    'category': 'Products',
+    'author': "Prixgen Tech Solutions Pvt. Ltd.",
+    'website': 'https://www.prixgen.com',
+    'company': 'Prixgen Tech Solutions Pvt. Ltd.',
+    'module_type':'official',
+    'App origin': "Base",
+    'summary':'Allows to map taxes to payments',
+    'depends': ['base','account','l10n_in','mail','account_additional_reports','purchase'],
+    'data': [
+            'security/ir.model.access.csv',
+            'views/tds_functionality.xml',
+            'views/tds_payment.xml',
+            'views/tax_code.xml',
+             ],
+    'auto_install': False,
+    'application': True,
+    }

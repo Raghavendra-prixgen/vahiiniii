@@ -1,0 +1,61 @@
+<odoo>
+
+   <!-- <record id="purchase_shipment_view_tree_inherit" model="ir.ui.view">
+        <field name="name">purchase.shipment.view.list</field>
+        <field name="model">purchase.shipment</field>
+        <field name="inherit_id" ref="incoming_shipment_tracker.purchase_shipment_view_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list/header" position="inside">
+                <button name="button_calculate_fleet_indent" string="Create Fleet Indent" type="object"/>
+            </xpath>
+        </field>
+    </record> -->
+
+    <record id="fleet_res_config_settings_view_form_transport" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.base.setup</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="0"/>
+        <field name="inherit_id" ref="fleet.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//app[@id='fleet']" position="inside">
+                <block title="Transportation Order" id="end_contract_settingss">
+                <setting string="Vehicle Indent Sequence">
+                    <div class="text-muted content-group mt16">        
+                        <field name="y_vehicle_intent_sequence_id" />
+                    </div> 
+                </setting>
+                <setting string="Service Product">
+                    <div class="text-muted content-group mt16">      
+                        <field name="y_transportation_product_id" domain="[('type','=','service')]"/>
+                    </div> 
+                </setting>
+                <setting string="Transporation Order Sequence">
+                    <div class="text-muted content-group mt16">      
+                        <field name="y_transportation_order_sequence_id" />
+                    </div>
+                </setting>
+                <setting string="Landed Cost Journal">
+                    <div class="text-muted content-group mt16">     
+                        <field name="y_transportation_journal_id" />
+                    </div>
+                </setting>
+                
+                <setting string="Freight Cost Master Sequence">
+                    <div class="text-muted content-group mt16">     
+                        <field name="y_freight_cost_master_sequence_id" />
+                    </div>
+                </setting>
+
+                <setting string="Transporation Order Approver">
+                    <div class="text-muted content-group mt16">     
+                        <field name="y_transportation_order_approver_ids" widget="many2many_tags"/>
+                    </div>
+                </setting>
+                
+                
+            </block>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

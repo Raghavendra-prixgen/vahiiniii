@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Report action definition -->
+        <record id="action_report_partner_ledger" model="ir.actions.report">
+            <field name="name">Partner Ledger</field>
+            <field name="model">account.move.line</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">partner_ledger_portal.report_partner_ledger</field>
+            <field name="report_file">partner_ledger_portal.report_partner_ledger</field>
+            <field name="binding_model_id" eval="False"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <!-- PDF Report Template -->
+        <template id="report_partner_ledger">
+            <t t-call="web.html_container">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Partner Ledger</h2>
+
+                        <div class="row mt-4 mb-4">
+                            <div class="col-6">
+                                <strong>Partner:</strong>
+                                <span t-esc="partner.name"/>
+                                <br/>
+                                <strong>Date Range:</strong>
+                                <span t-esc="date_begin"/>
+                                <span class="">to</span>
+                                <span t-esc="date_end"/>
+                                <br/>
+                                <t t-if="journal_type != 'all'">
+                                    <strong>Journal Type:</strong>
+                                    <span t-esc="journal_types[journal_type]"/>
+                                    <br/>
+                                </t>
+                                <t t-if="outstanding_only">
+                                    <strong>Filter:</strong> Outstanding Only
+                                    <br/>
+                                </t>
+                            </div>
+                            <div class="col-6 text-right">
+                                <strong>Report Date:</strong>
+                                <span t-esc="report_date" t-options='{"widget": "date"}'/>
+                                <br/>
+                                <strong>Company:</strong>
+                                <span t-esc="company.name"/>
+                            </div>
+                        </div>
+
+                        <table class="table table-sm table-bordered" style="font-size:12px;">
+                            <thead style="font-size:14px;">
+                                <tr>
+                                    <th class="fw-bold text-center">Date</th>
+                                    <th class="fw-bold text-center">Reference</th>
+                                    <th class="fw-bold text-center">Journal</th>
+                                    <th class="fw-bold text-center">Matching Number</th>
+                                    <th class="fw-bold text-center">Due Date</th>
+                                    <th class="fw-bold text-center">Debit</th>
+                                    <th class="fw-bold text-center">Credit</th>
+                                    <th class="fw-bold text-center">Amount</th>
+                                    <th class="fw-bold text-center">Balance</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Initial balance row -->
+                                <tr t-if="ledger_lines and initial_balance is not None" class="initial-balance-row">
+                                    <td colspan="5" class="p-1">
+                                        <strong >Initial Balance</strong>
+                                    </td>
+                                    <td class="text-right">
+                                        <!-- No debit for initial balance -->
+                                    </td>
+                                    <td class="text-right">
+                                        <!-- No credit for initial balance -->
+                                    </td>
+                                    <td class="text-right">
+                                        <!-- No amount for initial balance -->
+                                    </td>
+                                    <td class="text-right">
+                                        <strong t-esc="initial_balance" t-options='{"widget": "monetary", "display_currency": company_currency}'/>
+                                    </td>
+                                </tr>
+
+                                <!-- Ledger lines -->
+                                <t t-foreach="ledger_lines" t-as="line">
+                                    <tr>
+                                        <td>
+                                            <span class="p-1" t-if="line['date']" t-esc="line['date']" t-options='{"widget": "date", "format": "dd/MM/yyyy"}' />
+                                        </td>
+                                        <td>
+                                            <t t-esc="line['move_name']"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="line['journal_name']"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="line['matching_number']"/>
+                                        </td>
+                                        <td>
+                                            <span t-if="line['due_date']" t-esc="line['due_date']" t-options='{"widget": "date", "format": "dd/MM/yyyy"}' />
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-if="line['debit']" t-esc="line['debit']" t-options='{"widget": "monetary", "display_currency": line["company_currency"]}' />
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-if="line['credit']" t-esc="line['credit']" t-options='{"widget": "monetary", "display_currency": line["company_currency"]}' />
+                                        </td>
+                                        <td class="text-right">
+                                            <t t-if="line['currency'] != line['company_currency']">
+                                                <span t-esc="line['currency_symbol']"></span>
+                                                <span t-esc="line['amount_currency']" />
+                                            </t>
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-esc="line['running_balance']" t-options='{"widget": "monetary", "display_currency": line["company_currency"]}' />
+                                        </td>
+                                    </tr>
+                                </t>
+
+                                <!-- Totals row -->
+                                <tr class="table-totals-row" style="font-size:14px;">
+                                    <td colspan="5" class="p-1">
+                                        <strong>Totals:</strong>
+                                    </td>
+                                    <td class="text-right">
+                                        <strong>
+                                            <t t-if="totals.get('currency')">
+                                                <span t-esc="totals['total_debit']" t-options='{"widget": "monetary", "display_currency": totals["currency"]}'/>
+                                            </t>
+                                            <t t-else="">
+                                                <span t-esc="totals['total_debit']"/>
+                                            </t>
+                                        </strong>
+                                    </td>
+                                    <td class="text-right">
+                                        <strong>
+                                            <t t-if="totals.get('currency')">
+                                                <span t-esc="totals['total_credit']" t-options='{"widget": "monetary", "display_currency": totals["currency"]}'/>
+                                            </t>
+                                            <t t-else="">
+                                                <span t-esc="totals['total_credit']"/>
+                                            </t>
+                                        </strong>
+                                    </td>
+                                    <td class="text-right">
+                                    </td>
+                                    <td class="text-right">
+                                        <strong>
+                                            <t t-if="totals.get('currency')">
+                                                <span t-esc="totals['final_balance']" t-options='{"widget": "monetary", "display_currency": totals["currency"]}'/>
+                                            </t>
+                                            <t t-else="">
+                                                <span t-esc="totals['final_balance']"/>
+                                            </t>
+                                        </strong>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

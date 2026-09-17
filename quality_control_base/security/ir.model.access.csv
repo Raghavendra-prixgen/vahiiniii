@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_inspection_plan,inspection_plan,model_inspection_plan,base.group_user,1,1,1,1
+access_inspection_sheet,inspection_sheet,model_inspection_sheet,base.group_user,1,1,1,0
+access_quality_test_method,quality_test_method,model_quality_test_method,base.group_user,1,1,1,1
+access_quality_characteristic,quality_characteristic,model_quality_characteristic,base.group_user,1,1,1,0
+access_quality_check_revision,quality_check_revision,model_quality_check_revision,base.group_user,1,1,1,1
+access_inspection_sheet_revision,inspection_sheet_revision,model_inspection_sheet_revision,base.group_user,1,1,1,1

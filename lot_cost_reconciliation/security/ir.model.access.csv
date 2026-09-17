@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_check_stock_valuation_wizard,check_stock_valuation_wizard,model_check_stock_valuation_wizard,,1,1,1,1
+access_check_stock_valuation,check_stock_valuation,model_check_stock_valuation,,1,1,1,1

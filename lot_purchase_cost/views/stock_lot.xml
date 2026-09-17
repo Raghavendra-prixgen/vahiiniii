@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="vview_production_lot_form_purchase_cost_per_unit" model="ir.ui.view">
+        <field name="name">stock.production.lot.form.purchase.cost.per.unit</field>
+        <field name="model">stock.lot</field>
+        <field name="inherit_id" ref="stock.view_production_lot_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='main_group']/group[2]" position="inside">
+                <field name="purchase_cost_per_unit"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

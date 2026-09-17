@@ -1,0 +1,555 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+
+        <template id="external_layout_standard_vahini">
+            <div class="header">
+                <div
+                    style="position:absolute;opacity:0.25;z-index:1000;font-size:12em;-webkit-transform:rotate(300deg);transform:rotate(300deg);height: 250px;width: 1000px;left: -50%; padding-top:90%">
+                    <t t-if="doc.state != 'sale'">
+                        <p>DRAFT</p>
+                    </t>
+                </div>
+                <div style="border:1px solid black; width:100%; margin-bottom:0; ">
+                    <div class="col-12 d-flex" style="font-size:12px;">
+
+                        <div class="col-3 m-1">
+                            <img t-if="doc.company_id.sudo().parent_id.logo"
+                                t-att-src="image_data_uri(doc.company_id.sudo().parent_id.logo)"
+                                width="170" height="90" alt="Logo" />
+                            <t t-if="doc.company_id.logo" t-else="">
+                                <img t-att-src="image_data_uri(doc.company_id.logo)" width="170"
+                                    height="90" alt="Logo" />
+                            </t>
+                        </div>
+                        <div class="col-6 text-center" style=" font-size:11px;">
+                            <div class="fw-bold" style="font-size:16px;text-transform:uppercase;">
+                                <span class="fw-bold p-1" t-if="doc.company_id.sudo().parent_id"
+                                    t-field="doc.company_id.sudo().parent_id.name" />
+                                <span class="fw-bold p-1" t-else="" t-field="doc.company_id.name" />
+                            </div>
+                            <div class="">
+                              <span t-if="doc.company_id.sudo().parent_id and doc.company_id.y_is_registered_company" t-field="doc.company_id.name" />
+                                <!-- <span t-if="partner.contact_address_complete"
+                                    t-esc="partner.contact_address_complete" /> -->
+                                <span t-if="partner.street" t-esc="partner.street" />
+                                <span t-if="partner.street2" t-esc="partner.street2" />
+                                <!-- <br /> -->
+                                <t t-if="partner.city">
+                                    <span t-field="partner.city" />
+                                </t>
+                                <t t-if="partner.city">
+                                    <t t-if="partner.state_id">,</t>
+                                </t>
+                                <t t-if="partner.state_id">
+                                    <span t-field="partner.state_id" />
+                                </t>
+
+                                <t t-if="partner.state_id">
+                                    <t t-if="partner.country_id">, </t>
+                                </t>
+                                <t t-if="partner.country_id">
+                                    <span t-field="partner.country_id" />
+                                </t>
+
+                                <t t-if="partner.zip">,</t>
+                                <t t-if="partner.zip">
+                                    <span t-field="partner.zip" />
+                                </t>
+                            </div>
+                            <div>
+                                <t>
+                                    <strong>GSTIN:</strong>
+                                    <span t-if="doc.company_id.sudo().parent_id"
+                                        t-field="doc.company_id.sudo().parent_id.vat"></span>
+                                    <span t-else="" t-field="doc.company_id.vat"></span>
+                                </t>
+                                <t>
+                                    <strong>CIN:</strong>
+                                    <span t-if="doc.company_id.sudo().parent_id"
+                                        t-field="doc.company_id.sudo().parent_id.company_registry"></span>
+                                    <span t-else="" t-field="doc.company_id.company_registry"></span>
+                                </t>
+                                <br />
+                            </div>
+                            <div>
+                                <t>
+                                    <strong>PAN:</strong>
+                                    <span t-if="doc.company_id.sudo().parent_id"
+                                        t-field="doc.company_id.sudo().parent_id.l10n_in_pan"></span>
+                                    <span t-else="" t-field="doc.company_id.l10n_in_pan"></span>
+                                </t>
+
+                                <t t-if="doc.company_id.phone">
+                                    <strong>Phone:</strong>
+                                    <span t-field="doc.company_id.phone"></span>
+                                </t>
+                                <t>
+                                    <strong>Email:</strong>
+                                    <span t-esc="doc.company_id.email"></span>
+                                </t>
+
+                                <br />
+                                <t t-if="doc.company_id.sudo().parent_id">
+                                    <span class="fw-bold">Regd. office :&#160; </span>
+                                    <!-- <span
+                                    t-field="doc.company_id.sudo().parent_id.partner_id.contact_address_complete"></span> -->
+
+                                    <span t-if="doc.company_id.sudo().parent_id.partner_id.street"
+                                        t-esc="doc.company_id.sudo().parent_id.partner_id.street" />
+                                    <span t-if="doc.company_id.sudo().parent_id.partner_id.street2"
+                                        t-esc="doc.company_id.sudo().parent_id.partner_id.street2" />
+                                    <!-- <br /> -->
+                                    <t t-if="doc.company_id.sudo().parent_id.partner_id.city">
+                                        <span
+                                            t-field="doc.company_id.sudo().parent_id.partner_id.city" />
+                                    </t>
+                                    <t t-if="doc.company_id.sudo().parent_id.partner_id.city">
+                                        <t
+                                            t-if="doc.company_id.sudo().parent_id.partner_id.state_id">
+                                            ,</t>
+                                    </t>
+                                    <t t-if="doc.company_id.sudo().parent_id.partner_id.state_id">
+                                        <span
+                                            t-field="doc.company_id.sudo().parent_id.partner_id.state_id" />
+                                    </t>
+
+                                    <t t-if="doc.company_id.sudo().parent_id.partner_id.state_id">
+                                        <t
+                                            t-if="doc.company_id.sudo().parent_id.partner_id.country_id">
+                                            , </t>
+                                    </t>
+                                    <t t-if="doc.company_id.sudo().parent_id.partner_id.country_id">
+                                        <span
+                                            t-field="doc.company_id.sudo().parent_id.partner_id.country_id" />
+                                    </t>
+
+                                    <t t-if="doc.company_id.sudo().parent_id.partner_id.zip">,</t>
+                                    <t t-if="doc.company_id.sudo().parent_id.partner_id.zip">
+                                        <span
+                                            t-field="doc.company_id.sudo().parent_id.partner_id.zip" />
+                                    </t>
+                                </t>
+                                <t t-else="">
+                                    <br />
+                                    <span style="color:white">.</span>
+                                    <br />
+                                </t>
+                            </div>
+
+                        </div>
+                        <div class="col-3"></div>
+                    </div>
+                </div>
+                <br/>
+
+               
+                <!-- <div>
+                    <table class="table table-borderless table-sm m-0 p-0" style="width:100%;">
+                        <tr>
+                            <td colspan="16"
+                style="background:#fffdaf;text-align:center;font-size:17px;padding-top:3px;padding-bottom:3px;border-top:none;border-bottom:1px
+                solid black;border-left:1px solid black;border-right:1px solid black;">
+                                <t>
+                                    <strong>SALE ORDER</strong>
+                                </t>
+                            </td>
+                        </tr>
+                        <td colspan="8" style="font-size:12px;width:50%;border-right:1px solid black;border-left:1px solid
+                black;border-bottom:1px solid black;">
+                            <div class="row">
+                                <div class="col-3" style="font-size:12px;text-align:left;width:25%">
+                                    <b>
+                                        <span style="font-size:12px">Account No </span>
+                                    </b>
+                                </div>
+                                <div class="col-1" style="text-align:left;width:2%">
+                                    <span>:</span>
+                                </div>
+                                <div class="col-6" style="text-align:left;width:73%;padding-left:20px">
+                                    <t t-if="doc.partner_id.bank_ids">
+                                        <span t-field="doc.partner_id.bank_ids[0].acc_number" />
+                                    </t>
+                                    <t t-else="">
+                                        <span t-if="doc.partner_id.bank_ids" t-field="doc.partner_id.bank_ids[0].acc_number" />
+                                    </t>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3" style="text-align:left;width:25%;font-size:12px;">
+                                    <b>
+                                        <span>Customer Name</span>
+                                    </b>
+                                </div>
+                                <div class="col-1" style="text-align:left;width:2%">
+                                    <span>:</span>
+                                </div>
+                                <div class="col-6" style="text-align:left;width:73%;padding-left:20px">
+                                    <t t-if="doc.partner_id.name">
+                                        <span t-field="doc.partner_id.name" />
+                                        <br />
+                                        <t t-if="doc.partner_id.street">
+                                            <span t-field="doc.partner_id.street" />
+                                        </t>
+                                        <br/>
+                                        <t t-if="doc.partner_id.street2">
+                                            <span t-field="doc.partner_id.street2" />
+                                        </t>
+                                        <b/>
+                                        <t t-if="doc.partner_id.state_id">
+                                            <span t-field="doc.partner_id.state_id" />
+                                        </t>
+                                        <br />
+                                        <t t-if="doc.partner_id.country_id">
+                                            <span t-field="doc.partner_id.country_id" />
+                                            <br />
+                                        </t>
+                                    </t>
+
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3" style="text-align:left;width:25%;font-size:12px;">
+                                    <b>
+                                        <span>GSTIN</span>
+                                    </b>
+                                </div>
+                                <div class="col-1" style="text-align:left;width:2%">
+                                    <span>:</span>
+                                </div>
+                                <div class="col-6" style="text-align:left;width:73%;padding-left:20px">
+                                    <t t-if="doc.partner_id.vat">
+                                        <span t-field="doc.partner_id.vat" />
+                                    </t>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3" style="text-align:left;width:25%;font-size:12px;">
+                                    <b>
+                                        <span>Mobile No</span>
+                                    </b>
+                                </div>
+                                <div class="col-1" style="text-align:left;width:2%">
+                                    <span>:</span>
+                                </div>
+                                <div class="col-6" style="text-align:left;width:73%;padding-left:20px">
+                                    <t t-if="doc.partner_id.mobile">
+                                        <span t-field="doc.partner_id.mobile" />
+                                    </t>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3" style="text-align:left;width:25%;font-size:12px;">
+                                    <b>
+                                        <span>Email</span>
+                                    </b>
+                                </div>
+                                <div class="col-1" style="text-align:left;width:2%">
+                                    <span>:</span>
+                                </div>
+                                <div class="col-6" style="text-align:left;width:73%;padding-left:20px">
+                                    <t t-if="doc.partner_id.email">
+                                        <span t-field="doc.partner_id.email" />
+                                    </t>
+                                </div>
+                            </div>
+                        </td>
+                        <td colspan="8" style="font-size:12px;width:50%;border-right:1px solid black;border-left:1px solid
+                black;border-bottom:1px solid black;">
+                            <div class="row">
+                                <div class="col-3" style="text-align:left;width:25%">
+                                    <b>
+                                        <span>Sale Order No</span>
+                                    </b>
+                                </div>
+                                <div class="col-1" style="text-align:left;width:2%;">
+                                    <span>:</span>
+                                </div>
+                                <div class="col-6" style="text-align:left;font-size:12px;padding-left:20px">
+                                    <t t-if="doc.name">
+                                        <span t-field="doc.name" />
+                                    </t>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3" style="text-align:left;width:25%;">
+                                    <b>
+                                        <span>Sale Order Date</span>
+                                    </b>
+                                </div>
+                                <div class="col-1" style="text-align:left;width:2%">
+                                    <span>:</span>
+                                </div>
+                                <div class="col-6" style="text-align:left;width:73%;padding-left:20px">
+                                    <t t-if="doc.date_order">
+                                        <span t-esc="doc.date_order.strftime('%d-%m-%Y')" />
+                                    </t>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3" style="text-align:left;width:25%;">
+                                    <b>
+                                        <span>Salesperson</span>
+                                    </b>
+                                </div>
+                                <div class="col-1" style="text-align:left;width:2%">
+                                    <span>:</span>
+                                </div>
+                                <div class="col-6" style="text-align:left;width:73%;padding-left:20px">
+                                    <t t-if="doc.user_id">
+                                        <span t-field="doc.user_id" />
+                                    </t>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3" style="text-align:left;width:25%;">
+                                    <b>
+                                        <span>Currency</span>
+                                    </b>
+                                </div>
+                                <div class="col-1" style="text-align:left;width:2%">
+                                    <span>:</span>
+                                </div>
+                                <div class="col-6" style="text-align:left;width:73%;padding-left:20px">
+                                    <t t-if="doc.currency_id">
+                                        <span t-field="doc.currency_id" />
+                                    </t>
+                                </div>
+                            </div>
+                        </td>
+                        <tr>
+                            <td colspan="8" style="font-size:12px;width:50%;border-right:1px solid black;border-left:1px solid
+                black;border-bottom:1px solid black;">
+                                <div class="row">
+                                    <div class="col-3" style="font-size:12px;text-align:left;width:25%">
+                                        <b>
+                                            <span style="font-size:12px">Delivery Address</span>
+                                        </b>
+                                    </div>
+                                    <div class="col-1" style="text-align:left;width:2%">
+                                        <span>:</span>
+                                    </div>
+                                    <div class="col-6" style="text-align:left;width:73%;padding-left:20px">
+                                        <div style="font-size:12px;width:60%;">
+                                            <t t-if="doc.partner_shipping_id.name">
+                                                <span t-field="doc.partner_shipping_id.name" />
+                                                <br />
+                                                <t t-if="doc.partner_shipping_id.street">
+                                                    <span t-field="doc.partner_shipping_id.street" />
+                                                </t>,                                                <br/>
+                                                <t t-if="doc.partner_shipping_id.street2">
+                                                    <span t-field="doc.partner_shipping_id.street2" />
+                                                </t>,                                                <br/>
+                                                <t t-if="doc.partner_shipping_id.state_id">
+                                                    <span t-field="doc.partner_shipping_id.state_id" />
+                                                </t>
+
+                                                <t t-if="doc.partner_shipping_id.country_id">
+                                                    <span t-field="doc.partner_shipping_id.country_id" />
+                                                </t>
+                                            </t>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3" style="text-align:left;width:25%;font-size:12px;">
+                                        <b>
+                                            <span>Phone No</span>
+                                        </b>
+                                    </div>
+                                    <div class="col-1" style="text-align:left;width:2%">
+                                        <span>:</span>
+                                    </div>
+                                    <div class="col-6" style="text-align:left;width:73%;padding-left:20px">
+                                        <t t-if="doc.partner_shipping_id.mobile">
+                                            <span t-field="doc.partner_shipping_id.mobile" />
+                                            <br />
+                                        </t>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3" style="text-align:left;width:25%;font-size:12px;">
+                                        <b>
+                                            <span>GSTIN</span>
+                                        </b>
+                                    </div>
+                                    <div class="col-1" style="text-align:left;width:2%">
+                                        <span>:</span>
+                                    </div>
+                                    <div class="col-6" style="text-align:left;width:73%;padding-left:20px">
+                                        <t t-if="doc.partner_shipping_id.vat">
+                                            <span t-field="doc.partner_shipping_id.vat" />
+                                            <br />
+                                        </t>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3" style="text-align:left;width:25%;font-size:12px;">
+                                        <b>
+                                            <span>Email</span>
+                                        </b>
+                                    </div>
+                                    <div class="col-1" style="text-align:left;width:2%">
+                                        <span>:</span>
+                                    </div>
+                                    <div class="col-6" style="text-align:left;width:73%;padding-left:20px">
+                                        <t t-if="doc.partner_shipping_id.email">
+                                            <span t-field="doc.partner_shipping_id.email" />
+                                            <br />
+                                        </t>
+                                    </div>
+                                </div>
+                            </td>
+                            <td colspan="8" style="font-size:12px;width:50%;border-right:1px solid black;border-left:1px solid
+                black;border-bottom:1px solid black;">
+                                <div class="row">
+                                    <div class="col-3" style="text-align:left;width:25%">
+                                        <b>
+                                            <span>Delivery To</span>
+                                        </b>
+                                    </div>
+                                    <div class="col-1" style="text-align:left;width:2%;">
+                                        <span>:</span>
+                                    </div>
+                                    <div class="col-6" style="text-align:left;font-size:12px;padding-left:20px">
+                                        <t t-if="doc.y_delivered_to">
+                                            <span t-field="doc.y_delivered_to" />
+                                            <br />
+                                        </t>
+                                    </div>
+                                </div>
+                                <div class="d-flex">
+                                    <div class="col-3" style="text-align:left;width:25%">
+                                        <b>
+                                            <span>Customer PO No</span>
+                                        </b>
+                                    </div>
+                                    <div class="col-1" style="text-align:left;width:2%;">
+                                        <span>:</span>
+                                    </div>
+                                    <div class="col-6" style="text-align:left;font-size:12px;padding-left:20px">
+                                        <t t-if="doc.y_delivered_to">
+                                            <span t-field="doc.y_custom_po_no" />
+                                            <br />
+                                        </t>
+                                    </div>
+                                </div>
+                                <div class="d-flex">
+                                    <div class="col-3" style="text-align:left;width:25%">
+                                        <b>
+                                            <span>Customer PO Date</span>
+                                        </b>
+                                    </div>
+                                    <div class="col-1" style="text-align:left;width:2%;">
+                                        <span>:</span>
+                                    </div>
+                                    <div class="col-6" style="text-align:left;font-size:12px;padding-left:20px">
+                                        <span t-field="doc.y_po_date" />
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div> -->
+            </div>
+
+            <div class="article doc_report_layout_standard" t-att-data-oe-model="doc and doc._name"
+                t-att-data-oe-id="doc and doc.id"
+                t-att-data-oe-lang="doc and doc.env.context.get('lang')">
+                <t t-call="web.address_layout" />
+                <t t-raw="0" />
+            </div>
+
+            <!-- <div class="footer">
+                <table class="table table-borderless " style="margin-bottom:0;font-size:12px; width:100%">
+                    <tr>
+                        <td colspan="100%" class=" p-1" style="font-size:12px;">
+                            <div class="col-12 d-flex">
+                                <div class="p-1" style="border:1px solid black;width:30%;">
+                                    <span class="fw-bold">Checked By :</span>
+                                </div>
+                                <div class="p-1" style="border:1px solid black;width:30%;">
+                                    <span class="fw-bold">Verified By :</span>
+                                </div>
+                                <div class="p-1 text-end" style="border:1px solid black;width:40%;">
+                                    <span class="fw-bold">FOR</span>
+                                    <t t-if="doc.company_id.parent_id">
+                                        <span class="fw-bold" t-field="doc.company_id.sudo().parent_id.name" />
+                                    </t>
+                                    <t t-else="">
+                                        <span class="fw-bold" t-field="doc.company_id.name" />
+                                    </t>
+                                    <br />
+                                    <br />
+                                    <br />
+                                    <br />
+                                    <span class="fw-bold" style="padding-right:5px;text-align:right;">Authorised Signatory</span>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                <div class="col-12 d-flex" style="text-align:center;padding:1px;margin-top:none
+            !important;font-color:gray font-size:12px;">
+                    <div class="col-3">
+                        <p style="color:black;font-size:12px;" class="text-muted">
+                            <span class=""> Page: </span>
+                            <span class="page" />
+                            <span class="">/</span>
+                            <span class="topage" />
+                        </p>
+                    </div>
+                    <div class="col-6 text-center">
+                        <span class="fw-bold">"Action is the foundational key to all success"</span>
+                    </div>
+                    <div class="col-3"></div>
+                </div>
+            </div> -->
+            <div class="footer doc_standard_footer " style="font-size:12px;margin-top:0">
+                <div class="col-12 d-flex" style="border:1px solid black;">
+                    <div class="col-4" style="width:30%; border-right:1px solid black;">
+                        <span class="fw-bold p-1">Checked By:</span>
+                    </div>
+                    <div class="col-4" style="width:30%; border-right:1px solid black;">
+                        <span class="fw-bold p-1">Verified By:</span>
+                    </div>
+                    <div class="col-4" style="width:40%; text-align:right;">
+                        <span class="fw-bold p-1 text-right">FOR</span>
+                        <t t-if="doc.company_id.parent_id">
+                            <span class="fw-bold" t-field="doc.company_id.sudo().parent_id.name" />
+                        </t>
+                        <t t-else="">
+                            <span class="fw-bold" t-field="doc.company_id.name" />
+                        </t>
+                        <br />
+                        <br />
+                        <br />
+                        <br />
+                        <span class="fw-bold p-1 text-end" style="display:block;">Authorized
+                            Signatory</span>
+                    </div>
+                </div>
+                <div class="col-12 d-flex">
+                    <div class="col-3">
+                        <p class="text-muted " style="margin: 0;">
+                            <strong style=""> Page: <span class="page" style=""></span>
+                           <a style="">/</a>
+                           <span
+                                    class="topage" style=""></span>
+                            </strong>
+                        </p>
+                    </div>
+                    <div class="col-6 text-center fw-bold">
+                        <span class="">"Action is the foundational key to all success."</span>
+                    </div>
+                    <div class="col-3"></div>
+                </div>
+            </div>
+        </template>
+
+
+    </data>
+
+
+</odoo>

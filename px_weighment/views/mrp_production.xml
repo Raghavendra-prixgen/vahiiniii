@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record model="ir.ui.view" id="view_manufacturing_order_completed_form">
+            <field name="name">mrp.production.form</field>
+            <field name="model">mrp.production</field>
+            <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+            <field name="arch" type="xml">
+                <field name="bom_id" position="after">
+                    <field name="y_is_order_completed" invisible="1"/>
+                    <field name="y_is_final_display" invisible="1"/>
+                </field>
+            </field>
+        </record>
+
+    </data>
+</odoo>

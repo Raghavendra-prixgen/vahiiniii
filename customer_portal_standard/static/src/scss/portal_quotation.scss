@@ -1,0 +1,79 @@
+input[type="text"] {
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-radius: 0px;
+  //  border-top: none;
+}
+
+
+.prod_table thead {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background-color: #007bff;
+  color: white;
+}
+
+.prod_table .add_itm_block,
+.prod_table .add_icon {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  background-color: #f8f9fa;
+}
+
+.prod_table {
+  max-height: 600px;
+  overflow-y: auto;
+  display: block;
+
+}
+
+// .prod_table th {
+//   align-items: center;
+// }
+
+
+.progress-bar {
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.table-danger .progress-bar {
+  background-color: #ef4444 !important;
+}
+
+.add-btn:hover {
+  background-color: #f0f0f0;
+  /* Light grey background on hover */
+}
+
+// ---------------------------------------------------------------------------------------------------------
+.prod_table th {
+  position: relative;
+  overflow: hidden;
+  align-items: center;
+}
+
+.column-resizer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 5px;
+  height: 100%;
+  background-color: transparent;
+  cursor: col-resize;
+  user-select: none;
+  touch-action: none;
+}
+
+.column-resizer:hover,
+.column-resizer.resizing {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+/* Prevent text selection while resizing */
+.resize-active {
+  cursor: col-resize;
+  user-select: none;
+}

@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="purchase_order_report_vahini" model="report.paperformat">
+        <field name="name">Purchase Order Paperformat</field>
+        <field name="default" eval="True" />
+        <field name="format">A4</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">43</field>
+        <field name="margin_bottom">15</field>
+        <field name="margin_left">5</field>
+        <field name="margin_right">5</field>
+        <field name="header_line" eval="False" />
+        <field name="header_spacing">30</field>
+        <field name="dpi">91</field>
+    </record>
+
+    <record id="vahini_purchase_order" model="ir.actions.report">
+        <field name="name">Purchase Order Report</field>
+        <field name="model">purchase.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">vahini_purchase_order.purchase_order_report_template</field>
+        <field name="report_file">vahini_purchase_order.purchase_order_report_template</field>
+        <field name="print_report_name">(object.name)</field>
+        <field name="binding_model_id" ref="purchase.model_purchase_order" />
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="vahini_purchase_order.purchase_order_report_vahini"/>
+    </record>
+
+    <template id="purchase_order_report_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="vahini_purchase_order.external_layout_for_purchase_order">
+                    <div class="page">
+                        <table class="table-borderless table-sm m-0 p-0" style="width:100%;font-size:12px;">
+                            <thead style="page-break-inside:avoid;">
+                                <tr class="">
+                                    <td class="p-0" colspan="100%">
+                                        <div class="col-12 p-1 text-center" style="background:#fffdaf;border:1px solid black;">
+                                            <span class="fw-bold fs-6">PURCHASE ORDER</span>
+                                        </div>
+
+                                        <div class="col-12 fw-bold p-1" style="font-size:12px;border:1px solid black;">
+                                            <div>
+                                                <u>KEY INSTRUCTIONS:</u>
+                                            </div>
+                                            <div>
+                                                <span class="">
+                                                    1. In GST, all purchases &amp; sales would be linked &amp; matched with details uploaded by the vendor, 
+                                                    hence it is imperative that the vendor uploads the sales details on time, so that credit on purchases 
+                                                    can be claimed by VIPL. <br />
+                                                    2. Please be informed that, your respective supplies payment would be withheld if credit is denied to VIPL under GST.
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12 d-flex" style="border:1px solid black;border-top:0;">
+                                            <div class="col-6 p-1" style="border-right:1px solid black;">
+                                                <div class="d-flex">
+                                                    <div style="width:25%;">
+                                                        <span class="fw-bold">Supplier Code</span>
+                                                    </div>
+                                                    <div class="px-1" style="width:3%">
+                                                        <span>:</span>
+                                                    </div>
+                                                    <div style="width:72%;">
+                                                        <span t-field="doc.partner_id.ref" />
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex">
+                                                    <div style="width:25%;">
+                                                        <span class="fw-bold">Name of Supplier</span>
+                                                    </div>
+                                                    <div class="px-1" style="width:3%">
+                                                        <span>:</span>
+                                                    </div>
+                                                    <div style="width:72%;">
+                                                        <span t-field="doc.partner_id.name"/>
+                                                        <br/>
+                                                        <span t-field="doc.partner_id.contact_address_complete" />
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex">
+                                                    <div style="width:25%;">
+                                                        <span class="fw-bold">GSTIN</span>
+                                                    </div>
+                                                    <div class="px-1" style="width:3%">
+                                                        <span>:</span>
+                                                    </div>
+                                                    <div style="width:72%;">
+                                                        <span t-if="doc.partner_id.vat" t-field="doc.partner_id.vat" />
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <div class="col-6 p-1" style="">
+                                                <div class="d-flex">
+                                                    <div style="width:30%;">
+                                                        <span class="fw-bold">PO Number</span>
+                                                    </div>
+                                                    <div class="px-1" style="width:3%">
+                                                        <span>:</span>
+                                                    </div>
+                                                    <div style="width:67%;">
+                                                        <span t-field="doc.name" />
+                                                    </div>
+                                                </div>
+
+                                                <div class="d-flex">
+                                                    <div style="width:30%;">
+                                                        <span class="fw-bold">PO Date</span>
+                                                    </div>
+                                                    <div class="px-1" style="width:3%">
+                                                        <span>:</span>
+                                                    </div>
+                                                    <div style="width:67%;">
+                                                        <t t-if="doc.date_order">
+                                                            <span t-esc="doc.date_order.strftime('%d-%m-%Y')" />
+                                                        </t>
+                                                    </div>
+                                                </div>
+                                               <!--  <div class="d-flex">
+                                                    <div style="width:30%;">
+                                                        <span class="fw-bold">Amendment No</span>
+                                                    </div>
+                                                    <div class="px-1" style="width:3%">
+                                                        <span>:</span>
+                                                    </div>
+                                                    <div style="width:67%;">
+
+                                                    </div>
+                                                </div> -->
+                                                <div class="d-flex">
+                                                    <div style="width:30%;">
+                                                        <span class="fw-bold">Vendor Quotation Ref</span>
+                                                    </div>
+                                                    <div class="px-1" style="width:3%">
+                                                        <span>:</span>
+                                                    </div>
+                                                    <div style="width:67%;">
+                                                        <span t-field="doc.partner_ref" />
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex">
+                                                    <div style="width:30%;">
+                                                        <span class="fw-bold">Purchase Order Type</span>
+                                                    </div>
+                                                    <div class="px-1" style="width:3%">
+                                                        <span>:</span>
+                                                    </div>
+                                                    <div style="width:67%;">
+                                                        <span t-field="doc.y_doc_type_id" />
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex">
+                                                    <div style="width:30%;">
+                                                        <span class="fw-bold">Delivery Schedule</span>
+                                                    </div>
+                                                    <div class="px-1" style="width:3%">
+                                                        <span>:</span>
+                                                    </div>
+                                                    <div style="width:67%;">
+                                                        <t t-if="doc.date_planned">
+                                                            <span t-esc="doc.date_planned.strftime('%d-%m-%Y')" />
+                                                        </t>
+                                                    </div>
+                                                </div>
+                                                <t t-if="doc.y_place_of_delivery">
+                                                    <div class="d-flex">
+                                                        <div style="width:30%;">
+                                                            <span class="fw-bold">Place Of Delivery</span>
+                                                        </div>
+                                                        <div class="px-1" style="width:3%">
+                                                            <span>:</span>
+                                                        </div>
+                                                        <div style="width:67%;">
+                                                            <span t-field="doc.y_place_of_delivery" />
+                                                        </div>
+                                                    </div>
+                                                </t>
+                                                <div class="d-flex">
+                                                    <div style="width:30%;">
+                                                        <span class="fw-bold">Payment Terms</span>
+                                                    </div>
+                                                    <div class="px-1" style="width:3%">
+                                                        <span>:</span>
+                                                    </div>
+                                                    <div style="width:67%;">
+                                                        <span t-if="doc.payment_term_id" t-field="doc.payment_term_id" />
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex">
+                                                    <div style="width:30%;">
+                                                        <span class="fw-bold">Incoterm</span>
+                                                    </div>
+                                                    <div class="px-1" style="width:3%">
+                                                        <span>:</span>
+                                                    </div>
+                                                    <div style="width:67%;">
+                                                        <span t-field="doc.incoterm_id.name" />
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <th class="text-center fw-bold p-1" style="width:4%;border:1px solid black;border-top:none !important;">Sl. No</th>
+                                    <th class="text-center fw-bold p-1" style="width:10%;border:1px solid black;border-top:none !important;">Item Code</th>
+                                    <th class="text-center fw-bold p-1" style="width:35.4%;border:1px solid black;border-top:none !important;">Description</th>
+                                    <th class="text-center fw-bold p-1" style="width:8.6%;border:1px solid black;border-top:none !important;">HSN/SAC</th>
+                                    <th class="text-center fw-bold p-1" style="width:6%;border:1px solid black;border-top:none !important;">Qty</th>
+                                    <th class="text-center fw-bold p-1" style="width:7%;border:1px solid black;border-top:none !important;">UOM</th>
+                                    <th class="text-center fw-bold p-1" style="width:5% !important;border:1px solid black;border-top:none !important;">Unit Price</th>
+                                    <th class="text-center fw-bold p-1" style="width:10%;border:1px solid black;border-top:none !important;">Taxes</th>
+                                    <th class="text-center fw-bold p-1" style="width:13%;border:1px solid black;border-top:none !important;">Taxable Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody style="">
+                                <t t-set="sl_no" t-value="1"/>
+                                <t t-if="doc.order_line" t-foreach="doc.order_line" t-as="line">
+                                    <t t-if="line.display_type == 'line_section' or line.display_type == 'line_note'">
+                                        <tr style="page-break-inside:avoid;">
+                                            <td colspan="100%" style="border:1px solid black;font-size:12px;">
+                                                <span t-field="line.name"></span>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                    <t t-else="">
+                                        <tr style="page-break-inside:avoid;">
+                                            <td class="text-center p-0 px-1" style="border:1px solid black;">
+                                                <span t-esc="sl_no" />
+                                                <t t-set="sl_no" t-value="sl_no + 1" />
+                                            </td>
+                                            <td class="text-center p-0 px-1" style="border:1px solid black;">
+                                                <span t-if="line.product_id.default_code" t-esc="line.product_id.default_code or ''"/>
+                                            </td>
+                                            <td class="p-0 px-1" style="border:1px solid black;">
+                                                <span t-field="line.name" />
+                                            </td>
+                                            <td class="text-center p-0 px-1" style="border:1px solid black;">
+                                                <span t-field="line.product_id.l10n_in_hsn_code" />
+                                            </td>
+                                            <td class="text-center p-0 px-1" style="border:1px solid black;">
+                                                <span t-field="line.product_qty" t-options="{'widget': 'float', 'precision': 0}" />
+                                            </td>
+                                            <td class="text-center p-0 px-1" style="border:1px solid black;">
+                                                <span t-field="line.product_uom.name" />
+                                            </td>
+                                            <td class="text-center p-0 px-1" style="border:1px solid black;">
+                                                <span t-field="line.price_unit" t-options="{'widget': 'float', 'precision': 2}" />
+                                            </td>
+                                            <td class="text-center p-0 px-1" style="border:1px solid black;">
+                                                <span t-field="line.taxes_id"></span>
+                                            </td>
+                                            <td class="text-end p-0 px-1" style="border:1px solid black;">
+                                                <span t-field="line.price_subtotal" />
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </t>
+                                <tr style="page-break-inside: avoid;">
+                                    <td colspan="4" class="fw-bold" style="border:1px solid black;">
+                                    </td>
+                                    <td class="fw-bold text-center" style="border:1px solid black;">
+                                        <t t-set="total_qty" t-value="sum(doc.order_line.mapped('product_qty'))" />
+                                        <t t-if="total_qty" t-esc="'{0:,.0f}'.format(total_qty)" />
+                                    </td>
+                                    <td colspan="3" class="fw-bold text-end" style="border:1px solid black;">
+                                        <span>Subtotal</span>
+                                    </td>
+                                    <td class="text-end fw-bold" style="border:1px solid black;">
+                                        <span t-field="doc.currency_id.symbol" />
+                                        <!-- <span t-esc="'{0:,.2f}'.format(doc.amount_untaxed)" /> -->
+                                        <span t-field="doc.amount_untaxed" t-options="{'widget': 'float', 'precision': 2}" />
+
+                                    </td>
+                                </tr>
+                                <tr style="page-break-inside: avoid;">
+                                    <td colspan="7" rowspan="2" style="border:1px solid black;">
+                                        <span class="px-1">
+                                            <strong>Total Amount in Words :</strong>
+                                        </span>
+                                        <span class="">
+                                            <t t-if="doc.currency_id.name == 'INR'">
+                                                <t t-set="amountwords" t-value="doc.amount_in_words(doc.amount_total).title()" />
+                                                <span t-esc="amountwords" />
+                                            </t>
+                                            <t t-else="">
+                                                <span t-esc="doc.currency_id.amount_to_text(doc.amount_untaxed).title()" />
+                                            </t>
+                                        </span>
+                                    </td>
+                                    <td class="text-end px-1 fw-bold" style="border:1px solid black;">
+                                        <span>Taxes</span>
+                                    </td>
+                                    <td class="text-end px-1 fw-bold" style="border:1px solid black;">
+                                        <t t-if="doc.currency_id.name == 'INR' ">
+                                            <span t-field="doc.currency_id.symbol" />
+                                            <span t-esc="'{0:,.2f}'.format(doc.amount_tax)" />
+                                        </t>
+                                        <t t-else=" ">
+                                            <span>0</span>
+                                        </t>
+                                    </td>
+                                </tr>
+
+                                <tr style="page-break-inside:avoid;">
+                                    <td class="text-end fw-bold" style="border:1px solid black;">
+                                        <span>Total</span>
+                                    </td>
+                                    <t t-if="doc.currency_id.name == 'INR' ">
+                                        <td class="text-end fw-bold" style="border:1px solid black;">
+                                            <span t-field="doc.currency_id.symbol" />
+                                            <!-- <span t-esc="'{0:,.2f}'.format(doc.amount_total)" /> -->
+                                            <span t-field="doc.amount_total" t-options="{'widget': 'float', 'precision': 2}" />
+                                        </td>
+                                    </t>
+                                    <t t-else=" ">
+                                        <td class="text-end fw-bold" style="border:1px solid black;">
+                                            <span t-field="doc.currency_id.symbol" />
+                                            <!-- <span t-if="doc.amount_untaxed" t-esc="'{0:,.2f}'.format(doc.amount_untaxed)" /> -->
+                                            <span t-field="doc.amount_untaxed" t-options="{'widget': 'float', 'precision': 2}" />
+                                        </td>
+                                    </t>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <br />
+
+                        <table class="table table-borderless" style="page-break-av">
+                            <tbody>
+                                <tr style="word-break: break-all;font-size:12px;">
+                                    <td style="padding:1px;width:100%;padding-top:3px">
+                                        <span class="fw-bold p-1">Terms and Conditions : </span>
+                                        <br class=""/>
+                                        <div class="row p-2" style="word-break: break-all;">
+                                            <div style="width:98%;">
+                                                <span style="word-break: break-all;" t-esc="doc.notes" />
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr style="width:100%;">
+                                    <t t-if="doc.y_remark">
+
+                                        <td style="text-align:left;width:100%;">
+
+                                            <span style="text-align:left;font-size:12px;width:100%;">
+                                                <strong>Remarks :</strong>
+                                            </span>
+                                            <span style="text-align:left;font-size:11px;width:100%;" t-esc="doc.y_remark" />
+                                        </td>
+                                    </t>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

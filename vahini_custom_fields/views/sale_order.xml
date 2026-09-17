@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="sale_order_form">
+            <field name="name">sale order form view</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form" />
+            <field name="arch" type="xml">
+
+                <field name="payment_term_id" position="after">
+                   
+                    <field name="y_po_date" string="Customer PO date" />
+                    <field name="y_custom_po_no" string="Customer PO NO" />
+                    <field name="y_delivered_to" />
+                </field>
+                <field name="partner_id" position="after">
+                    <field name="y_enquiry_date" />
+                </field>
+
+                <xpath expr="//field[@name='tag_ids']" position="before">
+                    <field name="y_proforma_sequence" column_invisible="[('status', '!=', 'sale')]" />
+                    <field name="y_product_as_per_is" />
+                </xpath>
+
+
+            </field>
+        </record>
+
+        <record id="view_quotation_tree_inherit_custom_fields" model="ir.ui.view">
+            <field name="name">sale.order.tree</field>
+            <field name="model">sale.order</field>
+            <field name="priority">4</field>
+            <field name="inherit_id" ref="sale.view_quotation_tree" />
+            <field name="arch" type="xml">
+                <field name="user_id" position="after">
+                    <field name="y_delivered_to" />
+                </field>
+            </field>
+        </record>
+        <record id="view_quotation_tree_inherit_custom_fields_order" model="ir.ui.view">
+            <field name="name">sale.order.tree</field>
+            <field name="model">sale.order</field>
+            <field name="priority">4</field>
+            <field name="inherit_id" ref="sale.view_order_tree" />
+            <field name="arch" type="xml">
+                <field name="user_id" position="after">
+                    <field name="y_delivered_to" />
+                </field>
+            </field>
+        </record>
+
+       
+
+
+    </data>
+</odoo>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="res_config_settings_view_form" model="ir.ui.view">
+            <field name="name">res.config.settings.view.form.inherit.gate_management</field>
+            <field name="model">res.config.settings</field>
+            <field name="priority" eval="85"/>
+            <field name="inherit_id" ref="base_setup.res_config_settings_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[hasclass('settings')]" position="inside">
+                    <div class="app_settings_block" data-string="Gate-Entry" string="Gate-Entry" data-key="gate_management">
+                        <h2>Gate Management</h2>
+                        <div class="row mt16 o_settings_container" name="gate_management_setting_container">
+                            <div class="col-xs-12 col-md-6 o_setting_box">
+                                <div class="o_setting_right_pane">
+                                   <label for="y_inward_sequence"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    
+                                    <field name = "y_inward_sequence"/>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-6 o_setting_box">
+                                <div class="o_setting_right_pane">
+                                    <label for="y_outward_sequence"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <field name = "y_outward_sequence"/> 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="action_gate_management_configuration" model="ir.actions.act_window">
+            <field name="name">Settings</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.config.settings</field>
+            <field name="view_mode">form</field>
+            <field name="target">inline</field>
+            <field name="context">{'module' : 'gate_management'}</field>
+        </record>
+
+        <menuitem id="menu_gate_management_global_settings" name="Settings"
+            parent="gate_management.menu_3" action="action_gate_management_configuration" groups="base.group_system"/>
+
+    </data>
+</odoo>

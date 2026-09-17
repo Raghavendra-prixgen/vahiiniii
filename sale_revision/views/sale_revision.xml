@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+
+
+    <record id="sale_order_form_inherit_purchase_revision" model="ir.ui.view">
+        <field name="name">sale.order.form.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_cancel']" position="after">
+
+                <button string="Sale Revision" name="action_revision" type="object" class="oe_highlight" invisible="state in ('sale','cancel')"/>
+            </xpath>
+
+
+            <div class="oe_button_box" position="inside">
+                 y_revision_count = fields.Integer(default=0,string="Revision Count")
+                <button name="open_sale_revision" type="object" class="oe_stat_button" icon="fa-bar-chart" invisible="y_revision_count==0">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_text">Sale Revision</span>
+                    </div>
+                </button>
+                
+            </div>
+
+            <xpath expr="//field[@name='origin']" position="after">
+                <field name="y_revision_count" readonly="1"></field>
+
+            </xpath>
+
+            
+
+        </field>
+    </record>
+
+
+    <record id="sale_order_revision_view_list" model="ir.ui.view">
+        <field name="name">sale.order.revision.view.list</field>
+        <field name="model">sale.order.revision</field>
+        <field name="arch" type="xml">
+            <list string="Sale Order Revision">
+
+                <field name="y_partner_ref"/>
+                <field name="y_name"/>
+                <field name="y_partner_id"/>
+                <field name="y_user_id" widget="many2one_avatar_user"/>
+                <field name="y_date_order"/>
+                <field name="y_date_planned"/>
+                <field name="y_origin"/>
+                <field name="y_amount_untaxed"  sum="Untaxed" widget="monetary"/>
+                <field name="y_amount_total"  sum="amount" widget="monetary"/>
+               
+
+                
+            </list>
+        </field>
+    </record>
+
+
+
+    <record id="sale_order_revision_form" model="ir.ui.view">
+        <field name="name">sale.order.revision.form</field>
+        <field name="model">sale.order.revision</field>
+        <field name="arch" type="xml">
+            <form string="Sale Order Revision" class="o_purchase_order">
+
+                <header>
+
+                    <button string="Sale Revision" name="action_revision" type="object" class="oe_highlight"/>
+
+                </header>
+
+            
+                <sheet>
+                
+                    <div class="oe_title">
+                        <h1 class="d-flex">
+                            <field name="y_name" readonly="1"/>
+                        </h1>
+                    </div>  
+                    <group>
+                        <group>
+                            <field name="y_partner_id"/>
+                            <field name="y_partner_ref"/>
+                            
+                        </group>
+                        <group>
+                            <field name="y_date_order"/>
+                            <field name="y_date_planned"/>
+                        
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Products" name="products">
+                            <field name="y_sale_order_revision_line_ids">
+                                <list string="Sale Order  revision Lines" editable="bottom">
+
+                                    <field name="y_product_id"/>
+                                    <field name="y_name"/>
+                                    <field name="y_date_planned"/>
+                                    <field name="y_product_qty"/>
+                                    <field name="y_price_unit"/>
+                                    <field name="y_taxes_id" widget="many2many_tags"/>
+                                    <field name="y_discount"/>
+                                    <field name="y_price_subtotal" widget="monetary"/>
+                                    <field name="y_price_total" widget="monetary"/>
+                                    
+                                
+                                </list>
+                            </field>
+
+                            
+                        </page>
+                        <page string="Other Information" name="sale_delivery_invoice">
+                            <group>
+                                <group name="other_info">
+                                    <field name="y_user_id"  widget="many2one_avatar_user"/>
+                                    <field name="y_origin"/>
+                                </group>
+                                <group name="invoice_info">
+                                    <field name="y_payment_term_id"  options="{'no_create': True}"/>
+                                    <field name="y_fiscal_position_id" options="{'no_create': True}" />
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+
+
+                    <group>
+                        <group>
+                           
+
+                            <group class="oe_subtotal_footer">
+                                <!-- <field name="y_tax_totals" widget="account-tax-totals-field" nolabel="1" colspan="2" readonly="1"/> -->
+
+                            </group>
+                        </group>
+                    </group>
+                </sheet>
+            
+            </form>
+        </field>
+    </record>
+
+    <record id="sale_order_revision_action" model="ir.actions.act_window">
+        <field name="name">Sale Order Revision</field>
+        <field name="res_model">sale.order.revision</field>
+        <field name="view_mode">list,form</field>
+       
+    </record>
+
+    <menuitem
+        id="sale_order_revision_menu"
+        name="Sale Order Revision"
+        action="sale_order_revision_action"
+        parent="sale.sale_order_menu"
+        sequence="50"/>
+   
+
+
+
+
+
+
+ 
+
+
+
+    
+</odoo>

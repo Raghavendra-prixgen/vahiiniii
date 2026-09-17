@@ -1,0 +1,110 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+
+
+    <record id="invoice_form_inherit_journal_entry_template" model="ir.ui.view">
+      <field name="name">invoice.form.inherit.journal_entry_template</field>
+      <field name="model">account.move</field>
+      <field name="inherit_id" ref="account.view_move_form"/>
+      <field name="arch" type="xml">
+        <xpath expr="//form[1]/sheet[1]/group[1]/group[2]/field[@name='invoice_date'][2]" position="after">
+            <field name="journal_entry_template_id" options="{'no_create': True, 'no_open': True}" readonly="state != 'draft'" invisible="move_type != 'entry'" domain="[('journal_id','=',journal_id),'|',('company_id','parent_of',company_id),('company_id','=',False)]"/>
+        </xpath>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="search_journal_entry_template">
+        <field name="name">search.journal.entry.template</field>
+        <field name="model">journal.entry.template</field>
+        <field name="arch" type="xml">
+            <search>
+              <field name="name"/>
+              <field name="journal_id"/>
+              <field name="company_id"/>
+              <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+
+
+    <record model="ir.ui.view" id="journal_entry_template_list">
+      <field name="name">journal_entry_template_list</field>
+      <field name="model">journal.entry.template</field>
+      <field name="arch" type="xml">
+        <list>
+          <field name="date"/>
+            <field name="name"/>
+            <field name="journal_id"/>
+            <field name="company_id" groups="base.group_multi_company" optional="show"/>
+        </list>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="journal_entry_template_form">
+      <field name="name">journal_entry_template_list</field>
+      <field name="model">journal.entry.template</field>
+      <field name="arch" type="xml">
+        <form>
+            <sheet>
+                <div class="oe_title">
+                    <h1>
+                        <field name="name" placeholder="Name.." required="1"/>
+                    </h1>
+                </div>
+                <group>
+                    <group id="header_left_group">
+                        <field name="company_id" groups="account.group_account_readonly" options="{'no_create': True, 'no_open': True}"/>
+                        <field name="journal_id" groups="account.group_account_readonly" options="{'no_create': True, 'no_open': True}" required="1"/>
+                    </group>
+                    <group id="header_right_group">
+                        <field name="date" string="Accounting Date"/>
+                        <field name="y_start_date" string="Period" widget="daterange" options="{&quot;end_date_field&quot;: &quot;y_end_date&quot;, &quot;always_range&quot;: &quot;1&quot;}" required="y_start_date or y_end_date"/>
+                        <field name="y_end_date" invisible="1" required="y_start_date"/>
+
+                    </group>
+                </group>
+                <notebook>
+                    <page id="aml_tab" string="Journal Items" groups="account.group_account_readonly" name="aml_tab">
+                        <field name="line_ids" mode="list">
+                            <list editable="bottom" string="Journal Items" decoration-muted="display_type in ('line_section', 'line_note')" default_order="sequence, id">
+                                <!-- Displayed fields -->
+                                <field name="sequence" widget="handle"/>
+                                <field name="account_id" invisible="display_type in ('line_section', 'line_note')" required="display_type not in ('line_section', 'line_note')" domain="[('deprecated', '=', False)]" options="{'no_create': True, 'no_open': True}"/>
+                                <field name="partner_id" options="{'no_create': True, 'no_open': True}" optional="hide"/>
+                                <field name="name" widget="section_and_note_text" optional="show"/>
+                                <field name="analytic_distribution" widget="analytic_distribution" groups="analytic.group_analytic_accounting" optional="show" options="{'account_field': 'account_id'}"/>
+                                <field name="debit" sum="Total Debit"/>
+                                <field name="credit" sum="Total Credit"/>
+                                <field name="balance" column_invisible="True"/>
+                                <field name="company_currency_id" column_invisible="True"/>
+                            </list>
+                        </field>
+                    </page>
+                </notebook>
+            </sheet>
+            <chatter/>
+        </form>
+      </field>
+    </record>
+
+
+    <!-- actions opening views on models -->
+
+    <record model="ir.actions.act_window" id="journal_entry_template_action">
+      <field name="name">Journal Entry Template</field>
+      <field name="res_model">journal.entry.template</field>
+      <field name="view_mode">list,form</field>
+    </record>
+
+
+    <!-- Top menu item -->
+    <menuitem
+      name="Journal Entry Template" id="journal_entry_template_menu"
+      parent="account.account_invoicing_menu"
+      action="journal_entry_template_action" sequence="4"/>
+
+
+  </data>
+</odoo>

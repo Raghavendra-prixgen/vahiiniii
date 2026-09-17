@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data> 
+
+        <record id="res_config_settings_view_form_boe_valuation" model="ir.ui.view">
+            <field name="name">res.config.settings.view.form.inherit.boe.valuation</field>
+            <field name="model">res.config.settings</field>
+            <field name="inherit_id" ref="purchase.res_config_settings_view_form_purchase"/>
+            <field name="arch" type="xml">
+              <setting id="manage_purchase_agreements" position="after">
+                    <div class="col-12 col-lg-6 o_setting_box" id="paper_format_setting_boe_valuation">
+                        <div class="o_setting_right_pane" id="y_valuation_based_on">
+                            <span class="o_form_label">Valuation Based On</span>
+                           
+                            
+                            <div class="content-group" id="valuation_id_seq">
+                                <div class="mt16 row">
+                                    <label for="y_valuation_based_on" string="Valuation Based On" class="col-3 col-lg-3 o_light_label"/>
+                                    <field name="y_valuation_based_on" class="oe_inline" required="0" />
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </setting>
+        
+            </field>
+        </record>
+
+        <record id="stock_picking_exim_view_form" model="ir.ui.view">
+                <field name="name">stock.picking.form</field>
+                <field name="model">stock.picking</field>
+                <field name="inherit_id" ref="stock.view_picking_form"/>
+                <field name="arch" type="xml">
+                <field name="origin" position="after">
+
+                    <label for="y_valuation_exchange_rate" invisible="not y_is_same_currency"/>
+                   
+                    <div name="y_valuation_exchange_rate_div" class="d-flex" >
+                        <field name="y_valuation_exchange_rate" force_save="1" readonly="0" invisible="not y_is_same_currency"/>
+
+                        <div name="update_exchange_rate_div" groups="base.group_multi_currency" class="w-100" style="white-space: pre;" invisible="move_type == 'entry'">
+                            <button name="update_exchange_rate" type="object" icon="fa-refresh" invisible="state == 'done' or not y_is_same_currency"/>  
+                            <div class="break"/>
+                           
+                        </div>
+                    </div>
+
+
+                </field>
+                    
+                </field>
+            </record>
+        </data>
+
+
+        
+</odoo>        

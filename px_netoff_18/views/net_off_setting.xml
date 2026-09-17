@@ -1,0 +1,19 @@
+<odoo>
+  <data>
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+      <field name="name">res.config.settings.view.form.inherit.netoff</field>
+      <field name="model">res.config.settings</field>
+      <field name="inherit_id" ref="account.res_config_settings_view_form"/>
+      <field name="arch" type="xml">
+        <xpath expr="//block[@id='invoicing_settings']" position="after">
+          <block title="Net Off">
+              <setting id="Net Off Account Journal" help="Journal that create the net off">
+                <label for="net_off_account_journal_id"/>
+                  <field name="net_off_account_journal_id"/>
+              </setting>
+          </block>
+        </xpath>
+      </field>
+    </record>
+  </data>
+</odoo>

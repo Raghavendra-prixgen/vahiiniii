@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<record id="stock_location_route_form_view_purchase_route" model="ir.ui.view">
+		<field name="name">stock.route.form.view.purchase.route</field>
+		<field name="model">stock.route</field>
+		<field name="inherit_id" ref="stock.stock_location_route_form_view"/>
+		<field name="arch" type="xml">
+			<xpath expr="//group[@name='route_selector']/group[2]" position="after">
+				<group>
+                    <field name="y_po_lines" string="Purchase Order Lines"/>
+                </group>
+			</xpath>
+		</field>
+	</record>
+	<record id="purchase_order_form_purchase_route" model="ir.ui.view">
+		<field name="name">purchase.order.form.purchase.route</field>
+		<field name="model">purchase.order</field>
+		<field name="inherit_id" ref="purchase.purchase_order_form"/>
+		<field name="arch" type="xml">
+			<xpath expr="//field[@name='order_line']/list/field[@name='date_planned']" position="after">
+				<field name="y_destination_route" widget="many2many_tags" groups="stock.group_adv_location" optional="hide"/>
+			</xpath>
+		</field>
+	</record>
+</odoo>

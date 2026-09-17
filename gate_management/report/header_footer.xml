@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+    <template id="external_layout_for_headerfooter_gate_management">
+        <div class="header">
+        <div class="row">
+            <div class="col-12">
+                <div class="row">
+                    <div class="col-2  text-left">
+                         <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style="height:53;width:150px;margin-top:0;" alt="Logo"/><br/>
+                    </div>
+                    <div class="col-8 text-center" style="font-size:14px !important;">
+                        <strong>
+                            <span t-field="o.y_warehouse_id.partner_id.street"/><span t-field="o.y_warehouse_id.partner_id.street2"/><br/>
+                            <span t-field="o.y_warehouse_id.partner_id.city"/>-
+                            <span t-field="o.y_warehouse_id.partner_id.zip"/>, 
+                            <span t-field="o.y_warehouse_id.partner_id.state_id"/>,
+                            <span t-esc="'State Code : '"/><span t-field="o.y_warehouse_id.partner_id.state_id.code"/>,
+                            <span t-field="o.y_warehouse_id.partner_id.country_id"/><br/>
+                            <t t-if="o.y_warehouse_id.partner_id.vat">
+                            <span t-esc="'GST NO : '"/><span t-field="o.y_warehouse_id.partner_id.vat"/></t>
+                        </strong>
+                    </div>
+                    <div class="col-2 text-left">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> 
+    <div class="article o_report_layout_standard"  t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">
+    <t t-call="web.address_layout"/>
+        <t t-raw="0"/>
+    </div>
+    <div class="footer o_standard_footer" style="font-size:12px;" >
+    </div>
+</template>
+</data>
+</odoo>

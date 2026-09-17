@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_inventory_aging_qty_value_report,inventory_aging_qty_value_report,model_inventory_aging_qty_value_report,,1,1,1,0
+access_inventory_aging_value_wizard,inventory_aging_value_wizard,model_inventory_aging_value_wizard,,1,1,1,1
+access_inventory_aging_qty_value_report_view,inventory_aging_qty_value_report_view,model_inventory_aging_qty_value_report_view,,1,1,1,1
+

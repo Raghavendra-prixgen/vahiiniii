@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+    <record id="view_picking_form_inherit_analytic_customization" model="ir.ui.view">
+        <field name="name">stock.picking.view.form.inherit</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+        
+            <xpath expr="//field[@name='move_ids_without_package']/list/field[@name='product_id']" position="after" >
+
+                <field name="analytic_distribution" widget="analytic_distribution"
+                    optional="hide"
+                    groups="analytic.group_analytic_accounting"
+                    options="{'product_field': 'product_id', 'business_domain': 'stock_move_and_line'}"/>
+            </xpath>
+        </field>
+    </record>
+    
+    <record id="view_stock_quant_tree_inventory_editable_inherit_analytic_base" model="ir.ui.view">
+        <field name="name">stock.quant.view.list.inherit</field>
+        <field name="model">stock.quant</field>
+        <field name="inherit_id" ref="stock.view_stock_quant_tree_inventory_editable"/>
+        <field name="arch" type="xml">
+            <button name="action_apply_inventory" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </button>
+            <button name="action_apply_inventory" position="after">
+                <button name="stock.action_stock_inventory_adjustement_name" groups="stock.group_stock_manager" type="action" string="Apply" icon="fa-save" invisible="('inventory_quantity_set', '=', False)" />
+            </button>
+        </field>
+    </record>
+
+    <record id="stock_inventory_adjustment_name_form_view_inherit_analytic_customization" model="ir.ui.view">
+        <field name="name">stock.inventory.adjustment.name.view.form.inherit</field>
+        <field name="model">stock.inventory.adjustment.name</field>
+        <field name="inherit_id" ref="stock.stock_inventory_adjustment_name_form_view"/>
+        <field name="arch" type="xml">
+            <field name="inventory_adjustment_name" position="after">
+                <field name="analytic_distribution" widget="analytic_distribution"
+                    groups="analytic.group_analytic_accounting" string="Analytic Account"
+                    options="{'product_field': 'product_id', 'business_domain': 'stock_move_and_line'}"/>
+            </field>
+        </field>
+    </record>
+
+
+
+
+    <record id="stock_move_search_view_search_pc" model="ir.ui.view">
+        <field name="name">stock.move.search.pt</field>
+        <field name="model">stock.move</field>
+        <field name="inherit_id" ref="stock.view_move_search"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field name="analytic_groupby_account_ids"/>
+            </field>
+
+        </field>
+    </record>
+
+    <record id="stock_valuation_layer_search_view_search_pc" model="ir.ui.view">
+        <field name="name">stock.valuation.layersearch.pt</field>
+        <field name="model">stock.valuation.layer</field>
+        <field name="inherit_id" ref="stock_account.view_inventory_valuation_search"/>
+        <field name="arch" type="xml">
+            <field name="product_tmpl_id" position="after">
+                <field name="analytic_groupby_account_ids"/>
+            </field>
+
+        </field>
+    </record>
+
+    <record id="account_move_line_search_view_search_pc" model="ir.ui.view">
+        <field name="name">account.move.line.pt</field>
+        <field name="model">account.move.line</field>
+        <field name="inherit_id" ref="account.view_account_move_line_filter"/>
+        <field name="arch" type="xml">
+            <field name="account_id" position="after">
+                <field name="analytic_groupby_account_ids"/>
+
+            </field>
+
+        </field>
+    </record>
+
+    <record id="view_stock_move_analytic_distribution" model="ir.ui.view">
+        <field name="name">stock.move.view.form.inherit</field>
+        <field name="model">stock.move</field>
+        <field name="inherit_id" ref="stock.view_move_tree"/>
+        <field name="arch" type="xml">
+            <field name="location_dest_id" position="after">
+                <field name="analytic_distribution" widget="analytic_distribution" groups="analytic.group_analytic_accounting" string="Analytic Account"/>
+                <field name="account_analytic_plan_ids" widget="many2many_tags"/>
+            </field>
+            
+        </field>
+    </record>
+
+    <record id="view_stock_valution_analytic_distribution" model="ir.ui.view">
+        <field name="name">stock.valuation.layer.view.form.inherit</field>
+        <field name="model">stock.valuation.layer</field>
+        <field name="inherit_id" ref="stock_account.stock_valuation_layer_tree"/>
+        <field name="arch" type="xml">
+            <field name="unit_cost" position="after">
+                <field name="analytic_distribution" widget="analytic_distribution" groups="analytic.group_analytic_accounting" string="Analytic Account" optional="hide"/>
+                <field name="account_analytic_plan_ids" widget="many2many_tags" optional="hide"/>
+            </field>
+            
+        </field>
+    </record>
+
+
+    <record id="view_account_move_line_analytic_distribution" model="ir.ui.view">
+        <field name="name">account.move.line.view.form.inherit</field>
+        <field name="model">account.move.line</field>
+        <field name="inherit_id" ref="account.view_move_line_tree"/>
+        <field name="arch" type="xml">
+            <field name="matching_number" position="after">
+                
+                <field name="account_analytic_plan_ids" widget="many2many_tags"/>
+            </field>
+            
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,53 @@
+<!-- <?xml version="1.0" encoding="utf-8"?> -->
+<odoo>
+<!-- Tax Code master views -->
+<record id="view_tax_code_list" model="ir.ui.view">
+    <field name="name">tax.code.list</field>
+    <field name="model">tax.code</field>
+    <field name="arch" type="xml">
+        <list string="Tax Codes">
+            <field name="y_name"/>
+            <field name="y_company_id"/>
+            <field name="y_tax_ids" widget="many2many_tags" readonly="1" invisible="1"/>
+        </list>
+    </field>
+</record>
+
+<record id="view_tax_code_form" model="ir.ui.view">
+    <field name="name">tax.code.form</field>
+    <field name="model">tax.code</field>
+    <field name="arch" type="xml">
+        <form string="Tax Code">
+            <sheet>
+                <group>
+                    <field name="y_name"/>
+                    <field name="y_company_id"/>
+                    <field name="y_tax_ids" widget="many2many_tags" readonly="1" invisible="1"/>
+
+                </group>
+            </sheet>
+        </form>
+    </field>
+</record>
+
+<record id="action_tax_code" model="ir.actions.act_window">
+    <field name="name">Tax Codes</field>
+    <field name="res_model">tax.code</field>
+    <field name="view_mode">list,form</field>
+    <field name="view_id" ref="view_tax_code_list"/>
+    <field name="help" type="html">
+        <p class="o_view_nocontent_smiling_face">
+            Create a new tax code
+        </p>
+    </field>
+</record>
+
+<menuitem id="menu_tax_code"
+          name="Tax Codes"
+          action="action_tax_code"
+          parent="account.menu_finance_configuration"
+          sequence="20"/>
+
+
+          </odoo>
+          

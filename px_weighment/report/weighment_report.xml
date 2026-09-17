@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+    	 <template id="report_weighment">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+        <t t-call="web.external_layout">
+            <div class="page">
+            <div class="oe_structure">
+                <div class="text-center" style="margin-top:-3px;"><h1>
+                    Weighment</h1>
+                </div>
+                        <div ><t >
+                        <strong>Name:</strong>
+                        <span t-field="o.name"></span><br/>
+                        <strong>Date:</strong>
+                        <span  t-field="o.date"></span><br/>
+                        <strong>Reference:</strong>
+                        <span  t-field="o.reference"></span>
+                        </t></div>
+                        <!--<t style="float-left;">
+                        <strong>Date:</strong>
+                        <span  t-field="o.date"></span>
+                        </t></div>-->               
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th style="text-align:center;">Total Products</th>
+                                    <th style="text-align:center;">Loaded Truck Weight</th>
+                                    <th style="text-align:center;">Empty Truck Weight</th>
+                                    <th style="text-align:center;">Tolerance</th>
+                                    <th style="text-align:center;">Total Product Standard Weight</th>
+                                    <th style="text-align:center;">Net Actual Weight</th>
+                                    <th style="text-align:center;">Difference</th>
+                                </tr>
+                            </thead>
+                           <tbody>
+                                <tr>
+                                    <t >
+                                    <td style="text-align:center;">
+                                        <span t-field="o.total_products"
+                                        />
+                                    </td>
+                                    </t>
+                                    <t >
+                                    <td style="text-align:center;">
+                                       <span t-field="o.total_truck_weight"
+                                        />
+                                    </td>
+                                    </t>
+                                    <td style="text-align:center;">
+                                        <span t-field="o.empty_truck_weight"
+                                            />
+                                    </td>
+                                     
+                                    <td style="text-align:center;">
+                                          <span t-field="o.tolerance"
+                                            />
+                                    </td>
+                                     <td style="text-align:center;">
+                                          <span t-field="o.gross_weight"
+                                            />
+                                    </td>
+                                    <td style="text-align:center;">
+                                          <span t-field="o.net_weight"
+                                            />
+                                    </td>
+                                    <td style="text-align:center;">
+                                          <span t-field="o.difference"/>
+                                      </td>
+                                      
+                                </tr>
+                                <!-- <tr>
+                                    <td style="text-align:right;">
+                                        <strong>Total</strong>
+                                    </td>
+                                    
+                                    <td style="text-align:right;">
+                                        <b><t t-esc="o.amount_untaxed"/></b>
+                                    </td>
+                                   
+                                    <td style="text-align:right;">
+                                      <b><t t-esc="o.amount_untaxed"/></b>
+                                    </td>
+                              
+                                </tr> -->
+                                <!-- <tr>
+                                    <td colspan="3">
+                                        <strong>Amount (in words):</strong><br/>
+                                        <span t-field="o.strom"/>
+                                    </td>
+                                </tr> -->
+                            </tbody>
+                        
+                        </table>
+                        <!-- <div><t >
+                        <strong>Prepared by:</strong>
+                    </t>
+                    <t >
+                        <strong>Checked by:</strong>
+                    </t>
+                    <t >
+                        <strong>Approved by:</strong>
+                    </t>
+                </div> -->
+            </div>
+            </div>
+    </t>
+        </t>
+        </t>
+    </template>
+    </data>
+</odoo>

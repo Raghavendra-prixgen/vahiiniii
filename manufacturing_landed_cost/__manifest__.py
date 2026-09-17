@@ -1,0 +1,22 @@
+{
+    'name': 'Manufacturing Landed Cost - 18.0.0.9',
+    'version': '18.0.0.1',
+    'category': 'Landed Costs',
+    'origin': 'base',
+    'module_type':'official',
+    'author': 'Prixgen Tech Solutions Pvt. Ltd.',
+    'company': 'Prixgen Tech Solutions Pvt. Ltd.',
+    'website': 'https://www.prixgen.com',
+    'depends': ['base',
+                'stock',
+                'stock_landed_costs',
+                'mrp',
+                'product',
+                'mrp_landed_costs',
+                'stock_account',
+    ],
+    'data': [
+        'security/ir.model.access.csv',
+        'views/manufacturing_landed_cost.xml',
+    ],   
+}

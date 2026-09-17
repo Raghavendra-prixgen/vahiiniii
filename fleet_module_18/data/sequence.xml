@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="seq_fleet_module_vehicle_intent" model="ir.sequence">
+            <field name="name">Vehicle Intent</field>
+            <field name="code">fleet.vehicle.intent</field>
+            <field name="prefix">VI</field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="seq_fleet_module_vehicle_non_contract_order" model="ir.sequence">
+            <field name="name">Non Contract Order</field>
+            <field name="code">non.contract.order</field>
+            <field name="prefix">NCO</field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="seq_fleet_module_transportation_order" model="ir.sequence">
+            <field name="name">Transportation Order</field>
+            <field name="code">transportation.order</field>
+            <field name="prefix">TO</field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+
+        <record model="res.groups" id="group_for_approval_non_contract_order">
+            <field name="name">Approval For Non Contract Order</field>
+        </record>
+
+        <!-- <record id="vehicle_type_1" model="fleet.vehicle.type">
+            <field name="y_vehicle_type">Canter Jumbo</field>
+        </record>
+
+        <record id="vehicle_type_2" model="fleet.vehicle.type">
+            <field name="y_vehicle_type">Canter 19feet / 6 Wheel</field>
+        </record>
+        <record id="vehicle_type_3" model="fleet.vehicle.type">
+            <field name="y_vehicle_type">Canter 17feet / 4 Wheel</field>
+        </record>
+        <record id="vehicle_type_4" model="fleet.vehicle.type">
+            <field name="y_vehicle_type">Canter 3MT / 4 wheel</field>
+        </record>
+        <record id="vehicle_type_5" model="fleet.vehicle.type">
+            <field name="y_vehicle_type">Container Close Body 20 feet</field>
+        </record>
+        <record id="vehicle_type_6" model="fleet.vehicle.type">
+            <field name="y_vehicle_type">Container Close Body 24 feet</field>
+        </record>
+        <record id="vehicle_type_7" model="fleet.vehicle.type">
+            <field name="y_vehicle_type">Flat bed trailer (32 Feet)</field>
+        </record>
+        <record id="vehicle_type_8" model="fleet.vehicle.type">
+            <field name="y_vehicle_type">Hydraulic Trailer</field>
+        </record>
+        <record id="vehicle_type_9" model="fleet.vehicle.type">
+            <field name="y_vehicle_type">LCV (Light Commercial Vehicle)</field>
+        </record>
+        <record id="vehicle_type_10" model="fleet.vehicle.type">
+            <field name="y_vehicle_type">Low Bed Trailer</field>
+        </record>
+        <record id="vehicle_type_11" model="fleet.vehicle.type">
+            <field name="y_vehicle_type">Multi axel trailer</field>
+        </record>
+        <record id="vehicle_type_12" model="fleet.vehicle.type">
+            <field name="y_vehicle_type">Over Dimensional Cargo Truck</field>
+        </record>
+        <record id="vehicle_type_13" model="fleet.vehicle.type">
+            <field name="y_vehicle_type">Refrigerated / AC Container</field>
+        </record>
+        <record id="vehicle_type_14" model="fleet.vehicle.type">
+            <field name="y_vehicle_type">Semi Low Bed Trailer</field>
+        </record>
+        <record id="vehicle_type_15" model="fleet.vehicle.type">
+            <field name="y_vehicle_type">Tanker Truck (12 wheel)</field>
+        </record>
+        <record id="vehicle_type_16" model="fleet.vehicle.type">
+            <field name="y_vehicle_type">Tanker Truck (14 wheel)</field>
+        </record>
+        <record id="vehicle_type_17" model="fleet.vehicle.type">
+            <field name="y_vehicle_type">Tanker Truck (6 wheel)</field>
+        </record>
+        <record id="vehicle_type_18" model="fleet.vehicle.type">
+            <field name="y_vehicle_type">Tata 407 2.5 MT / 4 Wheel</field>
+        </record>
+
+        <record id="vehicle_type_19" model="fleet.vehicle.type">
+            <field name="y_vehicle_type">Trailer 4923</field>
+        </record> -->
+
+    </data>
+</odoo>

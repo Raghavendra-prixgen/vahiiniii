@@ -1,0 +1,49 @@
+<odoo>
+  <data>
+
+    <record id="hrmls_custom_fields_hr_view_employee_form" model="ir.ui.view">
+          <field name="name">hr.hrms.custom.fields.form.emp</field>
+          <field name="model">hr.employee</field>
+          <field name="inherit_id" ref="hr.view_employee_form"/>
+          <field name="arch" type="xml">
+            <field name="country_id" position="after">
+                <field name="y_universal_account_number" invisible="1"/>
+                <field name="y_provident_fund"/>
+                <field name="y_pan_no" invisible="1"/>
+                <field name="y_esi_number" invisible="1"/>
+            </field>
+            <field name="identification_id" position="attributes">
+              <attribute name="string">Aadhaar No.</attribute>
+            </field>
+          </field>
+      </record>
+
+      <record id="view_account_journal_form_ceiling_limit" model="ir.ui.view">
+        <field name="name">account.journal.inherit.view.form.ceiling.limit</field>
+        <field name="model">account.journal</field>
+        <field name="inherit_id" ref="account.view_account_journal_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='advanced_settings']/group" position="inside">
+                <group>
+                    <field name="y_ceiling_limit" widget="boolean_toggle"/>
+                    <field name="y_ceiling_limit_value" widget="monetory" invisible="y_ceiling_limit != True" required="y_ceiling_limit == True" />
+                    <field name="y_ceiling_limit_for_transporter" widget="monetory" invisible="y_ceiling_limit != True" required="y_ceiling_limit == True"/>
+                    <field name="y_is_allow_credit" widget="boolean_toggle" invisible="type != 'bank'"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+<!-- 
+    <record id="contact_masters_list_view_inherit" model="ir.ui.view">
+        <field name="name">contact.masters</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='property_account_receivable_id']" position="after">
+                <field name="y_is_transporter"/>
+              </xpath>           
+        </field>
+    </record>
+ -->
+  </data>
+</odoo>

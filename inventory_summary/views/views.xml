@@ -1,0 +1,83 @@
+<odoo>
+  <data>
+    <record id="inventory_balance_summmary_tree_view" model="ir.ui.view">
+      <field name="name">inventory balance summmary list view</field>
+      <field name="model">inv.bal.sum.report.view</field>
+      <field name="arch" type="xml">
+        <list>
+          <field name="y_default_code" optional="show"/>
+          <field name="y_product_id"/>
+          <field name="y_lot_id"/>
+          <field name="y_categ_id"/>
+          <field name="y_product_group_1_id"/>
+          <field name="y_product_group_2_id"/>
+          <field name="y_product_group_3_id"/>
+          <field name="y_uom_id" optional="show"/>
+          <field name="y_opening_stock"  optional="show"/>
+          <field name="y_opening_value" sum="Total Value" optional="show"/>
+          <field name="y_stock_increase" decoration-success="1"    optional="show"/>
+          <field name="y_increase_value" decoration-success="1" sum="Total Value"  optional="show"/>
+          <field name="y_stock_decrease" decoration-danger="1"   optional="show"/>
+          <field name="y_decrease_value" decoration-danger="1" sum="Total Value" optional="show"/>
+          <field name="y_closing_stock"   optional="show"/>
+          <field name="y_closing_value" sum="Total Value" optional="show"/>
+          <field name="y_company_id" optional="hide"/>
+          
+        </list>
+      </field>
+    </record>
+  
+
+    <record id="inventory_balance_summmary_search_view" model="ir.ui.view">
+      <field name="name">inventory balance summmary search view</field>
+      <field name="model">inv.bal.sum.report.view</field>
+      <field name="arch" type="xml">
+        <search string="Search Inventory Summary">
+          <field name="y_default_code"/>
+          <field name="y_product_id"/>
+          <field name="y_lot_id"/>
+          <field name="y_categ_id"/>
+          <field name="y_company_id"/>
+        </search>
+      </field>
+    </record>
+
+    <record id="inv_bal_summary_wiz_view_form" model="ir.ui.view">
+      <field name="name">inv.bal.sum.wiz.view.form</field>
+      <field name="model">inv.bal.sum.wiz</field>
+      <field name="arch" type="xml">
+        <form string="Inventory Balance Summary">
+          <sheet>
+            <group>
+              <group>
+                <field name="y_open_date" required="1" widget="date"/>
+                <field name="y_company_id" required="1" options="{'no_create': True,'no_open': True,'no_create_edit':True}"/>
+                <field name="y_categ_id"  widget="many2many_tags" />
+              
+              </group>
+              <group>
+                  <field name="y_close_date" required="1" widget="date"/>
+                  <field name="y_product_group_id_1"/>
+                  <field name="y_product_group_id_2"/>
+                  <field name="y_product_group_id_3"/>
+              </group>
+            </group>
+            <footer>
+              <button name="action_open_report" type="object" class="oe_highlight" string="View Summary"/>
+              <button string="Cancel" special="cancel" type="object" class="btn btn-secondary oe_inline"/>
+            </footer>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <record id="inv_bal_sum_wiz_action" model="ir.actions.act_window">
+      <field name="name">Inventory Summary</field>
+      <field name="res_model">inv.bal.sum.wiz</field>
+      <field name="view_mode">form</field>
+      <field name="target">new</field>
+    </record>
+
+    <menuitem id="inv_bal_sum_menu_act" name="Inventory Summary" parent="stock.menu_warehouse_report" action="inv_bal_sum_wiz_action"/>
+  </data>
+</odoo>

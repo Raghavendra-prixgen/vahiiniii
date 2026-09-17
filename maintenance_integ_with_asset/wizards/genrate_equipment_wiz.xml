@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="generate_asset_equipment_wiz_view_form" model="ir.ui.view">
+        <field name="name">generate.asset.equipment.form</field>
+        <field name="model">generate.asset.equipment</field>
+        <field name="arch" type="xml">
+            <form string="Generate Equipements">
+                <sheet>
+                <group>
+                    <group>
+                        <field name="y_asset_id" options="{'no_create': True,'no_open': True}" domain="[('state','not in',('draft','close'))]"/>
+                        <field name="y_category_id" options="{'no_create': True,'no_open': True}"/>
+                        <field name="y_number_of_equiments"/>
+                    </group>
+                </group>
+                
+                <footer>
+                    <button type="object" string="Generate" name="generate_equipments" class="btn-primary"/>
+                    <button type="object" special="cancel" string="Cancel" class="btn-secondary"/>
+                </footer>
+            </sheet>
+            </form>
+        </field>
+    </record>
+
+</odoo>

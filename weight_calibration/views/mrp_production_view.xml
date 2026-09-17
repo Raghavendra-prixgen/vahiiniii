@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+		<record id="mrp_production_form_view_inherit" model="ir.ui.view">
+            <field name="name">mrp.production.form.inherit</field>
+            <field name="model">mrp.production</field>
+            <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+            <field name="arch" type="xml">
+            	<xpath expr="//form/header/button[@name='action_cancel']" position="after">
+            		<button name="approve_weight_difference" type="object" class="oe_highlight" string="Approve Weight Difference" invisible="y_check_approve_weight or state in ['draft','confirmed','done','cancel'] or not y_check_toggle"/>
+            	</xpath>
+	
+            	<!-- <xpath expr="//field[@name='move_raw_ids']/list/field[@name='product_uom_qty']" position="after">
+					<field name="y_actual_weight_cal" column_invisible="1"/>
+                    <field name="y_ratio_for_weight" column_invisible="1" force_save="1"/>
+				</xpath> -->
+
+				<!-- <xpath expr="//field[@name='move_raw_ids']/list/field[@name='quantity']" position="replace">
+					<field name="quantity" string="Consumed"
+                                        decoration-success="not is_done and (quantity - should_consume_qty == 0)"
+                                        decoration-warning="not is_done and (quantity - should_consume_qty &gt; 0.0001)"    
+                                        force_save="1"
+                                        column_invisible="parent.state == 'draft'"
+                                        readonly = "show_details_visible == True or parent.y_check_approve_weight == True"/>
+                </xpath> -->
+				<xpath expr="//field[@name='move_byproduct_ids']/list/field[@name='lot_ids']" position="after">
+					<field name="y_actual_weight_cal"/>
+				</xpath>
+				
+				<xpath expr="//form/sheet/notebook/page[@name='miscellaneous']" position="after">
+                        <page string="Weight Details" name="weight_details" invisible="not y_check_toggle" >
+                            <group>
+                                <group>
+                                    <field name="y_mrp_ideal_weight" force_save="1" readonly="1"/>
+                                    <field name="y_actual_ideal_weight" force_save="1" readonly="1" />
+                                    <field name="y_fg_actual_weight" force_save="1"  options="{'no_create': True, 'no_create_edit':True}" readonly="state in ['draft','done']"/> 
+
+                                    <field name="y_check_toggle" readonly="1"/>
+                                    <field name="y_check_approve_weight" invisible="1"/>
+                                </group>
+                                <group>
+                                    <field name="y_product_actual_weight" force_save="1"/>
+                                    <field name="y_total_actual_weight" force_save="1"/>
+                                </group>
+                            </group>
+                        </page>	
+                </xpath>
+                
+            </field>
+		</record>
+
+		<record id="view_mrp_production_filter_inherit" model="ir.ui.view">
+            <field name="name">mrp.production.select.inherit</field>
+            <field name="model">mrp.production</field>
+            <field name="inherit_id" ref="mrp.view_mrp_production_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//search/filter[@name='planning_issues']" position="after">
+                	<filter string="Weight Calibration" name="check_weight_calibration" domain="[('y_check_toggle', '=', True)]"/>
+                </xpath>
+                <xpath expr="//search/filter[@name='planning_issues']" position="after">
+                	<filter string="Weight Calibration" name="check_weight_calibration" domain="[]" context="{'group_by': 'y_check_toggle'}"/>
+                </xpath>
+            </field>
+        </record>
+		
+		<record id="mrp_bom_form_view_inherit" model="ir.ui.view">
+            <field name="name">mrp.production.form.inherit</field>
+            <field name="model">mrp.bom</field>
+            <field name="inherit_id" ref="mrp.mrp_bom_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='company_id']" position="after">
+                	<label for="y_ideal_weight"/>
+                	<div class="o_row" name="y_ideal_weight" >
+    					<field name="y_ideal_weight"  force_save="1" invisible = "'y_check_bom_weight' == False"/>
+    					<span><field name="y_ideal_weight_uom_name" invisible = "'y_check_bom_weight' == False"/>
+                    </span>
+    				</div>
+                    <field name ="y_check_bom_weight" invisible="1"/>
+				</xpath>
+                <xpath expr="//form//sheet//notebook/page/field[@name='bom_line_ids']//list/field[@name='product_qty']" position="before">
+                    <field name="y_ratio_for_weight" column_invisible="True"/>
+                </xpath>
+			</field>
+		</record>
+
+
+
+	</data>
+</odoo>
+                

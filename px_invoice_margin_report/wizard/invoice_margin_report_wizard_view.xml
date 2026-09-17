@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_invoice_margin_report_wizard_form" model="ir.ui.view">
+        <field name="name">invoice.margin.report.wizard.form</field>
+        <field name="model">invoice.margin.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Product Lot Report Wizard">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="from_date" required="1"/>
+                        </group>
+                        <group>
+                            <field name="to_date" required="1"/>
+                            <field name="company_ids" widget="many2many_tags" required="1"/>
+                        </group>
+
+                    </group>
+                    <footer>
+                        <button name="action_view_invoice_margin_report" type="object" string="View Report"
+                                class="btn-primary"/>
+                        <button name="action_generate_invoice_margin_report" type="object" string="Generate Excel Report"
+                                class="btn-primary" invisible="1"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </sheet>
+
+            </form>
+        </field>
+    </record>
+
+    <record id="action_invoice_margin_report_wizard" model="ir.actions.act_window">
+        <field name="name">Invoice Margin Report Wizard</field>
+        <field name="res_model">invoice.margin.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_invoice_margin_report_wizard_form"/>
+        <field name="target">new</field>
+    </record>
+
+    <!-- <menuitem id="menu_product_lot_report" name="Lot Product Report" parent="account.menu_finance_reports"
+              sequence="10"/> -->
+    <menuitem id="menu_invoice_margin_report" name="Invoice Margin Report" parent="account_additional_reports.menu_additional_reports"
+              action="px_invoice_margin_report.action_invoice_margin_report_wizard"/>
+</odoo>

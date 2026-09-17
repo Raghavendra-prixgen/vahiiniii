@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="gate_management_assets" inherit_id="web.assets_backend" name="widget extend">
+        <xpath expr="." position="inside">
+            <link rel="stylesheet" type="text/scss" href="/gate_management/static/src/scss/kanban_dashboard.scss"/>
+        </xpath>
+    </template>
+</odoo>

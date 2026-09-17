@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="sale_order_inherit_tree_view" model="ir.ui.view">
+            <field name="name">sale.order,inherit.new</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_tree"/>
+            <field name="arch" type="xml">     
+                <xpath expr="//list" position="inside">
+                    <header>
+                        <button name="post_packing_details" type="object" string="Validate"/> 
+                    </header>        
+                </xpath>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="stock_quant_package_pallet_capacity">
+            <field name="name">stock.quant.form.pallet_capacity</field>
+            <field name="model">stock.quant.package</field>
+            <field name="inherit_id" ref="stock.view_quant_package_form"/>
+            <field name="arch" type="xml">
+                <field name="location_id" position="after">
+                    <field name="y_package_customer" invisible="1"/>
+                    <field name="y_package_sale_order" widget="many2many_tags" invisible="1"/>
+                    <field name="id" invisible="1"/>
+                    <field name="y_seq_name" invisible="1"/>
+                </field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="stock_warehouse_quant_package_pallet_capacity1">
+            <field name="name">stock.warehouse.quant.form.pallet_capacity</field>
+            <field name="model">stock.warehouse</field>
+            <field name="inherit_id" ref="mrp.view_warehouse_inherit_mrp"/>
+            <field name="arch" type="xml">
+                <field name="code" position="after">
+                    <field name="y_pacakging_sequence"/>
+                </field>
+            </field>
+        </record>
+
+
+        <record model="ir.ui.view" id="sale_order_package_pallet_capacity">
+            <field name="name">account.sale.order.quant.form.pallet_capacity</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+                <field name="partner_shipping_id" position="after">
+                    <field name="y_notify_party_id" invisible="move_type != 'out_invoice'"/>
+                    <field name="y_stock_packaging_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}" invisible="move_type in ('in_invoice', 'in_receipt', 'in_refund', 'entry', 'out_refund')" groups="account.group_delivery_invoice_address" domain="[('y_state','=','posted'),('y_partner_id', '=', partner_shipping_id)]"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="view_packaging_list_document_form" model="ir.ui.view">
+            <field name="name">packaging.list.form</field>
+            <field name="model">packaging.list</field>
+            <field name="arch" type="xml">
+                <form string="Packaging List">
+                    <header>
+                        <button type="object" name="button_validate" class="oe_highlight" string="Validate" invisible="y_state in ['posted']"/>
+                        <button type="object" name="button_reset_to_draft" class="oe_highlight" string="Reset to Draft" invisible="y_state in ['open']"/>
+                        <field name="y_state" widget="statusbar" statusbar_visible="open,posted"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="view_package" type="object" class="oe_stat_button" icon="fa-bars">
+                                <div class="o_stat_info">
+                                    <span class="o_stat_text">Packages</span>
+                                </div>
+                            </button>
+                        </div>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="y_document_number" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group>            
+                            <group>
+                                <field name="y_sale_order_ids" widget="many2many_tags" readonly="1"/>
+                                <field name="y_warehouse_id" required="1" readonly="y_state in ['posted']"/>
+                                <field name="y_partner_id" required="1" readonly="y_state in ['posted']"/>
+                            </group>
+                            <group>
+                                <field name="y_gross_weight" force_save="1"/>
+                                <field name="y_marks_and_no" readonly="y_state in ['posted']"/>
+                                <field name="y_number_of_package" readonly="1"/>
+                                <field name="y_net_weight" force_save="1"/>
+                            </group>
+                        </group>
+                        <button name="get_details" type="object" invisible="y_state in ['posted']" string="Get Delivery Orders"/>
+                        <notebook>
+                            <page string="Packages" name="stock_packages" >
+                                <field name="y_packaging_list_line_ids" widget="section_and_note_one2many" readonly="y_state in ['posted']">
+                                    <list string="Packaging List" default_order="y_stock_quanat_packaing_id ASC" editable="bottom">
+                                        <control>
+                                            <create name="add_product_control" string="Add a product"/>
+                                            
+                                            <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                        </control>
+                                        <field name="y_name" widget="section_and_note_one2many" column_invisible="True"/>
+                                        <field name="y_stock_quanat_packaing_id" required="1"/> 
+                                        <field name="y_product_id" column_invisible="True"/>
+                                        <field name="y_default_code"/>
+                                        <field name="y_product_description"/>
+                                        <field name="y_sale_origin_id" optional="hide"/>
+                                        <field name="y_package_customer_id" optional="hide"/>
+                                        <field name="y_customer_ref"/>
+                                        <field name="y_display_type" column_invisible="True"/>
+                                        <field name="y_package_type_id" optional="hide"/>
+                                        <field name="y_net_weight"/>
+                                        <field name="y_gross_weight"/>
+                                        <field name="y_shipping_weight" column_invisible="True"/>
+                                        <field name="y_quantity"/>
+                                        <field name="y_product_uom_id"/>
+                                        <field name="y_customer_po"/>
+                                    </list>
+                                </field>
+                            </page>
+                            <page string="Additional Info" name="additional_info">
+                                <group>
+                                    <group>
+                                        <field name="create_date"/>
+                                        <field name="create_uid"/>
+                                        <field name="y_company_id" invisible="1"/>
+                                        <field name="y_gst_reg_no" readonly="1" force_save="1"/>
+                                        <field name="y_is_invoiced" invisible="1"/>
+                                        <field name="y_invoice_ref_id" readonly="y_state in ['posted']"/>
+                                    </group>
+                                    <group>
+                                        <field name="y_container_type" readonly="y_state in ['posted']"/>
+                                        <field name="y_container_number" readonly="y_state in ['posted']"/>
+                                        <field name="y_container_seal_number" readonly="y_state in ['posted']"/>
+                                    </group>
+                                </group>
+                            
+                            </page>
+                        </notebook> 
+                    </sheet> 
+                    <chatter/>
+
+                                
+                </form>
+            </field>
+        </record>
+
+        <record id="tree_packaging_list_document" model="ir.ui.view">
+            <field name="name">packaging.list.list</field>
+            <field name="model">packaging.list</field>
+            <field name="arch" type="xml">
+            <list string="Packaging List">
+                <field name="y_document_number"/>
+                <field name="y_ship_to_code"/>
+                <field name="y_partner_id"/>
+                <field name="y_container_number"/>
+                <field name="y_container_seal_number"/>
+                <field name="y_gst_reg_no"/>
+                <field name="y_gross_weight"/>
+                <field name="y_net_weight"/>   
+                <field name="y_state" widget="badge" decoration-info="y_state in ['open']" decoration-success="y_state in ['posted']"/>    
+            </list>
+            </field>
+        </record>
+
+        <record id="action_packaging_list_document" model="ir.actions.act_window">
+            <field name="name">Packaging List</field>
+            <field name="res_model">packaging.list</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+        <menuitem id="menu_packaging_list_document"
+                    name="Packaging List"
+                    action="action_packaging_list_document"
+                    parent="stock.menu_stock_warehouse_mgmt"
+                    sequence="105"/>
+
+    </data>
+</odoo>
+    

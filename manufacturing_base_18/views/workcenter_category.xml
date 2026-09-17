@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- <record id="floor_lever_validation_mrp_workorder_view_form_tablet_inherited" model="ir.ui.view">
+        <field name="name">mrp.workorder.view.form.inherit.floor.level.validation</field>
+        <field name="model">mrp.workorder</field>
+        <field name="inherit_id" ref="mrp_workorder.mrp_workorder_view_form_tablet"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_open_manufacturing_order']" position="attributes">
+                <attribute name="group">manufacturing_base_18.group_mo_user_validation_workorder</attribute>             
+            </xpath>   
+        </field>
+    </record>
+ -->
+
+    <record id="res_config_settings_view_form_diable" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.disable</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="mrp.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <setting id="mrp_lock" position="after">
+                <div class="col-12 col-lg-6 o_setting_box" id="restrict_reserved_qty_warning">
+                    <div class="o_setting_left_pane">
+                        <field name="y_restrict_reserved_qty_warning" widget="upgrade_boolean"/>
+                    </div>
+                    <div class="o_setting_right_pane">
+                        <label for="y_restrict_reserved_qty_warning"/>
+                        <div class="text-muted">
+                            Allow operations Based on material Availability
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-6 o_setting_box" id="output_quantity_validation">
+                    <div class="o_setting_left_pane">
+                        <field name="y_is_output_quantity_validation" widget="upgrade_boolean"/>
+                    </div>
+                    <div class="o_setting_right_pane">
+                        <label for="y_is_output_quantity_validation"/>
+                        <div class="text-muted">
+                            Activate Output Quantity Validation
+                        </div>
+                    </div>
+                </div>
+            </setting>
+        </field>
+    </record>
+
+    <record id="view_mrp_production_view_mrp_production_filter_sale_order" model="ir.ui.view">
+        <field name="name">mrp.production.form.view.inherit.sn</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.view_mrp_production_filter"/>
+        <field name="arch" type="xml">
+            <search>
+                <field name="y_sale_order_id" string="Sale Order"/>
+            </search>
+        </field>
+    </record>
+
+     <record id="view_mrp_production_form_view_inherit_sale_order" model="ir.ui.view">
+        <field name="name">mrp.production.form.view.inherit.so.origin</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='miscellaneous']//field[@name='origin']" position="after">
+                <field name="y_sale_order_id" readonly='0'/>
+                <field name="y_partner_shipping_id" readonly='0'/>
+            </xpath>
+        </field>
+    </record>
+
+     <record id="sale_order_production_form_view_inherit_sale_order" model="ir.ui.view">
+        <field name="name">mrp.production.form.view.inherit.origin</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='origin']" position="after">
+                <field name="y_sale_order_id" string="Sale Order" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_mrp_workcenter_form_view_inherited_productivity_center" model="ir.ui.view">
+        <field name="name">mrp.workcenter.form.view.inherited.productivity.center</field>
+        <field name="model">mrp.workorder</field>
+        <field name="inherit_id" ref="mrp.mrp_production_workorder_form_view_inherit"/>
+        <field name="arch" type="xml">
+            <field name="production_id" position="after">
+                <field name="y_total_output_quantity" />
+            </field>
+            <xpath expr="//field[@name='time_ids']/list/field[@name='date_end']" position='after'>
+                <field name='y_output_quantity'  force_save="1" sum="Output Quantity"/>
+            </xpath>
+        </field>
+    </record>
+
+
+
+    <record model="ir.ui.view" id="mrp_workorder_center_category_wizard_outquantity">
+        <field name="name">mrp_workorder_center_category_wizard_outquantity</field>
+        <field name="model">wizard.outquantity</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Workorder Category">
+                <sheet>		                	
+                    <group> 
+                        <field name="y_workorder_id" invisible="1"/>
+                        <field name="y_po_demand" string="Demand Quantity" readonly="1"/>
+                        <field name="y_po_total_output_qty" string="Quantity Produced" readonly="1"/>
+                        <field name="y_po_remaining_qty" string="Remaining Quantity" readonly="1"/>
+                        <field name="y_output_quantity" string="Output Quantity"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="added" type="object" string="Save" class="oe_highlight"/>
+                    <button special="cancel" string="Discard"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_workorder_form_inherited_category_tree" model="ir.ui.view">
+        <field name="name">workorder.form.view.inherited.category.list</field>
+        <field name="model">mrp.workorder</field>
+        <field name="inherit_id" ref="mrp.mrp_production_workorder_tree_editable_view"/>
+        <field name="arch" type="xml">
+            <!-- <xpath expr="//list" position="attributes">
+              <attribute name="create">0</attribute>
+            </xpath>  -->
+            <!-- <field name="operation_id" position="attributes">
+                <attribute name="options">{'no_create': True}</attribute>
+            </field>             -->
+            <xpath expr="//field[@name='name']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="operation_id" domain="['|', ('bom_id', '=', production_bom_id), ('bom_id', '=', False)]" context="{'default_workcenter_id': workcenter_id, 'default_company_id': company_id}"/>
+            </xpath>
+            <!-- <field name="workcenter_id" position="attributes">
+                <attribute name="options">{'no_create': True, 'no_create_edit':True}</attribute>
+            </field> -->
+            <field name="product_id" position="after">
+                <field name="y_total_workorder_demand"/>
+                <field name="y_total_output_quantity"/>
+                <field name="y_total_workorder_remaining"/>
+                <field name="y_sale_order_id" optional="hide"/>    
+            </field>
+        </field>
+    </record>
+
+
+    <!-- <record id="view_workcenter_form_inherited_category" model="ir.ui.view">
+        <field name="name">workcenter.form.view.inherited.category</field>
+        <field name="model">mrp.workcenter</field>
+        <field name="inherit_id" ref="mrp.mrp_workcenter_view"/>
+        <field name="arch" type="xml"> -->
+            <!-- <field name="code" position="attributes">
+                <attribute name="attrs">{'readonly':[('is_workcenter_category_id','=',False)]}</attribute>
+                <attribute name="force_save">1</attribute>
+            </field>
+            <field name="company_id" position="after">
+                <field name="is_workcenter_category_id" invisible="1"/>
+                <field name='workcentre_category_id' options="{'no_create': True, 'no_create_edit':True}"/>
+            </field> -->
+            <!-- <xpath expr="//field[@name='tag_ids']" position="attributes">
+                <attribute name="options">{'no_create': True,'no_edit':True}</attribute>
+            </xpath>
+             <xpath expr="//field[@name='alternative_workcenter_ids']" position="attributes">
+                <attribute name="options">{'no_create': True,'no_edit':True}</attribute>
+            </xpath> -->
+            <!-- <xpath expr="//field[@name='costs_hour_account_id']" position="attributes">
+                <attribute name="options">{'no_create': True,'no_edit':True}</attribute>
+            </xpath> -->
+        <!-- </field>
+    </record>
+ -->
+
+    <record id="view_workcenter_form_inherited_search" model="ir.ui.view">
+        <field name="name">workorder.form.view.inherited.search</field>
+        <field name="model">mrp.workorder</field>
+        <field name="inherit_id" ref="mrp.view_mrp_production_work_order_search"/>
+        <field name="arch" type="xml">
+            <search>
+                <field name="product_id"/>
+            </search>
+        </field>
+    </record>
+
+	<!-- <record id="view_workcenter_category_tree" model="ir.ui.view">
+            <field name="name">workcenter.category.list.view</field>
+            <field name="model">workcenter.category</field>
+            <field name="arch" type="xml">
+                <list editable='bottom'>
+                    <field name='name'/>
+                    <field name='categ_sequence_id' options="{'no_create': True, 'no_create_edit':True,'no_open': True}"/>
+                    <field name="company_id" options="{'no_create': True, 'no_create_edit':True,'no_open': True}"/>
+                </list>                
+            </field>
+        </record>
+
+    <record model="ir.rule" id="workcenter_category_record_restricted_company_rule">
+        <field name="name">Workcenter Category Restricted Record: multi-company</field>
+        <field name="model_id" ref="model_workcenter_category"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">
+            ['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]
+        </field>
+    </record>
+
+
+    <record model="ir.actions.act_window" id="action_workcenter_category_tree_view">
+        <field name="name">Work Center Category</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">workcenter.category</field>
+        <field name="view_mode">list</field>
+  </record>
+
+  <menuitem name="Work Center Category" action="action_workcenter_category_tree_view" id="menu_workcenter_category_tree_view_act" parent="mrp.menu_mrp_configuration" sequence="96"/>
+ -->
+</odoo>

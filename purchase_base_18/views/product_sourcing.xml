@@ -1,0 +1,14 @@
+<odoo>
+
+	<record model="ir.ui.view" id="purchase_tolerance_inventry">
+    <field name="name">purchase sourcing in product</field>
+    <field name="model">product.template</field>
+    <field name="inherit_id" ref="purchase_base_18.purchase_tolerance_inventry_inherited"/>    
+    <field name="arch" type="xml">
+        <field name="y_purchase_tol_reqd" position="before">
+          <field name="y_product_sourcing"/>
+        </field>
+    </field>                   
+  </record>
+
+</odoo>

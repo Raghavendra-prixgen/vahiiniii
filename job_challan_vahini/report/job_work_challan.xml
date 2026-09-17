@@ -1,0 +1,430 @@
+<odoo>
+    <data>
+        <record id="vahini_job_page_format" model="report.paperformat">
+            <field name="name">job work challan page format</field>
+            <field name="default" eval="True" />
+            <field name="format">A4</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">55</field>
+            <field name="margin_bottom">20</field>
+            <field name="margin_left">5</field>
+            <field name="margin_right">5</field>
+            <field name="header_line" eval="False" />
+            <field name="header_spacing">45</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <record id="deliveryorder_report" model="ir.actions.report">
+            <field name="name">Job Work Challan</field>
+            <field name="model">equipment.request.delivery</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">job_challan_vahini.vahini_job_work_challan_report</field>
+            <field name="report_file">job_challan_vahini.vahini_job_work_challan_report</field>
+            <field name="binding_model_id" ref="maintenance_base.model_equipment_request_delivery" />
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="job_challan_vahini.vahini_job_page_format" />
+        </record>
+
+        <template id="vahini_job_work_challan_report">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <t t-call="job_challan_vahini.external_header_footer_job_work">
+                        <div class="page">
+                            <!-- ============ HEADER INFO TABLE (Consignee / Shipping / State /
+                            Transporter) ============ -->
+                            <table class="table"
+                                style="font-size:14px;border:1px solid #143980;border-bottom:none;width:100%;margin-bottom:0;color:#143980;">
+                                <tbody>
+                                    <tr style="height:3px !important;">
+                                        <!-- Consignee -->
+                                        <td
+                                            style="width:30%;padding:1px;border:1px solid #143980;font-size:12px;padding-left:6px;">
+                                            <span style="color:#143980;">
+                                                <b>Consignee :</b>
+                                            </span>
+                                            <br />
+
+                                            <strong t-if="doc.y_customer_id">
+                                                <span t-esc="doc.y_customer_id.name" />
+                                            </strong>
+                                            <br />
+
+                                            <t t-if="doc.y_customer_id.street">
+                                                <span t-esc="doc.y_customer_id.street" />
+                                                <br />
+                                            </t>
+
+                                            <t t-if="doc.y_customer_id.street2">
+                                                <span t-esc="doc.y_customer_id.street2" />
+                                                <br />
+                                            </t>
+
+                                            <t
+                                                t-if="doc.y_customer_id.city or doc.y_customer_id.state_id">
+                                                <span t-if="doc.y_customer_id.city"
+                                                    t-esc="doc.y_customer_id.city" />
+                                                <t
+                                                    t-if="doc.y_customer_id.city and doc.y_customer_id.state_id">
+                                                    , </t>
+                                                <span t-if="doc.y_customer_id.state_id"
+                                                    t-esc="doc.y_customer_id.state_id.name" />
+                                                <t t-if="doc.y_customer_id.zip"> - <span
+                                                        t-esc="doc.y_customer_id.zip" /></t>
+                                                <br />
+                                            </t>
+
+                                            <t t-if="doc.y_customer_id.vat">
+                                                <b>GSTIN:</b>
+                                                <span t-esc="doc.y_customer_id.vat" />
+                                                <br />
+                                            </t>
+
+                                            <t t-if="doc.y_customer_id.email">
+                                                <b>Email:</b>
+                                                <t t-set="emailstr"
+                                                    t-value="doc.y_customer_id.email_split(doc.y_customer_id.email)" />
+                                                <span t-esc="emailstr" />
+                                                <br />
+                                            </t>
+
+                                            <t
+                                                t-if="doc.y_customer_id.mobile or doc.y_customer_id.phone">
+                                                <b>Mobile:</b>
+                                                <span t-if="doc.y_customer_id.mobile"
+                                                    t-esc="doc.y_customer_id.mobile" />
+                                                <t
+                                                    t-if="doc.y_customer_id.mobile and doc.y_customer_id.phone">
+                                                    / </t>
+                                                <span t-if="doc.y_customer_id.phone"
+                                                    t-esc="doc.y_customer_id.phone" />
+                                            </t>
+                                        </td>
+
+                                        <!-- Shipping Address -->
+                                        <td
+                                            style="width:25%;padding:1px;border:1px solid #143980;font-size:12px;padding-left:6px;">
+                                            <t t-if="doc.partner_shipping_id">
+                                                <span style="color:#143980;">
+                                                    <b>Shipping Address : </b>
+                                                </span><br />
+                                                <strong>
+                                                    <span style="color:black;font-style:normal;"
+                                                        t-if="doc.partner_shipping_id"
+                                                        t-esc="doc.partner_shipping_id.name" />
+                                                </strong><br />
+                                                <span
+                                                    style="color:black;font-style:normal;"
+                                                    t-if="doc.partner_shipping_id"
+                                                    t-esc="doc.partner_shipping_id.street" /><br />
+                                                <span
+                                                    style="color:black;font-style:normal;"
+                                                    t-if="doc.partner_shipping_id"
+                                                    t-esc="doc.partner_shipping_id.street2" />
+                                                <span
+                                                    style="color:black;font-style:normal;"
+                                                    t-if="doc.partner_shipping_id"
+                                                    t-esc="doc.partner_shipping_id.city" />- <strong>
+                                                    <span style="color:black;font-style:normal;"
+                                                        t-if="doc.partner_shipping_id"
+                                                        t-esc="doc.partner_shipping_id.state_id.name" />
+                                                </strong><br />
+                                                <span
+                                                    style="color:black;font-style:normal;"
+                                                    t-if="doc.partner_shipping_id"
+                                                    t-esc="doc.partner_shipping_id.mobile" />
+                                                <span
+                                                    style="color:black;font-style:normal;"
+                                                    t-if="doc.partner_shipping_id"
+                                                    t-esc="doc.partner_shipping_id.phone" /><br />
+                                                <t
+                                                    t-if="doc.partner_shipping_id.email">
+                                                    <t t-set="emailstr"
+                                                        t-if="doc.partner_shipping_id"
+                                                        t-value="doc.partner_shipping_id.email_split(doc.partner_shipping_id.email)" />
+                                                    <span style="color:black;font-style:normal;"
+                                                        t-esc="emailstr" />
+                                                </t>
+                                            </t>
+                                        </td>
+
+                                        <!-- State / GSTIN / PAN -->
+                                        <td
+                                            style="width:20%;padding:1px;border:1px solid #143980;font-size:12px;padding-left:6px;">
+                                            <t t-if="doc.partner_shipping_id">
+                                                <b>
+                                                    <span style="color:#143980;">State: </span>
+                                                </b>
+                                                <span style="color:black;">
+                                                    <t t-if="doc.partner_shipping_id.state_id.name"
+                                                        t-esc="doc.partner_shipping_id.state_id.name" />
+                                                </span>
+                                                <br />
+                                                <b>
+                                                    <span style="color:#143980;">State Code:</span>
+                                                </b>
+                                                <span style="color:black;">
+                                                    <span
+                                                        t-if="doc.partner_shipping_id.state_id.l10n_in_tin"
+                                                        t-esc="doc.partner_shipping_id.state_id.l10n_in_tin" />
+                                                </span>
+                                                <br />
+                                                <b>
+                                                    <span style="color:#143980;">GSTIN:</span>
+                                                </b>
+                                                <span style="color:black;">
+                                                    <span t-if="doc.partner_shipping_id.vat"
+                                                        t-esc="doc.partner_shipping_id.vat" />
+                                                </span>
+                                                <br />
+                                                <b>
+                                                    <span style="color:#143980;">PAN:</span>
+                                                </b>
+                                                <span style="color:black;">
+                                                    <span t-if="doc.partner_shipping_id.l10n_in_pan"
+                                                        t-esc="doc.partner_shipping_id.l10n_in_pan" />
+                                                </span>
+                                            </t>
+                                            <t t-elif="doc.y_customer_id">
+                                                <b>
+                                                    <span style="color:#143980;">State: </span>
+                                                </b>
+                                                <span style="color:black;">
+                                                    <t t-if="doc.y_customer_id.state_id.name"
+                                                        t-esc="doc.y_customer_id.state_id.name" />
+                                                </span>
+                                                <br />
+                                                <b>
+                                                    <span style="color:#143980;">State Code:</span>
+                                                </b>
+                                                <span style="color:black;">
+                                                    <span
+                                                        t-if="doc.y_customer_id.state_id.l10n_in_tin"
+                                                        t-esc="doc.y_customer_id.state_id.l10n_in_tin" />
+                                                </span>
+                                                <br />
+                                                <b>
+                                                    <span style="color:#143980;">GSTIN:</span>
+                                                </b>
+                                                <span style="color:black;">
+                                                    <span t-if="doc.y_customer_id.vat"
+                                                        t-esc="doc.y_customer_id.vat" />
+                                                </span>
+                                                <br />
+                                                <b>
+                                                    <span style="color:#143980;">PAN:</span>
+                                                </b>
+                                                <span style="color:black;">
+                                                    <span t-if="doc.y_customer_id.l10n_in_pan"
+                                                        t-esc="doc.y_customer_id.l10n_in_pan" />
+                                                </span>
+                                            </t>
+                                        </td>
+
+                                        <!-- Transporter / Vehicle / Dispatch From -->
+                                        <td
+                                            style="width:25%;padding:1px;border:1px solid #143980;font-size:12px;padding-left:6px;vertical-align:top;">
+                                            <span style="color:#143980;">
+                                                <b>Transporter : </b>
+                                            </span>
+                                            <span t-field="doc.y_transporter" />
+                                            <br />
+
+                                            <span style="color:#143980;">
+                                                <b>Vehicle No : </b>
+                                            </span>
+                                            <span t-field="doc.y_vehicle_no" />
+                                            <br />
+                                            <br />
+
+                                            <span style="color:#143980;">
+                                                <b>Dispatch From : </b>
+                                            </span>
+                                            <br />
+
+                                            <strong t-if="doc.y_dispatch_from_id">
+                                                <span t-esc="doc.y_dispatch_from_id.name" />
+                                            </strong>
+                                            <br />
+
+                                            <t t-if="doc.y_dispatch_from_id.street">
+                                                <span t-esc="doc.y_dispatch_from_id.street" />
+                                                <br />
+                                            </t>
+
+                                            <t t-if="doc.y_dispatch_from_id.street2">
+                                                <span t-esc="doc.y_dispatch_from_id.street2" />
+                                                <br />
+                                            </t>
+
+                                            <t
+                                                t-if="doc.y_dispatch_from_id.city or doc.y_dispatch_from_id.state_id">
+                                                <span t-if="doc.y_dispatch_from_id.city"
+                                                    t-esc="doc.y_dispatch_from_id.city" />
+                                                <t
+                                                    t-if="doc.y_dispatch_from_id.city and doc.y_dispatch_from_id.state_id">
+                                                    , </t>
+                                                <span t-if="doc.y_dispatch_from_id.state_id"
+                                                    t-esc="doc.y_dispatch_from_id.state_id.name" />
+                                                <t t-if="doc.y_dispatch_from_id.zip"> - <span
+                                                        t-esc="doc.y_dispatch_from_id.zip" /></t>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <!-- ============ ITEM LINES + TOTALS TABLE (7 real columns, matching
+                            every row below) ============ -->
+                            <table class="table"
+                                style="font-size:14px;border:1px solid #143980;border-top:none;width:100%;margin-bottom:0;color:#143980;table-layout:fixed;">
+                                <colgroup>
+                                    <col style="width:5%;" />
+                                    <col style="width:23%;" />
+                                    <col style="width:10%;" />
+                                    <col style="width:12%;" />
+                                    <col style="width:8%;" />
+                                    <col style="width:14%;" />
+                                    <col style="width:28%;" />
+                                </colgroup>
+                                <thead>
+                                    <tr style="color:#143980;font-size:12px;">
+                                        <th class="text-center"
+                                            style="padding:1px;border:1px solid;color:#143980">
+                                            <strong>Sl No</strong>
+                                        </th>
+                                        <th class="text-center"
+                                            style="padding:1px;border:1px solid;color:#143980">
+                                            <strong>Description of Goods / Services</strong>
+                                        </th>
+                                        <th class="text-center"
+                                            style="padding:1px;border:1px solid;color:#143980">
+                                            <strong>HSN Code</strong>
+                                        </th>
+                                        <th class="text-center"
+                                            style="padding:1px;border:1px solid;color:#143980">
+                                            <strong>Quantity</strong>
+                                        </th>
+                                        <th class="text-center"
+                                            style="padding:1px;border:1px solid;color:#143980">
+                                            <strong>UOM</strong>
+                                        </th>
+                                        <th class="text-center"
+                                            style="padding:1px;border:1px solid;color:#143980">
+                                            <strong>Price/Unit&#160;(&#8377;)</strong>
+                                        </th>
+                                        <th class="text-center"
+                                            style="padding:1px;border:1px solid;color:#143980">
+                                            <strong>Amount&#160;(&#8377;)</strong>
+                                        </th>
+                                    </tr>
+                                </thead>
+
+                                <tbody
+                                    style="width:100%;border:1px solid #143980;color:black;border-bottom:none !important;font-size:12px;">
+                                    <t t-set="i" t-value="1" />
+                                    <t t-foreach="doc.equipment_request_line_ids" t-as="line">
+                                        <t
+                                            t-if="line.display_type == 'line_section' or line.display_type == 'line_note'">
+                                            <tr>
+                                                <td colspan="7"
+                                                    style="border:1px solid #143980;border-bottom:none !important;">
+                                                    <span t-field="line.name" />
+                                                </td>
+                                            </tr>
+                                        </t>
+                                        <t t-else="">
+                                            <t t-set="equip" t-value="line.y_child_equipment_id if line.y_child_equipment_id else line.equipment_id"/>
+                                            <tr>
+                                                <td class="text-center" style="border:1px solid #143980;border-bottom:none !important;">
+                                                    <span t-esc="i"/>
+                                                    <t t-set="i" t-value="i+1"/>
+                                                </td>
+                                                <td class="text-left" style="border:1px solid #143980;border-bottom:none !important;">
+                                                    <span t-if="equip" t-field="equip.display_name"/>
+                                                </td>
+                                                <td class="text-center" style="border:1px solid #143980;border-bottom:none !important;">
+                                                    <span t-if="equip" t-field="equip.y_hsn_code"/>
+                                                </td>
+                                                <td class="text-center" style="border:1px solid #143980;border-bottom:none !important;">
+                                                    <span t-field="line.quantity"/>
+                                                </td>
+                                                <td class="text-center" style="border:1px solid #143980;border-bottom:none !important;">
+                                                    <span t-if="equip" t-field="equip.y_uom_id"/>
+                                                </td>
+                                                <td class="text-center" style="border:1px solid #143980;border-bottom:none !important;">
+                                                    <span t-if="equip" t-field="equip.y_cost" t-options="{'widget': 'float', 'precision': 2}"/>
+                                                </td>
+                                                <td class="text-center" style="border:1px solid #143980;border-bottom:none !important;text-align:right">
+                                                    <t t-esc="line.quantity * equip.y_cost" t-options="{'widget': 'float', 'precision': 2}"/>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </t>
+                                </tbody>
+
+                                <tbody style="width:100%;border:1px solid #143980;">
+                                    <t t-set="tot_amt" t-value="0" />
+                                    <tr style="height:3px !important;">
+                                        <th colspan="6" class="text-right"
+                                            style="padding:1px;border:1px solid #143980;border-top:1px solid #143980;font-size:12px;text-align:right">
+                                            <strong>
+                                                <span style="color:#143980;text-align:right">Total
+                                                    Value of Goods/Services:</span>
+                                            </strong>
+                                        </th>
+                                        <th colspan="1" class="text-center"
+                                            style="padding:1px;border:1px solid;text-align:center;color:#143980;">
+
+                                            <t t-foreach="doc.equipment_request_line_ids"
+                                                t-as="line">
+                                                <t t-set="equip"
+                                                    t-value="line.y_child_equipment_id if line.y_child_equipment_id else line.equipment_id" />
+                                                <t t-set="tot_amt"
+                                                    t-value="tot_amt + equip.y_cost * line.quantity" />
+                                            </t>
+                                            <span t-if="tot_amt" t-esc="tot_amt"
+                                                t-options="{'widget': 'float', 'precision': 2}" />
+
+                                        </th>
+                                    </tr>
+                                    <tr style="height:3px !important;">
+                                        <td colspan="7" class="text-left"
+                                            style="padding:1px;border:1px solid #143980;font-size:12px;">
+                                            <strong style="color:#143980;font-size:12px;">Challan
+                                                Total in Words: </strong>
+
+                                            <span style="color:black;text-transform:uppercase">
+                                                <t t-set="amountwords"
+                                                    t-value="doc.amt_in_words_do(tot_amt)" />
+                                                <span t-if="amountwords" t-esc="amountwords" />
+                                            </span>
+
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="5" class="text-left"
+                                            style="padding:1px;border:1px solid #143980;height:80px;font-size:12px;">
+                                            <u>
+                                                <strong style="color:#143980;">Remarks:</strong>
+                                            </u>
+                                            <br />
+                                            <span t-field="doc.y_remarks" />
+                                        </td>
+                                        <td colspan="2" class="text-center"
+                                            style="border:1px solid #143980;color:#143980;">
+                                            <span style="font-weight:700">for <strong
+                                                    t-if="doc.company_id"
+                                                    t-esc="doc.company_id.name" /></span>
+                                            <div style="padding:25px" />
+                                            <span style="color:#143980;">Authorized Signatory</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

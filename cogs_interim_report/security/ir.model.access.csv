@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_cogs_interim_report_user,cogs.interim.report user,cogs_interim_report.model_cogs_interim_report,,1,1,1,1

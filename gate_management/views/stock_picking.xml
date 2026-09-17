@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>  
+    <record model="ir.ui.view" id="view_picking_form_gate_management">
+        <field name="name">stock.picking.form.gate.management</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <field name="group_id" position="after">
+                <field name="y_stock_gate_management_ids" domain="[('id','=',y_gate_management_ids)]"
+                  options="{'no_create': True, 'no_create_edit':True}" widget="many2many_tags"/>
+                <field name="y_gate_management_ids" invisible="1"  widget="many2many_tags"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>

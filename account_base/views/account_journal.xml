@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_move_form_account_cash_rounding_form_customization" model="ir.ui.view">
+            <field name="name">account.cash.rounding.form customization</field>
+            <field name="model">account.cash.rounding</field>
+            <field name="inherit_id" ref="account.rounding_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='profit_account_id']" position="after">
+                    <field name="y_is_default_round_off" widget="boolean_toggle"/>
+                </xpath>
+            </field>
+    </record>
+
+    <record id="view_invoice_amount_residual_tree" model="ir.ui.view">
+        <field name="name">account.journal.amount.residual.view.form</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_invoice_tree"/>
+        <field name="arch" type="xml">
+            <field name="amount_residual_signed" position="after">
+                <field name="amount_residual" string="Amount Due in Currency" optional="show"/>
+            </field>
+            <field name="invoice_date_due" position="after">
+                <field name="invoice_date_due" optional="show" string="Date of Due" invisible="payment_state in ('paid', 'in_payment', 'reversed') or state == 'cancel'"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="account_invoice_report_view_residual_tree" model="ir.ui.view">
+        <field name="name">account.journal.amount.residual.view.form</field>
+        <field name="model">account.invoice.report</field>
+        <field name="inherit_id" ref="account.account_invoice_report_view_tree"/>
+        <field name="arch" type="xml">
+            <field name="price_total" position="after">
+                <field name="y_amount_residual" optional="show" sum="Amount Due"/>
+                <field name="y_amount_residual_signed" optional="show" sum="Amount Due"/>
+                <field name="y_weight" optional="hide" sum="Weight"/>
+                <field name="y_total_weight" optional="hide" sum="Total Weight"/>
+            </field>
+        </field>
+    </record>
+
+    
+
+
+    <record id="view_account_journal_form" model="ir.ui.view">
+        <field name="name">account.journal.inherit.view.form</field>
+        <field name="model">account.journal</field>
+        <field name="inherit_id" ref="account.view_account_journal_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='advanced_settings']/group" position="inside">
+                <group>
+                    <field name="y_is_salary_journal" widget="boolean_toggle"/>
+                </group>
+            </xpath>
+            <field name="code" position="after">
+                <field name="y_make_seq_mandetory" invisible="1"/>
+                <field name="y_name_sequence_id" string="Custom Sequence" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"
+                invisible="type not in ['purchase','sale','general']" />
+                <field name="y_refund_sequence_id" string="Custom Refund Sequence" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"
+                invisible="type not in ['purchase','sale']" />
+                <field name="y_recon_sequence_id" string="Reconciliation Sequence" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"
+                invisible="type not in ['bank']" required="y_make_seq_mandetory == True"  />
+                <field name="y_out_sequence_id" string="Outward Sequence" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"
+                invisible="type not in ['cash','bank']" required="y_make_seq_mandetory == True" />
+                <field name="y_in_sequence_id" string="Inward Sequence" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"
+                invisible="type not in ['cash','bank']" required="y_make_seq_mandetory == True" />
+            </field>
+        </field>
+    </record>
+
+    <record id="invoice_form_inherit" model="ir.ui.view">
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form[1]/sheet[1]/group[1]/group[1]/field[@name='ref']" position="attributes">
+                <attribute name="force_save">1</attribute>
+                <attribute name="readonly">state != "draft"</attribute>
+            </xpath>
+            <div name="journal_div" position="after">
+                <field name="y_journal_type" invisible="1"/>
+                <field name="y_payment_type" invisible="y_journal_type not in ['cash','bank']" required="y_journal_type in ['cash','bank'] and origin_payment_id" />
+                <field name="y_is_salary_journal" invisible="1"/>
+            </div>
+            <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='aml_tab']/field[@name='line_ids']/list[1]/field[@name='partner_id']" position="attributes">
+                <attribute name="column_invisible">parent.move_type != 'entry' or parent.y_is_salary_journal</attribute>
+            </xpath>
+            <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='aml_tab']/field[@name='line_ids']/list[1]/field[@name='partner_id']" position="after">
+                <field name="partner_id" optional="show" domain="[('employee_ids', '!=', False),'|', ('parent_id', '=', False), ('is_company', '=', True)]" column_invisible="parent.move_type != 'entry' or not parent.y_is_salary_journal"/>
+            </xpath>
+
+        </field>
+    </record>
+
+    <!-- <record id="view_account_payment_form_reset_to_draft" model="ir.ui.view">
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_draft']" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+        </field>
+    </record> -->
+    
+</odoo>

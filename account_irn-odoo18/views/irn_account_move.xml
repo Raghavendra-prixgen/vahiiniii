@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="irn_account_move_list_view" model="ir.ui.view">
+    <field name="name">List View for Account Move IRN</field>
+    <field name="model">irn.account.move</field>
+    <field name="arch" type="xml">
+      <list>
+        <!-- <field name="Irn" readonly="0"/>
+        <field name="Version" readonly="0"/>
+        <field name="TaxSch" readonly="0"/> -->
+        <field readonly="0" name="SupTyp"/>
+        <field readonly="0" name="Typ"/>
+        <field readonly="0" name="No"/>
+        <field readonly="0" name="Dt"/>
+        <field readonly="0" name="BuyGstin"/>
+        <field readonly="0" name="BuyLglNm"/>
+        <field readonly="0" name="BuyPos"/>
+        <field readonly="0" name="BuyAddr1"/>
+        <field readonly="0" name="BuyAddr2"/>
+        <field readonly="0" name="BuyLoc"/>
+        <field readonly="0" name="BuyPin"/>
+        <field readonly="0" name="BuyStcd"/>
+        <field readonly="0" name="SellGstin"/>
+        <field readonly="0" name="SellLglNm"/>
+        <field readonly="0" name="SellAddr1"/>
+        <field readonly="0" name="SellAddr2"/>
+        <field readonly="0" name="SellLoc"/>
+        <field readonly="0" name="SellPin"/>
+        <field readonly="0" name="SellStcd"/>
+        <field readonly="0" name="ItemList"/>
+        <field readonly="0" name="Assval"/>
+        <field readonly="0" name="CgstVal"/>
+        <field readonly="0" name="SgstVal"/>
+        <field readonly="0" name="IgstVal"/>
+        <field readonly="0" name="RndOffAmt"/>
+        <field readonly="0" name="TotInvVal"/>
+      </list>
+    </field>
+  </record>
+    
+  <record id="irn_account_move_form_view" model="ir.ui.view">
+    <field name="name">Form View for Account Move IRN</field>
+    <field name="model">irn.account.move</field>
+    <field name="arch" type="xml">
+      <form>
+        <header>
+          <button name="generate_irn" type="object" string="Generate IRN" class="oe_highlight"/>
+          <button name="cancel_irn" string="Cancel IRN" type="object" class="oe_highlight"/>
+          <button name="generate_json" type="object" string="Generate JSON" class="oe_highlight"/>
+          <field name="download_json_data"/>
+        </header>
+        <sheet>
+          <div class="oe_title">
+              <label class="oe_edit_only" for="Irn" string="Invoice Reference Number"/>
+              <h1><field readonly="0" name="Irn" placeholder="Invoice Reference Number"/></h1>
+              <field name="upload_json_data"/>
+          </div>
+          <group>
+            <group>
+              <field readonly="0" name="Version"/>
+              <field readonly="0" name="TaxSch"/>
+              <field readonly="0" name="SupTyp"/>
+              <field readonly="0" name="Typ"/>
+              <field readonly="0" name="No"/>
+              <field readonly="0" name="Dt"/>
+            </group>
+            <group>
+              <field readonly="0" name="Assval"/>
+              <field readonly="0" name="CgstVal"/>
+              <field readonly="0" name="SgstVal"/>
+              <field readonly="0" name="IgstVal"/>
+              <field readonly="0" name="Discount"/>
+              <field readonly="0" name="RndOffAmt"/>
+              <field readonly="0" name="TotInvVal"/>
+            </group>
+            <group>
+              <field readonly="0" name="owner_id"/>
+              <field readonly="0" name="SellGstin"/>
+              <field readonly="0" name="SellLglNm"/>
+              <field readonly="0" name="SellAddr1"/>
+              <field readonly="0" name="SellAddr2"/>
+              <field readonly="0" name="SellLoc"/>
+              <field readonly="0" name="SellPin"/>
+              <field readonly="0" name="SellStcd"/>
+            </group>
+            <group>
+              <field readonly="0" name="BuyGstin"/>
+              <field readonly="0" name="BuyLglNm"/>
+              <field readonly="0" name="BuyPos"/>
+              <field readonly="0" name="BuyAddr1"/>
+              <field readonly="0" name="BuyAddr2"/>
+              <field readonly="0" name="BuyLoc"/>
+              <field readonly="0" name="BuyPin"/>
+              <field readonly="0" name="BuyStcd"/>
+            </group>
+            <field readonly="0" name="ItemList">
+              <list>
+                <field readonly="0" name="SlNo"/>
+                <field readonly="0" name="IsServc"/>
+                <field readonly="0" name="PrdDesc"/>
+                <field readonly="0" name="HsnCd"/>
+                <field readonly="0" name="Qty"/>
+                <field readonly="0" name="Unit"/>
+                <field readonly="0" name="UnitPrice"/>
+                <field readonly="0" name="TotAmt"/>
+                <field readonly="0" name="AssAmt"/>
+                <field readonly="0" name="GstRt"/>
+                <field readonly="0" name="IgstAmt"/>
+                <field readonly="0" name="CgstAmt"/>
+                <field readonly="0" name="SgstAmt"/>
+                <field readonly="0" name="TotItemVal"/>
+              </list>
+            </field>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <record id="irn_account_move_graph" model="ir.ui.view">
+    <field name="name">irn.account.move.graph</field>
+    <field name="model">irn.account.move</field>
+    <field name="arch" type="xml">
+      <graph string="IRNs">
+        <field name="SupTyp"/>
+        <field name="Typ"/>
+        <!-- <field name="No"/> -->
+        <field name="Dt"/>
+        <field name="Assval" type="measure"/>
+        <field name="CgstVal" type="measure"/>
+        <field name="SgstVal" type="measure"/>
+        <field name="IgstVal" type="measure"/>
+        <field name="Discount" type="measure"/>
+        <field name="RndOffAmt" type="measure"/>
+        <field name="TotInvVal" type="measure"/>
+      </graph>
+    </field>
+  </record>
+
+  <record id="irn_account_move_action" model="ir.actions.act_window">
+      <field name="name">E-Invoice Cockpit</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">irn.account.move</field>
+      <field name="view_mode">list,form,pivot,graph</field>
+  </record>
+
+  <menuitem id="irn_account_move_menu" name="IRN Menu" action="irn_account_move_action" parent="account.menu_finance_entries" sequence="5"/>
+
+  <record id="ir_action_bulk_json" model="ir.actions.server">
+      <field name="name">Generate Json</field>
+      <field name="type">ir.actions.server</field>
+      <field name="model_id" ref="model_irn_account_move"/>
+      <field name="state">code</field>
+      <field name="code">
+          if records:
+            action = records.generate_payload()
+      </field>
+      <field name="binding_model_id" ref="model_irn_account_move"/>
+  </record>
+</odoo>

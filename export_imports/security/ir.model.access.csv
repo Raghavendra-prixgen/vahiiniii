@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_packaging_list,packaging.list,model_packaging_list,,1,1,1,1
+access_container_type,container.type,model_container_type,,1,1,1,1
+access_packaging_list_line,packaging.list.line,model_packaging_list_line,,1,1,1,1

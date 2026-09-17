@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+
+    <t t-name="AnalyticDistributionPopupInherit" t-inherit="analytic.AnalyticDistributionPopup" t-inherit-mode="extension" owl="1">
+        <xpath expr="//td[hasclass('o_analytic_percentage')]" position="before">
+        <!-- <xpath expr="//t[@t-foreach='invoices']/tr/td[hasclass('tx_status')]" position="replace"> -->
+            <!-- <td class="o_analytic_percentage">
+                <input
+                    class="o_input"
+                    inputmode="numeric"
+                    type="text"
+                    t-att-value="dist_tag.percentage_amount"
+                    t-on-click.stop=""
+                    t-on-change="(ev) => this.percentageAmountChanged(dist_tag, ev)"/>
+            </td> -->
+            <td class="o_analytic_percentage">
+                <input
+                    class="o_input"
+                    inputmode="numeric"
+                    type="number"
+                    value="dist_tag.percentage_amount"
+                    t-on-click.stop=""
+                    t-on-change="(ev) => this.percentageChanged(dist_tag, ev)"/>
+            </td>
+        </xpath>
+
+    </t>
+
+</templates>

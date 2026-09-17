@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_concession_code,concession.code,model_concession_code,,1,1,1,1
+access_tds_master,tds.master,model_tds_master,,1,1,1,1
+access_tds.lines,tds.lines,model_tds_lines,,1,1,1,1
+access_tds_section,tds.section,model_tds_section,,1,1,1,1
+access_nature_of_deduction,nature.of.deduction,model_nature_of_deduction,,1,1,1,1
+access_tds_payment,tds.payment,model_tds_payment,,1,1,1,1
+access_tds_payment_line,tds.payment.line,model_tds_payment_line,,1,1,1,1
+access_tax_code_user,tax.code.user,model_tax_code,,1,1,1,1

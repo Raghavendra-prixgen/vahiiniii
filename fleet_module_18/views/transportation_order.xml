@@ -1,0 +1,638 @@
+<odoo>
+
+    <record id="stock_picking_action_server"
+        model="ir.actions.server">
+        <field name="name">Vehicle Indent</field>
+        <field name="model_id" ref="model_stock_picking"/>
+        <field name="binding_model_id" ref="model_stock_picking"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="code">
+            if records:
+            action = records.action_create_vehicle_intent()
+        </field>
+    </record>
+    
+    <record id="ir_form_transportation_order" model="ir.actions.server">
+        <field name="name">Create Purchase Order</field>
+        <field name="model_id" ref="model_transportation_order" />
+        <field name="binding_model_id" ref="model_transportation_order" />
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="code">
+            if records:
+            action = records.create_purchase_order()
+        </field>
+    </record>
+
+    <record id="ir_form_transportation_order_get_vehicle_indent"
+        model="ir.actions.server">
+        <field name="name">Get Vehicle Indent</field>
+        <field name="model_id" ref="model_transportation_order" />
+        <field name="binding_model_id" ref="model_transportation_order" />
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="code">
+            if records:
+            action = records.get_vehicle_indent()
+        </field>
+    </record>
+
+    <record id="ir_form_get_picking_detailss"
+        model="ir.actions.server">
+        <field name="name">Get Pickings</field>
+        <field name="model_id" ref="model_transportation_order" />
+        <field name="binding_model_id" ref="model_transportation_order" />
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="code">
+            if records:
+            action = records.get_picking()
+        </field>
+    </record>
+
+    <record id="view_stock_picking_fleet_tree" model="ir.ui.view">
+        <field name="name">stock.picking.list</field>
+        <field name="model">stock.picking</field>
+        <field name="arch" type="xml">
+            <list string="Pickings">
+                <header>
+                    <button name="create_fleet_indent_lines" string="Create Indent Lines" type="object" class="oe_highlight"/>
+                </header>
+                <field name="name"/>
+                <field name="location_id"/>
+                <field name="location_dest_id"/>
+                <field name="origin"/>
+                <field name="company_id"/>   
+            </list>
+        </field>
+    </record>
+
+    <record id="view_stock_picking_trasnaportation_order_tree" model="ir.ui.view">
+        <field name="name">stock.picking.list</field>
+        <field name="model">stock.picking</field>
+        <field name="arch" type="xml">
+            <list string="Pickings">
+                <header>
+                    <button name="create_transportation_order_lines" string="Create Transportation Order" type="object" class="oe_highlight"/>
+                </header>
+                <field name="name"/>
+                <field name="location_id"/>
+                <field name="location_dest_id"/>
+                <field name="origin"/>   
+                <field name="company_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="stock_picking_tree_transportation_order" model="ir.ui.view">
+        <field name="name">stock_picking_inherit_transportation_order_tree</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.vpicktree"/>
+        <field name="arch" type="xml">
+            <field name="state" position="before">
+                <field name="y_overall_status" widget="badge"/>         
+            </field>
+        </field>
+    </record>
+
+    <record id="stock_picking_form_transportation_order" model="ir.ui.view">
+        <field name="name">stock_picking_inherit_transportation_order</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <field name="carrier_id" position="after">
+                <field name="y_vehicle_type" readonly="state in ('done','cancel') or y_transportation_order_id != False"/>
+                <field name="y_transportation_order_id" readonly="1"/>
+                <field name="y_vehicle_number" readonly="y_vehicle_type != 'cust_ven' or state in ('done','cancel')" force_save="1"/>
+                <field name="y_overall_status" readonly="y_vehicle_type != 'cust_ven' or state in ('done','cancel')" force_save="1"/>
+                <field name="y_lr_date" readonly="y_vehicle_type != 'cust_ven' or state in ('done','cancel')" force_save="1"/>
+                <field name="y_lr_number" readonly="y_vehicle_type != 'cust_ven' or state in ('done','cancel')" force_save="1"/>
+                <field name="y_driver_number" readonly="y_vehicle_type != 'cust_ven' or state in ('done','cancel')" force_save="1"/>
+                <field name="y_vehicle_intent_number" string="Vehicle Indents" force_save="1" readonly="1"/>                
+            </field>
+            <field name="carrier_tracking_ref" position="attributes">
+                <attribute name="readonly">y_vehicle_type != 'cust_ven' or state in ('done','cancel')</attribute>
+            </field>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_indent" class="oe_stat_button"
+                        type="object" invisible="not y_fleet_indent_line_ids" string="Indent">
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="purchase_order_form_transportation_order" model="ir.ui.view">
+        <field name="name">purchase_order_inherit_transportation_order</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <field name="fiscal_position_id" position="after">
+                <field name="y_transportation_order_id" readonly="1" />
+                <field name="y_lr_date"/>
+                <field name="y_lr_number"/>
+                <field name="y_tender_status"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="sale_order_form_transportation_order" model="ir.ui.view">
+        <field name="name">sale_order_inherit_transportation_order</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='picking_policy']" position="before">
+                <field name="y_transportation_order_id" invisible="1" readonly="1" />
+            </xpath>
+        </field>
+    </record>
+
+     <record id="account_move_form_transportation_order" model="ir.ui.view">
+        <field name="name">account_move_inherit_transportation_order</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath
+                expr="//form[1]/sheet[1]/notebook[1]/page[@name='other_info']/group[1]/group[@name='sale_info_group']/field[@name='delivery_date']"
+                position="after">
+                <field name="y_transportation_order_id"  readonly="1" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_is_transporter_res_partner" model="ir.ui.view">
+      <field name="name">view.venodr.form.transporter</field>
+      <field name="model">res.partner</field>
+      <field name="inherit_id" ref="purchase.view_partner_property_form"/>
+      <field name="arch" type="xml">
+        <field name="property_purchase_currency_id" position="after">
+          <field name="y_is_transporter"/>
+        </field>
+      </field>                   
+    </record>
+
+    <record id="view_fleet_freight_cost_master_tree" model="ir.ui.view">
+        <field name="name">freight.cost.master.list</field>
+        <field name="model">freight.cost.master</field>
+        <field name="arch" type="xml">
+            <list string="Freight Cost">
+                <field name="y_name"/>
+                <field name="y_from_city_id"/>                           
+                <field name="y_to_city_id"/>
+                <field name="y_vehicle_category_id"/>
+                <field name="y_transporter_id"/>
+                <field name="y_via" />   
+                <field name="y_company_id"/>      
+            </list>
+        </field>
+    </record>
+
+    <record id="view_fleet_freight_cost_master_form" model="ir.ui.view">
+        <field name="name">freight.cost.master.form</field>
+        <field name="model">freight.cost.master</field>
+        <field name="arch" type="xml">
+            <form string="Shipment Route">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="y_name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="y_from_city_id" required="1" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <field name="y_to_city_id" required="1" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>    
+                            <field name="y_transporter_id" required="1" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <field name="y_vehicle_category_id" required="1" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <field name="y_via" />
+                            <field name="y_contract_cost_master_id" string="Cost Element"/>
+                        </group>
+                        <group>
+                            <field name="active" widget="boolean_toggle"/>
+                            <field name="y_company_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <field name="y_rate_based" required="1"/>
+                            <field name="y_fixed_cost" invisible="y_rate_based != 'fixed_cost'"/>
+                            <field name="y_cost_per" invisible="y_rate_based == 'fixed_cost'"/>
+                            <field name="y_start_date"/>
+                            <field name="y_end_date"/>                            
+
+                        </group>  
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.rule" id="fleet_freight_cost_master_record_restricted_company_rule">
+        <field name="name">Freight Cost Restricted Record: multi-company</field>
+        <field name="model_id" ref="model_freight_cost_master"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">
+            ['|', ('y_company_id', '=', False), ('y_company_id', 'in', company_ids)]
+        </field>
+    </record>
+
+    <record id="action_freight_cost_master_menu" model="ir.actions.act_window">
+        <field name="name">Freight Cost Master</field>
+        <field name="res_model">freight.cost.master</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to create a new freight cost master.
+            </p>
+        </field> 
+    </record>
+
+    <record id="view_fleet_transportation_order_kanban" model="ir.ui.view">
+        <field name="name">transportation.order.kanban</field>
+        <field name="model">transportation.order</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile">
+                <field name="y_name"/>
+                <field name="y_vehicle_type"/>
+                <field name="y_state"/>
+                <field name="y_shipping_type"/>
+                <field name="y_vehicle_number"/>
+                <field name="y_fleet_id"/>
+                <field name ="y_from_city_id"/>
+                <field name="y_to_city_id"/>
+                <field name="y_planned_end_date"/>
+                <field name="y_purchase_invoice_status" />
+
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_card oe_kanban_global_click">
+                            <div class="row mb4">
+                                <div class="col-6">
+                                    <strong><span><t t-out="record.y_name.value"/></span></strong>
+                                    <div>
+                                        <field name="y_vehicle_number" invisible="y_vehicle_type != 'external'"/>
+                                        <field name="y_fleet_id" invisible="y_vehicle_type not in ('internal','cust_ven')"/><br/>
+                                        <field name="y_from_city_id"/>---><br/>
+                                        <field name="y_to_city_id"/><br/>
+                                        <field name="y_planned_end_date" invisible="y_state != 'posted'"/>
+                                        <div>
+                                        <field name="y_purchase_invoice_status" widget="label_selection" options="{'classes': {'pending_for_po': 'info', 'waiting_for_bill': 'default', 'fully_billed': 'success'}}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6 text-end">
+                                    <field name="y_state" widget="label_selection" options="{'classes': {'draft': 'info', 'planned': 'default', 'posted': 'success'}}"/>
+                                        <t t-if="record.y_state.value == 'In Transit' and record.y_shipping_type.value == 'By Truck'">
+                                            <img height="80" width="100" src="/fleet_module_18/static/src/img/moving_truck2.gif" />
+                                        </t>
+
+                                        <t t-if="record.y_state.value == 'Planned' and record.y_shipping_type.value == 'By Truck'">
+                                            <img height="80" width="100" src="/fleet_module_18/static/src/img/truck.jpg" />
+                                        </t>
+
+                                        <t t-if="record.y_state.value == 'In Transit' and record.y_shipping_type.value == 'By Train'">
+                                            <img height="80" width="100" src="/fleet_module_18/static/src/img/Tarin.gif" />
+                                        </t>
+
+                                        <t t-if="record.y_state.value == 'Planned' and record.y_shipping_type.value == 'By Train'">
+                                            <img height="80" width="100" src="/fleet_module_18/static/src/img/train.jpg" />
+                                        </t>
+                                        <t t-if="record.y_state.value == 'In Transit' and record.y_shipping_type.value == 'By Ship'">
+                                            <img height="80" width="100" src="/fleet_module_18/static/src/img/Cargoship.gif" />
+                                        </t>
+                                        <t t-if="record.y_state.value == 'Planned' and record.y_shipping_type.value == 'By Ship'">
+                                            <img height="80" width="100" src="/fleet_module_18/static/src/img/ship.jpg" />
+                                        </t>
+
+                                        <t t-if="record.y_state.value == 'Planned' and record.y_shipping_type.value == 'By AirPlane'">
+                                            <img height="80" width="100" src="/fleet_module_18/static/src/img/plane.jpg"/>
+                                        </t>
+
+                                        <t t-if="record.y_state.value == 'In Transit' and record.y_shipping_type.value == 'By AirPlane'">
+                                            <img height="80" width="100" src="/fleet_module_18/static/src/img/Plane2.gif"/>
+                                        </t>
+
+                                    </div>
+                                   
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_fleet_transportation_order_form" model="ir.ui.view">
+        <field name="name">transportation.order.form</field>
+        <field name="model">transportation.order</field>
+        <field name="arch" type="xml">
+            <form string="Transportation Order">
+                <header>
+                    <button name="action_process" type="object" width="135px" class="oe_highlight" string="Process" invisible="y_state != 'running'"/>
+                    <button name="action_send_approval" type="object" width="135px" class="oe_highlight" string="Approve" invisible="y_approval_state in ('request_for_approval', 'approved')"/>
+                    <button name="request_approval" type="object" width="135px" class="oe_highlight" string="Request for Approval" invisible="y_approval_state  in ('sent_for_approval', 'approved')" />
+                    <button name="action_shipment_start" type="object" string="Shipment Start" invisible="y_approval_state != 'approved' or y_state != 'planned'"/>
+                    <button name="update_cost_element" type="object" string="Get Freight Cost" invisible="y_tender_status != 'withcontract' or y_vehicle_type != 'external' or y_state != 'draft'"/>
+                    <field name="y_state" widget="statusbar" statusbar_visible="draft,planned,running,posted"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="view_purchase_order" type="object" class="oe_stat_button" icon="fa-bars" invisible="not y_transportation_po_ids">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Purchase Order</span>
+                            </div>
+                        </button>
+                        <button name="view_non_contract_order" invisible="y_tender_status != 'withoutcontract'" type="object" class="oe_stat_button" icon="fa-bars" >
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Non contract orders</span>
+                            </div>
+                        </button>
+                    </div>
+                    <field name="avatar_128" invisible="1"/>
+                    <field name="image_1920" widget="image" class="oe_avatar" options="{&quot;preview_image&quot;: &quot;avatar_128&quot;}"/>
+                    <div class="oe_title">
+                        <h2>
+                            <div class="d-flex">
+                                <field class="text-break" name="y_name" options="{'line_breaks': False}" widget="text" style="padding-left:14px;"/>
+                            </div>
+                        </h2>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="y_vehicle_type" readonly="y_state not in ('draft','planned')"/>
+                            <field name="y_purchase_invoice_status" readonly="1"/>
+                            <field name="y_vehicle_category_id" required="y_vehicle_type != 'cust_ven'" readonly="y_state not in ('draft','planned')" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <label for="y_used_weight_percentage" string="Weight" invisible="not y_vehicle_category_id or not y_vehicle_weight_capacity"/>
+                            <div class="d-flex flex-row gap-4" invisible="not y_vehicle_category_id or not y_vehicle_weight_capacity">
+                                <div class="d-flex flex-row gap-1">
+                                    <field name="y_total_weight"/>
+                                    <span><field name="y_weight_uom_name"/></span>
+                                </div>
+                                <field name="y_used_weight_percentage" widget="progressbar"/>
+                            </div>
+
+                            <field name="y_name" invisible="1"/>
+                            <field name="y_tender_status" invisible="y_vehicle_type in ('cust_ven','internal')" required="y_vehicle_type == 'external'" readonly="y_state not in ('draft','planned')"/>
+                            <field name="y_fwd_agent" invisible="y_vehicle_type == 'cust_ven'" force_save="1" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <field name="y_non_contract_transporter" readonly="1" invisible="y_vehicle_type != 'external' or y_tender_status != 'withoutcontract'"/>
+                            <field name="y_transporter" invisible="y_vehicle_type != 'cust_ven'" readonly="y_state not in ('draft','planned')"/>
+                             <field name="y_from_city_id" required="1" readonly="y_state not in ('draft','planned')" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <field name="y_to_city_id" required="1" readonly="y_state not in ('draft','planned')" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            
+                            <field name="y_fleet_id" invisible="y_vehicle_type not in ('internal',)" readonly="y_state not in ('draft','planned')" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <field name="y_vehicle_number" invisible="y_vehicle_type  in ('internal')" readonly="y_state not in ('draft','planned')"/>
+                            <field name="y_driver_number" widget="phone" readonly="y_state not in ('draft','planned')"/>                           
+                        </group>
+                        <group>
+                            <field name="y_company_id" readonly="0" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <field name="create_date" class="oe_inline" options="{'show_time':False}" string="Create Date"/> 
+                            <field name="y_planned_start_date" readonly="y_state == 'posted'"/>
+                            <field name="y_planned_end_date" readonly="y_state == 'posted'"/>
+                            <field name="y_actual_start_date" readonly="y_state == 'posted'"/>
+                            <field name="y_actual_end_date" readonly="y_state == 'posted'"/>
+                            <field name="y_lr_date" readonly="y_state == 'posted'"/>
+                            <field name="y_lr_number" readonly="y_state == 'posted'"/>
+                            <field name="y_approval_state" invisible="1"/>
+                            <field name="y_shipping_type" readonly="y_state not in ('draft','planned')"/>
+                            <field name="y_via" readonly="y_state not in ('draft','planned')"/>
+                            <field name="y_total_weight" invisible="1"/>
+                            
+                        </group>
+                    </group>
+                <notebook>
+                    <page name="costing" string="Costing" invisible="y_vehicle_type == 'cust_ven'">
+                        <field name="y_transportation_costing_ids" widget="one2many" nolabel="1" readonly="y_state == 'posted'">
+                            <list name="y_transportation_costing_ids" string="Costing" editable="bottom" >
+                                <field name="y_serial_no" width="10px;" readonly="y_is_cost_master_record"/>
+                                <field name="y_transportation_order_id" column_invisible="1"/>
+                                <field name="y_contract_cost_master_id" string="Cost Element" readonly="y_is_cost_master_record"/>
+                                <field name="y_currency_id"/>
+                                <field name="y_cost" string="Amount" readonly="y_is_cost_master_record" sum="y_cost"/>        
+                            </list>
+                        </field>         
+                    </page>
+                    <page name="y_transportation_order_intent_line_ids" string="Indent Lines">
+                        <field name="y_transportation_order_intent_line_ids" widget="one2many" nolabel="1" readonly="y_state == 'posted'">
+                            <list name="y_transportation_order_intent_line_ids" string="Indent Lines" editable="bottom" >
+                                <field name="y_transportation_order_id" column_invisible="1"/> 
+                                <field name="y_fleet_indent_id" domain="[('y_status','=','released')]" readonly="1"/>
+                                <field name="y_picking_id" domain="[('state','=','assigned')]" readonly="1" required="1"/>
+                                <field name="y_lr_number"/>
+                                <field name="y_source_document" optional="show" readonly="1"/>
+                                <field name="y_partner_id" optional="show" readonly="1"/>
+                                <field name="y_scheduled_date" readonly="1"/>
+                                <field name="y_picking_state" optional="show" widget="badge" decoration-danger="y_picking_state=='cancel'" decoration-info="y_picking_state== 'assigned'" decoration-muted="y_picking_state == 'draft'" decoration-success="y_picking_state == 'done'" decoration-warning="y_picking_state not in ('draft','cancel','done','assigned')"/>
+                                <field name="from_city" readonly="1"/>
+                                <field name="to_city" readonly="1"/>
+                                <field name="y_indent_weight" readonly="1" sum="y_indent_weight"/>
+                                <field name="y_pod_document" widget="binary" filename="y_attachment_filename"/>
+                                <field name="y_attachment_date"/>
+                                <field name="y_attachment_filename" column_invisible="1"/>
+                            </list>    
+                        </field>
+                    </page>
+                    <page name="other_info" string="Other Info">
+                        <group>
+                            <group>
+                                <label for="create_uid"/>
+                                <div name="create_uid">
+                                    <field name="create_uid" class="oe_inline"/> On
+                                    <field name="create_date" class="oe_inline" options="{'show_time':False}"/> 
+                                </div>
+                                <label for="write_uid"/>
+                                <div name="write_uid">
+                                    <field name="write_uid" string="Changed By" class="oe_inline"/> On
+                                    <field name="write_date" class="oe_inline" options="{'show_time':False}"/> 
+                                </div>
+                                
+                            </group>
+                        </group>
+                    </page>
+                </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_fleet_transportation_order_search" model="ir.ui.view">
+        <field name="name">transportation.order.search</field>
+        <field name="model">transportation.order</field>
+        <field name="arch" type="xml">
+            <search string="Transporatation Order">
+                <field name="y_name"/>
+                <field name="y_fwd_agent"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_fleet_transportation_order_tree" model="ir.ui.view">
+        <field name="name">transportation.order.list</field>
+        <field name="model">transportation.order</field>
+        <field name="arch" type="xml">
+            <list string="Transporatation Order">
+                <field name="y_name"/>
+                <field name="create_date"/>
+                <field name="y_lr_number"/>
+                <field name="y_shipment_type"/>
+                <field name="y_fwd_agent"/>
+                <field name="y_shipping_type"/>
+                <field name="y_tender_status"/>
+                <field name="y_company_id"/>
+                <field name="y_purchase_order_id"/>
+                <field name="y_sale_order_ids" widget="many2many_tags" optional="hide"/>
+                <field name="y_customer_ids" widget="many2many_tags" optional="hide"/>
+
+                <field name="y_purchase_state"/>
+                <field name="y_purchase_invoice_status"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_non_contract_order_tree" model="ir.ui.view">
+        <field name="name">non.contract.order.list</field>
+        <field name="model">non.contract.order</field>
+        <field name="arch" type="xml">
+            <list string="Non Contract Order">
+                <field name="y_name" readonly="1"/>
+                <field name="y_transportation_order_id" column_invisible="1"/>
+                <field name="y_from_city_id" required="1" readonly="y_approval_state == 'approve'"/>
+                <field name="y_to_city_id" readonly="y_approval_state == 'approve'"/>
+                <field name="y_distance" readonly="y_approval_state == 'approve'"/>
+                <field name="y_concat_transporter"/>
+                <field name="y_contract_cost_master_id" required="1" string="Cost Element" readonly="y_approval_state == 'approve'"/>
+                <field name="y_rate_based" required="1" readonly="y_approval_state == 'approve'"/>
+                <field name="y_base_cost" string="Fixed Cost" force_save="1" readonly="y_rate_based != 'fixed_cost' or y_approval_state == 'approve'"/>
+                <field name="y_rate_by_unit" string="Cost Per" force_save="1" readonly="y_rate_based == 'fixed_cost' or y_approval_state == 'approve'"/>
+                <field name="y_travel_document" widget="binary" filename="y_attachment_filename" optional="hide"/>
+                <field name="y_attachment_filename" column_invisible="1"/>
+                <button string="Approve" name="approve_non_contract_order" type="object" icon="fa-thumbs-up" invisible="y_approval_state != 'pending'"/>
+                <button string="Reject" name="reject_non_contract_order" type="object" icon="fa-times" invisible="y_approval_state != 'pending'"/>
+                <field name= "y_approval_state" widget="badge" decoration-info="y_approval_state == 'pending'" decoration-success="y_approval_state == 'approve'" decoration-warning="y_approval_state == 'rejected'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_fleet_non_contract_order_form" model="ir.ui.view">
+        <field name="name">non.contract.order.form</field>
+        <field name="model">non.contract.order</field>
+        <field name="arch" type="xml">
+            <form string="Non Contract">
+                <header>
+                    <button name="approve_non_contract_order" string="Approve" type="object" class="oe_highlight" invisible="y_approval_state != 'pending'"/>
+                    <button name="reject_non_contract_order" string="Reject" type="object" class="oe_highlight" invisible="y_approval_state != 'pending'"/>
+                    <button name="revoke_non_contract_order" string="Revoke" type="object" class="oe_highlight" invisible="y_approval_state != 'approve'"/>
+                    <field name="y_approval_state" widget="statusbar" statusbar_visible="pending,approve"/>
+                    
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="y_name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="y_from_city_id" readonly="1"/>
+                            <field name="y_to_city_id" readonly="1"/>
+                            <field name="y_contract_cost_master_id" required="1" string="Cost Element" readonly="y_approval_state == 'approve'"/>
+                            <field name="y_distance" readonly="y_approval_state == 'approve'"/>
+                            
+                        </group>
+                        <group>
+                            <field name="y_is_existing_transporter" widget="boolean_toggle"/>
+                            <field name="y_stage_forward_agent_id" required="1" readonly="y_approval_state == 'approve'" string="Transporter" invisible="not y_is_existing_transporter" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <field name="y_transporter" required="1" readonly="y_approval_state == 'approve'" string="Transporter" invisible="y_is_existing_transporter"/>
+
+                            <field name="y_rate_based" required="1" readonly="y_approval_state == 'approve'"/>
+                            <field name="y_base_cost" string="Fixed Cost" force_save="1" readonly="y_approval_state == 'approve'" invisible="y_rate_based != 'fixed_cost'"/>
+                            <field name="y_rate_by_unit" string="Cost Per" force_save="1" readonly="y_approval_state == 'approve'" invisible="y_rate_based == 'fixed_cost'"/>
+                            <field name="y_travel_document" widget="binary" filename="y_attachment_filename" readonly="y_approval_state == 'approve'"/>
+                            <field name="y_attachment_filename" invisible="1"/>
+                        </group>  
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="view_res_state_city_form" model="ir.ui.view">
+        <field name="name">res.state.city.form</field>
+        <field name="model">res.state.city</field>
+        <field name="arch" type="xml">
+            <form string="City">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="y_name" required="1"/>
+                            <field name="y_country_id" required="1" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <field name="y_state_id" domain="[('country_id','=',y_country_id)]" required="1" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <field name="y_locality"/>
+                        </group>
+                        <group>
+                            <field name="latitude" digits="[12,6]"/>
+                            <field name="longitude" digits="[12,6]"/>
+                            <field name="gps_coordinates"/>
+                        </group>            
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_fleet_city_tree" model="ir.ui.view">
+        <field name="name">res.state.city.list</field>
+        <field name="model">res.state.city</field>
+        <field name="arch" type="xml">
+            <list string="City">
+                <field name="y_name"/>
+                <field name="y_country_id"/>
+                <field name="y_state_id" domain="[('country_id','=',y_country_id)]"/>
+                <field name="y_locality"/>
+            </list>
+        </field>
+    </record>
+
+    <record model="ir.rule" id="transportation_order_record_restricted_company_rule">
+        <field name="name">Transportation Order Restricted Record: multi-company</field>
+        <field name="model_id" ref="model_transportation_order"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">
+            ['|', ('y_company_id', '=', False), ('y_company_id', 'in', company_ids)]
+        </field>
+    </record>
+
+
+    <record id="action_fleet_transportation_order" model="ir.actions.act_window">
+        <field name="name">Transportation Order</field>
+        <field name="res_model">transportation.order</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to create a new Transportation Order.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_city_master" model="ir.actions.act_window">
+        <field name="name">City</field>
+        <field name="res_model">res.state.city</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to create a city.
+            </p>
+        </field>
+    </record>
+
+
+    <menuitem id="fleet_vehicle_other_menu"
+                    name="Others"
+                    parent="fleet.fleet_vehicles_configuration"
+                    />
+    <menuitem id="menu_fleet_transportation_order" name="Transportation Order" parent="fleet.menu_root" action="action_fleet_transportation_order" sequence="10"/>
+
+    <menuitem id="fleet_freight_cost_master_menu" name="Freight Cost Master" parent="fleet.fleet_vehicles" action="action_freight_cost_master_menu" sequence="10"/>
+
+    <menuitem id="menu_city_master" name="City" parent="fleet_vehicle_other_menu" action="action_city_master" sequence="10"/>
+
+</odoo>

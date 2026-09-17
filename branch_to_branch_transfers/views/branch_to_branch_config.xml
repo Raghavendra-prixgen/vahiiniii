@@ -1,0 +1,102 @@
+<odoo>
+  <record id="search_branch_to_branch_config_view" model="ir.ui.view">
+    <field name="name">branch.to.branch.transfer.config.search.view</field>
+    <field name="model">branch.to.branch.transfer.config</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="y_name"/>
+        <field name="y_from_warehouse_id"/>
+        <field name="y_to_warehouse_id"/>
+        <field name="y_from_location_id"/>
+        <field name="y_to_location_id" />
+        <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+      </search>  
+    </field>
+  </record>
+
+  <record model="ir.ui.view" id="branch_to_branch_config_form_view">
+    <field name="name">branch.to.branch.transfer.config.form.view</field>
+    <field name="model">branch.to.branch.transfer.config</field>
+    <field name="arch" type="xml">
+      <form>
+      	<sheet>
+
+          <group>
+          	<group>
+              <field name="y_is_same_company" invisible="1"/>
+          		<field name="y_from_warehouse_id" options="{'no_create': True, 'no_create_edit':True}" required="1" domain="[('id','!=',y_to_warehouse_id)]"/>
+              <field name="y_from_location_id" options="{'no_create': True, 'no_create_edit':True}" required="1" domain="[('id','!=',y_to_location_id)]"/>
+              <field name="y_shipment_sequence_id" options="{'no_create': True, 'no_create_edit':True}" required="1"/>
+              <field name="y_branch_sale_account_id" options="{'no_create': True, 'no_create_edit':True}" required="not y_is_same_company"/>
+              <field name="y_branch_sale_journal_id" options="{'no_create': True, 'no_create_edit':True}" required="not y_is_same_company"/>
+              <field name="y_receivable_payable_offset_account_id" options="{'no_create': True, 'no_create_edit':True}" required="not y_is_same_company"/>
+              <field name="y_lanaded_cost_product_id" options="{'no_create': True, 'no_create_edit':True}" invisible="1"/>
+              <field name="y_intranit_account_id" options="{'no_create': True, 'no_create_edit':True}" required="not y_is_same_company"/>
+              
+            </group>
+            <group>
+              <field name="y_to_warehouse_id" options="{'no_create': True, 'no_create_edit':True}" required="1" domain="[('id','!=',y_from_warehouse_id)]"/>
+              <field name="y_to_location_id" options="{'no_create': True, 'no_create_edit':True}" required="1" domain="[('id','!=',y_from_location_id)]"/>
+              <field name="y_receipt_sequence_id" options="{'no_create': True, 'no_create_edit':True}" required="1"/>
+              <field name="y_branch_purchase_account_id" options="{'no_create': True, 'no_create_edit':True}" required="not y_is_same_company"/>
+              <field name="y_branch_purchase_journal_id" options="{'no_create': True, 'no_create_edit':True}" required="not y_is_same_company"/>
+              
+              <field name="y_is_interstate"/>
+            </group>
+            <div >
+            <field name="y_image_icon" widget="image" readonly="1" options="{'size': [650, 650]}"/>
+          </div>
+          </group>
+
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+
+  <record model="ir.ui.view" id="branch_to_branch_config_tree_view">
+    <field name="name">branch.to.branch.transfer.config.list.view</field>
+    <field name="model">branch.to.branch.transfer.config</field>
+    <field name="arch" type="xml">
+      <list>
+    		<field name='y_from_warehouse_id'/>
+    		<field name='y_to_warehouse_id'/>
+        <field name='y_from_location_id'/>
+        <field name='y_to_location_id'/>
+      </list>
+    </field>
+  </record>
+
+  <record model="ir.actions.act_window" id="branch_to_branch_config_action_window">
+    <field name="name">Branch To Branch Transfer Configuration</field>
+    <field name="res_model">branch.to.branch.transfer.config</field>
+    <field name="view_mode">list,form,search</field>
+  </record>
+
+  <menuitem id="branch_to_branch_config_menu" name="Branch To Branch Config." parent="stock.menu_warehouse_config" action="branch_to_branch_config_action_window"/>
+
+  <record model="ir.ui.view" id="btb_stock_warehouse_tree_view">
+    <field name="name">btb.stock.warehouse.list.view</field>
+    <field name="model">btb.stock.warehouse</field>
+    <field name="arch" type="xml">
+      <list editable="bottom">
+        <header>
+          <button name="action_update_warehouse" class="btn-primary" type="object" string="Update" display="always"/>             
+        </header>
+        <field name='y_warehouse_id' options="{'no_create': True, 'no_create_edit':True,'no_open':True}" required="1"/>
+        <field name='y_company_id' options="{'no_create': True, 'no_create_edit':True,'no_open':True}" required="1"/>
+        <field name="active" widget="boolean_toggle" optional="hide"/>
+      </list>
+    </field>
+  </record>
+
+  <record model="ir.actions.act_window" id="btb_stock_warehouse_action_window">
+    <field name="name">Branch To Branch Transfer Warehouse</field>
+    <field name="res_model">btb.stock.warehouse</field>
+    <field name="view_mode">list,form,search</field>
+  </record>
+
+  <menuitem id="btb_stock_warehouse_menu" name="Branch To Branch Warehouse." parent="stock.menu_warehouse_config" action="btb_stock_warehouse_action_window" groups="base.group_system"/>
+
+
+</odoo>

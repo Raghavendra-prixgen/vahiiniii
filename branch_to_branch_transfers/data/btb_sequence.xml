@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="seq_branch_brach_data" model="ir.sequence">
+            <field name="name">Branch To Branch</field>
+            <field name="code">branch.branch.transfer</field>
+            <field name="prefix">BTB</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+    </data>
+</odoo>

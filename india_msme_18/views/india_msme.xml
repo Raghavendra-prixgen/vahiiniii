@@ -1,0 +1,110 @@
+<odoo>
+
+  <record id="custom_contact_local" model="ir.ui.view">
+    <field name="name">Custom Contact</field>
+    <field name="model">res.partner</field>
+    <field name="inherit_id" ref="base.view_partner_form"/>
+    <field name="arch" type="xml">
+      <xpath expr="//sheet" position="before">
+        <div class="alert alert-warning mb-0" role="alert"
+             invisible="not warning_bool">
+             Assign Fiscal position to display the taxes <b></b>.<br/>   
+        </div>
+      </xpath>
+      <field name="name" position="after">
+        <field name="warning_bool" invisible="1"/>    
+      </field>
+      <notebook position="inside">
+        <page string="MSME " name="msme_fields">
+          <field name="msme_ids">
+            <list string="MSME Details" editable="bottom" delete="0" duplicate="0">
+              <field name="y_msme_registered"/>
+              <field name="y_start_date"/>
+              <field name="y_end_date"/>
+              <field name="y_expiry_date" column_invisible="1"/>
+              <field name="y_registration_number"/>
+              <field name="y_msme_type"/>
+              <field name="y_is_aggrement_msme" column_invisible="1"/>
+              <field name="y_monthly_interest_rate"/>
+              <field name="y_msme_reg_date"/>
+              <field name="y_validity_period"/>  
+              <field name="y_validity_days"/>
+              <field name="y_type_of_business"/>
+            </list>
+          </field>              
+        </page>
+      </notebook>
+    </field>
+  </record>
+
+	<record id="india_msme_report_tree_view" model="ir.ui.view">
+    <field name="name">india.msme.account.move</field>
+    <field name="model">account.move</field>
+    <field name="arch" type="xml">
+      <list create="false">          
+        <field name="partner_id" string="Vendor Name"/>
+        <field name="name" />          
+        <field name="y_po" column_invisible="True"/>
+        <field name="y_is_micro_yes_or_no" column_invisible="True"/>
+        <field name="y_registration_number" string="MSME / Udyam Reg No"/>
+        <field name="y_l10n_in_pan" optional="hide"/>
+        <field name="date" readonly="1" string="Acceptance Date"/>
+        <field name="amount_total" string="Vendor Bill Amount"/>
+        <field name="invoice_payment_term_id" string="PO Payment Terms (days)"/>
+        <field name="y_amount_paid_tilldate" string="Amount Paid Till date"/>
+        <field name="y_payed_date" string="Paid date"/>
+        <field name="amount_residual" string="Balance"/>
+        <field name="y_days_from" string="Actual Days"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="india_msme_wiz_view_form" model="ir.ui.view">
+    <field name="name">india.msme.wiz.view.form</field>
+    <field name="model">india.msme.wiz</field>
+    <field name="arch" type="xml">
+      <form string="MSME Report">
+        <sheet>
+          <group>
+            <group>
+              <field name="y_open_date" required="1"/>
+              <field name="y_close_date" required="1"/> 
+            </group>
+          </group>
+          <footer>
+            <button name="action_open_report" type="object" class="oe_highlight" string="Execute"/>
+          </footer>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <record id="view_move_form_inherit_account_move_msme" model="ir.ui.view">
+    <field name="name">account.move.view.form.inherit</field>
+    <field name="model">account.move</field>
+    <field name="inherit_id" ref="account.view_move_form"/>
+    <field name="arch" type="xml">
+      <xpath expr="//group/group//field[@name='date']" position="after">
+        <field name="y_account_date_tooltip" nolabel="0" string="" invisible="move_type not in ['in_invoice'] and partner_id.y_ms"></field>
+      </xpath>
+    </field>
+   </record>
+
+	<record id="msme_india_report" model="ir.actions.act_window">
+    <field name="name">MSME Register</field>
+    <field name="res_model">india.msme.wiz</field>
+    <field name="view_mode">form</field>
+    <field name="target">new</field>
+  </record>
+
+  <!-- <menuitem id="msme_india_menu"
+            name="MSME Report"
+            parent="account.menu_finance_reports"
+            /> -->
+
+  <menuitem id="msme_india_menu_child"
+            name="MSME Register"
+            action="msme_india_report"
+            parent="account_additional_reports.menu_additional_reports" 
+           />
+</odoo>

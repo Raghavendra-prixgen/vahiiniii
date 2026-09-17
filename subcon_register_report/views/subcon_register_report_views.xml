@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- <record id="view_product_form_device_type_warrantysaaa" model="ir.ui.view">
+        <field name="name">view_product_warranty_templateaaa</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form" />
+        <field name="arch" type="xml">
+          <xpath expr="//field[@name='picking_type_id']" position="after">
+            <field name="y_dc_from_vendor" />
+          </xpath>
+        </field>
+      </record> -->
+
+    <record id="subcon_register_tree_view" model="ir.ui.view">
+        <field name="name">subcon.register.report.tree</field>
+        <field name="model">subcon.register.report</field>
+        <field name="arch" type="xml">
+            <list string="Subcontracting Register" create="false" edit="false" delete="false">
+                <button name="action_po"  type="object" class="btn-link" icon="fa-eye" />  
+                <field name="y_po_ref_no"/>
+                <field name="y_po_ref_date"/>
+                <field name="y_vendor_id"/>
+                <field name="y_vendor_gstn"/>
+                <field name="y_warehouse_id"/>
+                <!-- <field name="y_dc_from_vendor"/> -->
+                <field name="y_dc_ref_no"/>
+                <field name="y_dc_validate_date"/>
+                <field name="y_dc_state"/>
+                <field name="y_dc_product_id"/>
+                <field name="y_dc_qty"/>
+                <field name="y_dc_uom_id"/>
+                <field name="y_taxable_value"/>
+                <field name="y_tax_amount"/>
+                <field name="y_tax_ids" widget="many2many_tags"/>
+                <field name="y_tax_names"/>
+                <field name="y_total"/>
+                <field name="y_grn_ref_no"/>
+                <field name="y_grn_validate_date"/>
+                <field name="y_grn_qty"/>
+                <field name="y_grn_uom_id"/>
+                <field name="y_grn_product_id"/>
+                <field name="y_first_dispatch_date"/>
+                <field name="y_grn_done_date"/>
+                <field name="y_due_days"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="subcon_register_report_search_view" model="ir.ui.view">
+      <field name="name">subcon.register.report.search.view</field>
+      <field name="model">subcon.register.report</field>
+      <field name="arch" type="xml">
+        <search string="Subcon Register Report">
+          <field name="y_po_ref_no"/>
+          <field name="y_vendor_id" />
+          <field name="y_dc_ref_no"/>
+          <field name="y_grn_ref_no"/>
+          <group expand="1" string="Group By">
+            <filter name="y_po_ref_no" context="{'group_by':'y_po_ref_no'}" string="PO Reference"/>
+            <filter name="y_vendor_id" context="{'group_by':'y_vendor_id'}" string="Vendor"/>
+            <filter name="y_dc_ref_no" context="{'group_by':'y_dc_ref_no'}" string="DC Reference"/>
+            <filter name="y_grn_ref_no" context="{'group_by':'y_grn_ref_no'}" string="GRN Reference"/>
+          </group>
+        </search>
+      </field>
+    </record>
+
+    <record id="action_subcon_register_report" model="ir.actions.act_window">
+        <field name="name">Subcon Register Report</field>
+        <field name="res_model">subcon.register.report</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="subcon_register_tree_view"/>
+    </record>
+
+    <menuitem id="subcon_register_report_menu" name="Subcon Register"
+              parent="purchase.purchase_report" sequence="140"
+              action="action_subcon_register_report" />
+            
+              
+</odoo>

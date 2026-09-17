@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+    
+        <record id="account_move_view_form_inherit_l10n_in_withholding_tds_entry" model="ir.ui.view">
+            <field name="name">account.move.tds.entry</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="l10n_in_withholding.account_move_view_form_inherit_l10n_in_withholding"/>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='%(l10n_in_withholding.l10n_in_withholding_entry_form_action)d']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+            </field>
+        </record>
+        
+    </data>
+</odoo>        

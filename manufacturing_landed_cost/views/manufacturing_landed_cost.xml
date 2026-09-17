@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="mrp_workcenter_landedcost_account_form" model="ir.ui.view">
+        <field name="name">mrp.workcenter.account.form</field>
+        <field name="model">mrp.workcenter</field>
+        <field name="inherit_id" ref="mrp.mrp_workcenter_view"/>
+        <field name="arch" type="xml">
+            <notebook position="inside">
+                <page string="Landed Cost" name="y_workcenter_landed_cost_lines_ids" >
+                    <field name="y_workcenter_landed_cost_lines_ids" widget="section_and_note_one2many" >
+                        <list string="Landed Cost" editable="bottom">
+                            <field name='y_workcenter_id' column_invisible="1" string="Work Center"/>
+                            <field name='y_product_id' domain="[('type', '=', 'service'),('landed_cost_ok', '=', True)]"  options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <field name="y_mrp_product_id" domain="[('type', '=', 'consu'),('is_storable', '=', True)]" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <field name="y_standard_weight"/>
+                            <field name="y_cost_per_weight" readonly="y_method_type != 'qty'"/>
+                            <field name="y_product_weight_in_lbs" readonly="1"/>
+                            <field name="y_company_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <field name='y_method_type' required="1"/>
+                            <field name='y_cost_per_hr' />
+                        </list>
+                    </field>
+                </page>
+            </notebook>
+        </field>
+    </record>
+    
+</odoo>

@@ -1,0 +1,13 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_ax_access_model_admin,ax.access.model admin,model_ax_access_model,base.group_system,1,1,1,1
+access_allowed_ips,access.allowed.ips,model_allowed_ips,centralized_access_management.group_access_user,0,0,0,0
+access_allowed_ips,access.allowed.ips,model_allowed_ips,centralized_access_management.group_access_manager,1,1,1,1
+
+access_unauthorized_access_log,access.unauthorized.access.log.model,model_unauthorized_access_log,centralized_access_management.group_access_user,0,0,0,0
+access_unauthorized_access_log,access.unauthorized.access.log.model,model_unauthorized_access_log,centralized_access_management.group_access_manager,1,1,1,1
+access_button_model_user,access.button.model.user,model_button_model,base.group_user,1,1,1,1
+access_custom_model_action,access.custom.model.action,model_custom_model_action,base.group_user,1,1,1,0
+access_button_action_model,access.button.action.model,model_button_action_model,base.group_user,1,1,1,0
+access_ax_hidden_tab_user,access.ax.hidden.tab.user,model_ax_hidden_tab,base.group_user,1,1,1,1
+access_tab_action_model_user,access.ax.tab.action.user,model_tab_action_model,base.group_user,1,1,1,1
+access_model_domain_rule_user,access.access.model.domain.rule.user,model_access_model_domain_rule,base.group_user,1,1,1,1

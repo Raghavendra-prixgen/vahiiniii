@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="product_category_form_view_release_desc" model="ir.ui.view">
+          <field name="name">product_category_form_view_release_desc</field>
+          <field name="model">product.category</field>
+          <field name="inherit_id" ref="product.product_category_form_view"/>
+          <field name="arch" type="xml">
+            <field name="parent_id" position="before">
+              <field name="y_description"/>
+            </field>
+            <field name="parent_id" position="after">
+              <field name="y_release" widget="boolean_toggle"/>
+            </field>
+          </field>
+         </record>
+
+       <!--  <record id="view_template_property_form_tracking_storable" model="ir.ui.view">
+          <field name="name">product.template.form.tracing.readonly</field>
+          <field name="model">product.template</field>
+          <field name="inherit_id" ref="stock.view_template_property_form"/>
+          <field name="arch" type="xml">
+            <field name="is_storable" position="attributes">
+              <attribute name="force_save">1</attribute>
+              <attribute name="readonly">y_is_storable_readonly</attribute>
+            </field>
+            <field name="tracking" position="attributes">
+              <attribute name="force_save">1</attribute>
+              <attribute name="readonly">y_is_storable_readonly</attribute>
+            </field>
+          </field>
+         </record>
+
+         <record id="view_template_property_form_tracking" model="ir.ui.view">
+            <field name="name">view.template.property.form.stock.account</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="stock_account.view_template_property_form_stock_account"/>
+            <field name="arch" type="xml">
+                <field name="lot_valuated" position="attributes">
+                  <attribute name="force_save">1</attribute>
+                  <attribute name="readonly">y_is_lot_valuated_readonly</attribute>
+                </field>
+            </field>
+        </record>
+ -->
+        
+
+         <record id="product_category_form_view_inventory_tracking" model="ir.ui.view">
+          <field name="name">product_category_form_view_inventory_tracking</field>
+          <field name="model">product.category</field>
+          <field name="inherit_id" ref="stock.product_category_form_view_inherit"/>
+          <field name="arch" type="xml">
+            <field name="route_ids" position="before">
+              <label for="y_is_storable" class="oe_inline"/>
+              <div class="o_row w-100">
+                  <field name="y_is_storable"/>
+                  <field name="y_tracking" invisible="not y_is_storable" required="1"/>
+              </div>
+              <field name="y_lot_valuated" invisible="y_tracking == 'none'"/>
+
+            </field>
+          </field>
+         </record>
+
+
+
+
+         
+
+         
+    </data>
+</odoo>

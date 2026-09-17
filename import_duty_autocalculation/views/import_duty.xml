@@ -1,0 +1,701 @@
+<odoo>
+  <data>
+
+    <record id="view_stock_landed_cost_boe" model="ir.ui.view">
+      <field name="name">stock.landed.cost.form.boe</field>
+      <field name="model">stock.landed.cost</field>
+      <field name="inherit_id" ref="stock_landed_costs.view_stock_landed_cost_form"/>
+      <field name="arch" type="xml">
+        <field name="account_move_id" position="after">
+          <field name="y_boe_ids" widget="many2many_tags" force_save="1" invisible="not y_boe_ids" readonly="1" />
+        </field>
+      </field>                   
+    </record>
+
+    <record id="view_account_incoterms_tree_editable" model="ir.ui.view">
+      <field name="name">view.account.incoterms.boe</field>
+      <field name="model">account.incoterms</field>
+      <field name="inherit_id" ref="account.view_incoterms_tree"/>
+      <field name="arch" type="xml">
+        <xpath expr="//list" position="attributes">
+                <attribute name="editable" />
+          </xpath>
+      </field>                   
+    </record>
+    <record id="view_boe_required_res_company" model="ir.ui.view">
+      <field name="name">view.company.form.boe</field>
+      <field name="model">res.company</field>
+      <field name="inherit_id" ref="base.view_company_form"/>
+      <field name="arch" type="xml">
+        <field name="currency_id" position="after">
+          <field name="y_is_export_oriented_unit" widget="boolean_toggle"/>
+        </field>
+      </field>                   
+    </record>
+
+
+
+
+    <record id="view_account_incoterms_form_additional" model="ir.ui.view">
+      <field name="name">view.account.incoterms.additional</field>
+      <field name="model">account.incoterms</field>
+      <field name="inherit_id" ref="account.account_incoterms_form"/>
+      <field name="arch" type="xml">
+        <field name="code" position="after">
+          <field name ="y_additional_cost_applied" widget="boolean_toggle"/>
+          <field name="y_included_landed_cost" widget="boolean_toggle"/>
+         
+        </field>
+        <xpath expr="/form/sheet" position="inside">
+           <notebook>
+              <page string="Additional Charges" invisible="not y_additional_cost_applied">
+                <field name="y_additional_incoterms_line_ids"  widget="one2many" invisible="not y_additional_cost_applied">
+                        <list editable="bottom">
+                            <field name="y_product_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"  domain="[('type','=','service'),('landed_cost_ok', '=', True)]"/>
+                            <field name="y_cost" />
+                            
+                           
+                          
+                        </list>
+                </field>
+              </page>
+            </notebook>
+        </xpath>
+
+
+
+
+        
+      </field>                   
+    </record>
+
+
+
+    
+
+
+
+    <record id="view_boe_required_res_partner" model="ir.ui.view">
+      <field name="name">view.venodr.form.boe</field>
+      <field name="model">res.partner</field>
+      <field name="inherit_id" ref="purchase.view_partner_property_form"/>
+      <field name="arch" type="xml">
+        <field name="property_purchase_currency_id" position="after">
+          <field name="y_is_boe"/>
+        </field>
+      </field>                   
+    </record>
+
+
+     <record id="action_delete_move_ids" model="ir.actions.server">
+            <field name="name">Delete Lines</field>
+            <field name="model_id" ref="account.model_account_move"/>
+            <field name="binding_model_id" ref="account.model_account_move"/>
+            <field name="binding_view_types">list</field>
+            <field name="state">code</field>
+            <field name="code">
+                if records:
+                    action = records.delete_move_lines()
+
+                </field>
+        </record>
+
+
+
+
+      <record id="purchase_order_boe_view_form" model="ir.ui.view">
+        <field name="name">purchase.order.form</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+              <field name="y_boe_id" force_save="1" invisible="1"/>
+              <field name="y_is_same_country" invisible="1"/>
+              <field name="y_picking_state" invisible="1"/>
+            </field>
+        </field>
+    </record>
+
+   <!--  <record id="boe_reset_valuesaction_server"
+        model="ir.actions.server">
+        <field name="name">Reset values</field>
+        <field name="model_id" ref="model_boe_template"/>
+        <field name="binding_model_id" ref="model_boe_template"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="code">
+            if records:
+            action = records.reset_value()
+        </field>
+    </record> -->
+
+
+
+
+    <record id="boe_template_details" model="ir.ui.view">
+            <field name="name">BOE template Details</field>
+            <field name="model">boe.template</field>
+            <field name="arch" type="xml">
+              <form string="BOE template">
+                  <header>
+                    <button name="button_confirm" type="object"  string="Validate"  class="btn-primary"
+                     invisible="y_state != 'in_process'"/>
+                    <button name="reset_to_draft" type="object"  string="Reset to Draft"  class="btn-primary" 
+                    invisible="y_state not in ('in_process','confirm')" groups="import_duty_autocalculation.group_reset_to_draft"/>
+                    
+                    <button name="calculate_all" type="object"  string="Calculate All"  class="btn-primary"  invisible="y_state != 'draft'" />
+                  <button name="action_cancel" type="object"  string="Cancel"  class="btn-primary"  invisible="y_state  in ('draft','cancel')" />
+              
+                    <field name="y_state" widget="statusbar" statusbar_visible="draft,in_process,confirm,cancel"/>
+                  </header>
+                  <sheet>
+                     <div class="oe_button_box" name="button_box">
+                        <button type="object" string="Payment" name="view_payment" class="oe_stat_button" icon="fa-pencil-square-o" invisible="not y_payment_id">
+                            
+                        </button>
+                      
+                        <button type="object" string="Down payment" name="view_downpayment" class="oe_stat_button" icon="fa-pencil-square-o" invisible="not y_is_downpayment_generated">
+                            
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        
+                        <h1>
+                            <field name="y_bill_of_entry_code" readonly="1"/>
+                        </h1>
+                    </div> 
+                  <notebook>
+                    <page string="General" name="boe_general">
+                      <group>
+                        <group>
+                          <field name="y_is_execute_all_clicked" invisible="1"/>
+                          <field name="y_payment_id" invisible="1"/>
+                          <field name="y_is_downpayment_generated" invisible="1"/>
+                          <field name="y_purchase_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}" domain="[('state','=','done'),('y_picking_state','=','assigned')]" readonly="y_state != 'draft'"/> 
+                          <field name="y_bill_of_entry_no" required="1" readonly="y_state != 'draft'"/>
+                          <field name="y_bill_of_entry_date" required="1" readonly="y_state != 'draft'"/>
+                          <field name="y_duty_to_pay_vendor_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}" required="not y_duties_exempted" domain="[('id','!=',y_partner_id)]" readonly="y_state != 'draft'"/>       
+
+                          
+                          <field name="y_bill_of_entry_rate" force_save="1"  required="1"  />
+                          <field name="y_purchase_boe_bill_id" invisible="1"/>
+                          <field name="y_invoice_name" required="1"/>
+                          <field name="y_invoice_date" required="1"/>
+                          <field name="y_invoice_value"/>
+                          <field name="y_incoterm_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}" force_save="1" readonly="y_state != 'draft'"/>
+                          <field name="y_additional_cost_applied" invisible="1"/>
+                          <field name="y_purchase_order_ids" force_save="1" invisible="1" widget="many2many_tags"/>
+                          
+                        </group>
+                        <group>
+                          <field name="y_partner_id" force_save="1" readonly="1"/>
+
+                          <field name="y_currency_id" readonly="1" force_save="1"/>
+                         
+                          <field name="y_total_assessable_value"/>
+                          <field name="y_total_assessable_value_lcy"/>
+                          <field name="y_duty_payable" />
+
+                          <field name="y_duties_exempted" readonly="y_state != 'draft'"/>
+                          <field name="y_exim_notification" invisible="not y_duties_exempted" required="y_duties_exempted" readonly="y_state != 'draft'"/>
+                          <field name="y_purchase_order_ids" force_save="1" widget="many2many_tags" readonly="1"/>
+                          <field name="y_picking_ids" force_save="1" readonly="y_state != 'draft'" widget="many2many_tags" domain="[('purchase_id','in',y_purchase_order_ids)]"/>
+
+                        
+                        </group>
+                      </group>
+                    </page>
+                    <page string="Other Info." name="other_info">
+                      <group>
+                        <group>
+                          <field name="y_warehouse_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                          <field name="y_invoice_number" force_save="1" readonly="1"/>
+                          <field name="y_country_orgin_goods_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                          <field name="y_port_loading_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                          <field name="y_port_discharge_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+
+                            
+                          <field name="y_company_id" force_save="1" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                          
+                          
+
+                        </group>
+                      </group>
+
+
+                    </page>
+                  </notebook> 
+                  
+             <notebook>
+              
+                <page string="BOE Lines" name="boe_lines">
+                    <field name="y_boe_template_line_ids" widget="section_and_note_one2many" mode="list" force_save="1" readonly="y_state != 'draft'">
+                      <list string="BOE  Lines" editable="bottom">
+                        <field name="y_purchase_line_id" column_invisible="1"/>
+                        <field name="y_purchase_id" optional="hide" column_invisible="0"/>
+                        <field name="y_product_id"/>
+                        <field name="y_import_duty_structure_id" domain="[('y_active_toggle','=',True)]"/>
+                        <field name="y_duties_exempted" optional="hide"/>
+                        <field name="y_exim_notification" required="y_duties_exempted"/>
+                        <field name="y_is_foc"/>
+                        <field name="y_ordered_quantity" force_save="1" readonly="1" optional="hide"/>
+                        <field name="y_product_qty" sum="Quantity"/>
+                        <field name="y_price_unit" digits="[12, 3]" force_save="1" readonly="not y_is_foc"/>
+                        <field name="y_currency_id" column_invisible="1"/>
+                        <field name="y_price_subtotal" sum="Sub Total"/>
+                        <field name="y_with_service_value_included" sum="Basic Assesable Value"/>
+                        <field name="y_total_calculated_assessable_value" sum="Service Charges as per PO" optional="hide"/>
+                        <field name="y_calculate_value_for_additional" sum="Calculated Assesable Value"/>
+                        <field name="y_miscellaneous_value_for_additional" sum="Calculated Miscellaneous Value" optional="hide"/>
+                        <field name="y_total_assessable_value" sum="Total Assesable Value"/>
+                        <button name="action_show_details" type="object" icon="fa-arrow-circle-right" width="0.1"  options="{&quot;warn&quot;: true}"/>
+                      </list>
+                    </field>
+                  </page>
+
+                  <page string="Import Duty Structure Line" name="import_duty_boe_line_ids">
+                    <field name="y_import_duty_boe_line_ids" widget="section_and_note_one2many" mode="list" readonly="1">
+                      <list string="Import Duty Structure Line" editable="bottom">
+                        <field name="y_import_duty_structure_line_serial_no" readonly="1" width="0"/>
+                        <field name="y_import_duty_structure_master_id"/>
+                        <field name="y_description"/>
+                        <field name="y_duty_type_id" domain="[('type','=','service'),('landed_cost_ok', '=', True)]" optional="hide"/>
+                        <field name="y_taxes_ids" domain="[('type_tax_use','=','purchase')]" widget="many2many_tags" optional="hide"/>
+                        <field name="y_purchase_id"/>
+                        <field name="y_purchase_line_id"/>
+                        <field name="y_assesable_value"/>
+                        <field name="y_duties_exempted" column_invisible="1"/>    
+                      </list>
+                    </field>
+                    <group>
+                      <group>
+                      </group>
+                      <group class="oe_subtotal_footer">
+                        <field name="y_duty_payable" colspan="2" readonly="1"/>
+                      </group>
+                    </group>
+                    <div class="clearfix"/>
+                  </page>
+
+
+                  <page string="Additional Charges" name="additional_quantity_line_ids" invisible="not y_additional_cost_applied" >
+                    <field name="y_additional_quantity_line_ids" widget="section_and_note_one2many" mode="list" readonly="y_state != 'draft'">
+                      <list string="Additional Duties" editable="bottom">
+                        <field name="y_product_id" domain="[('type','=','service'),('landed_cost_ok', '=', True)]"/>
+                        <field name="y_purchase_id" domain="[('id','in',parent.y_purchase_order_ids)]" options="{'no_create': True, 'no_create_edit':True}" required="1"/>
+                        <field name="y_calculated_type"/>
+                        <field name="y_calculated_value" digits="[12,5]"/>
+                        <field name="y_currency_id" required="y_product_id != True"  />
+                        <field name="y_is_diff_country" column_invisible="1"/>
+                        <field name="y_is_duty_payable"/>
+                        <field name="y_currency_excahange_rate"
+                        readonly="0" force_save="1"/>
+                        <field name="y_additional_boe_id" column_invisible="1"/>   
+                      </list>
+                    </field>
+                    
+                  </page>
+
+                  
+
+                  <page string="Miscellaneous Assesable Value" name="miscellaneous_value_line_ids">
+                    <field name="y_miscellaneous_value_line_ids" widget="section_and_note_one2many" mode="list" force_save="1" readonly="y_state != 'draft'">
+                      <list string="Additional Duties" editable="bottom">
+                        <field name="y_product_id" domain="[('type','=','service'),('landed_cost_ok', '=', True)]"/>
+                        <field name="y_purchase_id" domain="[('id','in',parent.y_purchase_order_ids)]" options="{'no_create': True, 'no_create_edit':True}"/>
+                        <field name="y_calculated_type"/>
+                        <field name="y_calculated_value"/>
+                        <field name="y_currency_id" required="y_product_id != True"/>
+                        <field name="y_is_diff_country" column_invisible="1"/>
+                        <field name="y_currency_excahange_rate" 
+                        readonly="not y_is_diff_country"
+                      />
+                        <field name="y_miscellaneous_boe_id" column_invisible="1"/>   
+
+                      </list>
+                    </field>
+                  
+                  </page>
+                  <page string="PO wise Total Assesable Value" name="po_total_accessable_value_line_ids">
+                    <field name="y_po_total_accessable_value_line_ids" widget="section_and_note_one2many" mode="list" force_save="1" readonly="y_state != 'draft'">
+                      <list string="Po Wise Total Assesable Value" editable="bottom">
+                        
+                        <field name="y_boe_template_id" column_invisible="1"/>
+                        <field name="y_purchase_id" />
+                        <field name="y_total_assessable_value"
+                         sum="Total Assessable Value(FCY)(Basic)"/>
+                        <field name="y_total_assessable_value_lcy"
+                         sum="Total Assessable Value(LCY)(Including additional duties)"/>
+                       
+                      </list>
+                    </field>
+                  </page>
+
+
+                  <page string="Other Charges(not included in BOE)" name="y_other_charges_line_ids">
+                    <field name="y_other_charges_line_ids" widget="section_and_note_one2many" mode="list" force_save="1" readonly="y_state != 'draft'">
+                      <list string="Other Charges(not included in BOE)" editable="bottom">
+                        <field name="y_purchase_id" options="{'no_create': True, 'no_create_edit':True}" domain="[('id','in',parent.y_purchase_order_ids)]"/>
+                        <field name="y_product_id" options="{'no_create': True, 'no_create_edit':True}" domain="[('type','=','service'),('landed_cost_ok', '=', True)]"/>
+                        <field name="y_name"/>
+                        <field name="y_amount" sum="Total"/>
+                        <field name="y_currency_id" readonly="1" options="{'no_create': True, 'no_create_edit':True}"/>
+                        <field name="y_boe_template_id" column_invisible="1"/>
+                       
+                      </list>
+                    </field>
+                  
+                  </page>
+                </notebook> 
+
+                
+
+              <notebook>
+                  <page string="Service Imports" name="additional_import_service_ids">
+                    <field name="y_additional_import_service_ids" widget="section_and_note_one2many" mode="list" readonly="y_state != 'draft'" force_save="1">
+                      <list string="Service Imports" editable="bottom">
+                        <field name="y_purchase_id" force_save="1" column_invisible="0"/>
+                        <field name="y_product_id"/>
+                        <field name="y_product_qty" sum="Quantity"/>
+                        <field name="y_price_unit"/>
+                        <field name="y_price_subtotal" sum="Sub Total"/>
+                        <field name="y_with_service_value_included" sum="Basic Assesable Value"/>
+                        <field name="y_addtional_import_service_line_id" column_invisible="1"/>
+                        <field name="y_addtional_import_service_id" column_invisible="1"/>
+                        <field name="y_currency_id" column_invisible="1"/>     
+                      </list>
+                    </field>
+                  </page>
+                </notebook> 
+                </sheet>
+                <chatter/>
+
+                
+              </form>
+            </field>
+        </record>
+
+
+        
+
+
+        <record id="boe_template_details_tree_view" model="ir.ui.view">
+            <field name="name">BOE template Tree Details</field>
+            <field name="model">boe.template</field>
+            <field name="arch" type="xml">
+              <list>
+                  <field name="y_bill_of_entry_code"/>
+                  <field name="y_bill_of_entry_no"/>
+                  <field name="y_bill_of_entry_date" optional="hide"/>
+                  <field name="y_currency_id"/>
+                  <field name="y_bill_of_entry_rate" optional="hide"/>
+                  <field name="y_partner_id"/>
+                  <field name="y_purchase_order_ids" widget="many2many_tags"/>
+                  <field name="y_picking_ids" widget="many2many_tags" optional="hide"/>
+                  <field name="y_warehouse_id"/>
+                  <field name="y_state" optional="show" widget="badge" decoration-success="y_state == 'confirm'"  decoration-info="y_state == 'draft'"/>
+              </list>
+            </field>
+        </record>
+
+    <record id="import_duty_structure_master_form" model="ir.ui.view">
+      <field name="name">Import Duty Structure Master Form</field>
+      <field name="model">import.duty.structure.master</field>
+      <field name="arch" type="xml">
+        <form>
+          <sheet>
+            <group>
+              <group>
+                <field name="y_name" />
+                <field name="y_product_id" options="{'no_create': True, 'no_create_edit':True}"/>
+              </group>
+              <group>
+                <field name="y_description"/>
+                <field name="y_taxes_ids" domain="[('type_tax_use','=','purchase')]" widget="many2many_tags" optional="hide" options="{'no_create': True, 'no_create_edit':True}"/>
+              </group>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <record id="import_duty_structure_form" model="ir.ui.view">
+            <field name="name">Import Duty Structure Form</field>
+            <field name="model">import.duty.structure</field>
+            <field name="arch" type="xml">
+              <form>
+                  <sheet>                    
+                  <group>
+                    <group>
+                  <field name="y_name" />
+                  <field name="y_start_date"/>
+                </group>
+                <group>                                   
+                  <field name="y_company_id"/>
+                  <field name="y_end_date"/> 
+                  <field name="y_active_toggle" widget="boolean_toggle"/>        
+                </group>
+                </group>
+
+                <notebook>
+                <page string="Import Duty Structure Line" name="import_duty_structure_ids">
+                    <field name="y_import_duty_structure_ids" widget="section_and_note_one2many" mode="list" >
+                      <list string="Import Duty Structure Line" editable="bottom">
+                        <field name="y_import_duty_structure_id" column_invisible="1"/>
+                        <field name="y_serial_no" readonly="1" width="0"/>
+                        <field name="y_import_duty_structure_master_id"/>
+                        <field name="y_description"/>
+                        <field name="y_duty_type_id" domain="[('type','=','service'),('landed_cost_ok', '=', True)]" optional="hide"/>
+                        <field name="y_taxes_ids" domain="[('type_tax_use','=','purchase')]" widget="many2many_tags" optional="hide"/>
+                        <field name="y_calculation_type" />
+                        <field name="y_calculated_on"/>
+                        <field name="y_calculated_value"/>
+                        <field name="y_assesable_value" column_invisible="1"/>
+                        <field name="y_base_formula"/>
+                        
+                        <field name="y_product_exp_account_id"/>
+                        
+                      </list>
+                    </field>
+                  </page>
+                </notebook>
+                </sheet>
+                <chatter/>
+
+              </form>
+            </field>
+        </record>
+
+
+        <record id="import_duty_structure_tree" model="ir.ui.view">
+            <field name="name">Import Duty Structure Form</field>
+            <field name="model">import.duty.structure</field>
+            <field name="arch" type="xml">
+              <list>           
+                  <field name="y_name" />
+                  <field name="y_start_date"/>
+                  <field name="y_end_date"/>
+                  <field name="y_company_id"/>
+                  <field name="y_active_toggle" />                                  
+              </list>
+            </field>
+        </record>
+
+        
+
+
+        <record id="boe_template_line_button_form" model="ir.ui.view">
+          <field name="name">Boe Template button Form</field>
+          <field name="model">boe.template.line</field>
+          <field name="arch" type="xml">
+            <form>
+              <sheet> 
+                <button name="button_execute" type="object"  string="Calculate"  class="btn-primary"/> 
+                <group>
+                  <group>
+                    <field name="y_total_assessable_value" readonly="1"/>
+                  </group>
+                </group>       
+                <notebook>
+                  <page string="Import Duty Structure Line" name="import_duty_structure_line_boe_ids">
+                    <field name="y_import_duty_structure_line_boe_ids" widget="section_and_note_one2many" mode="list" readonly="1">
+                      <list string="Import Duty Structure Line" editable="bottom">
+                        <field name="y_boe_import_duty_structure_line_id" column_invisible="1"/>
+                        <field name="y_serial_no" readonly="1" width="0"/>
+                        <field name="y_import_duty_structure_master_id"/>
+                        <field name="y_description"/>
+                        <field name="y_duty_type_id" domain="[('type','=','service'),('landed_cost_ok', '=', True)]" optional="hide"/>
+                        <field name="y_taxes_ids" domain="[('type_tax_use','=','purchase')]" widget="many2many_tags" optional="hide"/>
+                        <field name="y_calculation_type"/>
+                        <field name="y_calculated_on"/>
+                        <field name="y_calculated_value"/>
+                        <field name="y_assesable_value"/>
+                        <field name="y_duties_exempted" column_invisible="1"/>
+                      </list>
+                    </field>
+                    <group>
+                      <group>
+                      </group>
+                      <group class="oe_subtotal_footer">
+                        <field name="y_duty_payable" colspan="2" readonly="1"/>
+                      </group>
+                    </group>
+                    <div class="clearfix"/>
+                  </page>
+
+                  <page string="Additional Quantity" name="addtional_quanitity_boe_line_ids">
+                    <field name="y_addtional_quanitity_boe_line_ids" widget="section_and_note_one2many" mode="list" readonly="1">
+                      <list string="Additional Quantity" editable="bottom">
+                        <field name="y_addtional_quanitity_boe_line_id" column_invisible="1"/>
+                        <field name="y_product_id"/>
+                        <field name="y_sum_value"/>
+                        <field name="y_purchase_id"/>
+                      </list>
+                    </field>
+                  </page>
+
+                  <page string="Service Imports" name="service_import_report_line_ids">
+                    <field name="y_service_import_report_line_ids" widget="section_and_note_one2many" mode="list" readonly="1">
+                      <list string="Service Imports" editable="bottom">
+                        <field name="y_service_boe_line_id" column_invisible="1"/>
+                        <field name="y_product_id"/>
+                        <field name="y_sum_value"/>
+                      </list>
+                    </field>
+                  </page>
+
+                  <page string="Miscellaneous Quantity" name="boe_miscellaneous_value_line_ids">
+                    <field name="y_boe_miscellaneous_value_line_ids" widget="section_and_note_one2many" mode="list" readonly="1">
+                      <list string="Miscellaneous Quantity" editable="bottom">
+                        <field name="y_miscellaneous_value_boe_line_id" column_invisible="1"/>
+                        <field name="y_product_id"/>
+                        <field name="y_sum_value"/>
+                      </list>
+                    </field>
+                  </page>
+
+                  <page string="Other Charges" name="y_boe_other_charger_line_ids">
+                    <field name="y_boe_other_charger_line_ids" widget="section_and_note_one2many" mode="list" readonly="1">
+                      <list string="Other Charges" editable="bottom">
+                        <field name="y_boe_template_line_id" column_invisible="1"/>
+                        <field name="y_product_id"/>
+                        <field name="y_amount"/>
+                      </list>
+                    </field>
+                  </page>
+
+
+                  
+                </notebook>
+                </sheet>               
+              </form>
+            </field>
+        </record>
+
+
+      <record model="ir.ui.view" id="product_template_only_form_view_import_duty">
+          <field name="name">purchase.template.product.duty</field>
+          <field name="model">product.template</field>
+          <field name="inherit_id" ref="product.product_template_only_form_view"/>    
+          <field name="arch" type="xml">
+            <xpath expr="//field[@name='purchase_method']" position="after">
+              <field name="y_import_duty_structure_id" options="{'no_create': True, 'no_create_edit':True}"  domain="['|', ('y_company_id', '=', False), ('y_company_id', '=', allowed_company_ids[0]),('y_active_toggle','=',True)]" />
+                <field name="y_is_insurance_for_idc"  invisible="1"  widget="boolean_toggle"/>
+            </xpath>
+          </field>                   
+      </record>
+
+
+
+
+
+    <record id="stock_picking_boe_view_form" model="ir.ui.view">
+        <field name="name">stock.picking.form</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <!-- <xpath expr="//header" position="inside">
+
+            <button name="importduty_validate" type='object' string="BOE Landed Cost" class="oe_highlight" 
+            invisible="not y_is_boe_done"/>
+
+        </xpath> -->
+        <field name="origin" position="after">
+          <field name="y_is_same_currency" invisible="1"/>
+          <field name="y_boe_template_id" invisible="not y_is_same_currency"  options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+          <field name="y_is_boe_done" invisible="1"/>
+        </field>
+            
+        </field>
+    </record>
+
+    <record id="view_account_move_form_custom_inherit_for_boe" model="ir.ui.view">
+            <field name="name">account.move.form.BOE</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+              <field name="ref" position="after">
+                <field name="y_is_same_currency" invisible="1"/>
+                <field name="y_boe_id" invisible="move_type != 'in_invoice'" readonly="state == 'posted'" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+              </field>  
+            </field>
+    </record>
+
+  <record id="res_config_settings_view_form_boe" model="ir.ui.view">
+            <field name="name">res.config.settings.view.form.inherit.boe</field>
+            <field name="model">res.config.settings</field>
+            <field name="inherit_id" ref="purchase.res_config_settings_view_form_purchase"/>
+            <field name="arch" type="xml">
+              <setting id="manage_purchase_agreements" position="after">
+                    <div class="col-12 col-lg-6 o_setting_box" id="paper_format_setting_boe">
+                        <div class="o_setting_right_pane" id="y_bill_of_entry_sequence_id">
+                            <span class="o_form_label">BOE Sequence</span>
+                           
+                            <div class="text-muted">
+                              Set the sequence format for BOE
+                            </div>
+                            <div class="content-group" id="boe_sequence_id_seq">
+                                <div class="mt16 row">
+                                    <label for="y_bill_of_entry_sequence_id" string="Sequence" class="col-3 col-lg-3 o_light_label"/>
+                                    <field name="y_bill_of_entry_sequence_id" class="oe_inline" required="0" options="{'no_create': True, 'no_create_edit':True}"/>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </setting>
+        
+            </field>
+        </record>
+
+        <record id="boe_dashboard_menu_item" model="ir.actions.act_window">
+            <field name="name">Bill Of Entry</field>
+            <field name="res_model">boe.template</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+       
+        <record id="action_import_duty" model="ir.actions.act_window">
+            <field name="name">Import Duty Structure</field>
+            <field name="res_model">import.duty.structure</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+      
+
+        <!-- Import Duty Structure:multi company rule  -->
+        <record model="ir.rule" id="import_duty_structure_multi_company_rule">
+            <field name="name">Import Duty Structure:multi company rule</field>
+            <field name="model_id" ref="model_import_duty_structure"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">
+                ['|', ('y_company_id', '=', False), ('y_company_id', 'parent_of', company_ids)]
+            </field>
+        </record>
+
+
+
+
+        <menuitem id="boe_dashboard_menu"  parent="purchase.menu_procurement_management" action="boe_dashboard_menu_item" name="Bill Of Entry"/>
+
+        
+
+        <menuitem id="menu_import_duty_structure_roots"
+                name="Exim Configuration"
+                parent="account.menu_finance_configuration"
+                sequence="100"/>
+
+       
+
+        <menuitem id="menu_child_import_duty"
+                name="Import Duty Structure"
+                action="action_import_duty"
+                parent="menu_import_duty_structure_roots"
+                sequence="2"/>
+
+    
+
+
+  </data>
+</odoo>

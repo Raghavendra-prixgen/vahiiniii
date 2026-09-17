@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<record id="sales_discount_form_view" model="ir.ui.view" >
+            <field name="name">Discount form view</field>
+            <field name="model">sale.discount</field>
+            <field name="arch" type="xml">
+                <form string="Discount">
+                    <sheet>
+                        <h1><field name="y_name" placeholder="Discount Name" /></h1>
+                        <group>
+                        	<group>
+                        		<field name="y_discount_type" required="1"/>
+                                <field name="y_company_id" options="{'no_open': True,'no_create': True}"/>
+                        	</group>
+                        	<group>
+                        		<field name="y_account_id" options="{'no_open': True,'no_create': True}"/>
+                        		<field name="y_refund_account_id" options="{'no_open': True,'no_create': True}"/>
+                        	</group>
+                        </group>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="sales_discount_list_view">
+            <field name="name">Discount list view</field>
+            <field name="model">sale.discount</field>
+            <field name="arch" type="xml">
+                <list string="Discount">
+                    <field name="y_name"/>
+                    <field name="y_discount_type"/>
+                    <field name="y_account_id"/>
+                    <field name="y_refund_account_id"/>
+                    <field name="y_company_id"/>
+                </list>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="action_sale_discount">
+            <field name="name">Discount</field>
+            <field name="res_model">sale.discount</field>
+            <field name="view_mode">list,form</field>
+        </record>
+		<menuitem id="menu_sale_discounts" name="Discount" parent="account.account_account_menu" action="action_sale_discount"/>
+	</data>
+</odoo>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="form_view_mrp_routing_workcenter_delete_button" model="ir.ui.view">
+        <field name="name">mrp.routing.workcenter.form.delete.button</field>
+        <field name="model">mrp.routing.workcenter</field>
+        <field name="inherit_id" ref="mrp.mrp_routing_workcenter_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="attributes">
+                <attribute name="delete">0</attribute>
+            </xpath>
+            
+        </field>
+    </record>
+
+    <record id="tree_view_mrp_routing_workcenter_delete_button" model="ir.ui.view">
+        <field name="name">mrp.routing.workcenter.list.delete.button</field>
+        <field name="model">mrp.routing.workcenter</field>
+        <field name="inherit_id" ref="mrp.mrp_routing_workcenter_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="attributes">
+                <attribute name="delete">0</attribute>
+            </xpath>
+            
+        </field>
+    </record>
+
+    <record id="form_view_mrp_workcenter_delete_button" model="ir.ui.view">
+        <field name="name">mrp.workcenter.form.delete.button</field>
+        <field name="model">mrp.workcenter</field>
+        <field name="inherit_id" ref="mrp.mrp_workcenter_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="attributes">
+                <attribute name="delete">0</attribute>
+            </xpath>
+            
+        </field>
+    </record>
+
+    <record id="tree_view_mrp_workcenter_delete_button" model="ir.ui.view">
+        <field name="name">mrp.workcenter.list.delete.button</field>
+        <field name="model">mrp.workcenter</field>
+        <field name="inherit_id" ref="mrp.mrp_workcenter_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="attributes">
+                <attribute name="delete">0</attribute>
+            </xpath>
+            
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+	<record model="ir.ui.view" id="purchase_request_order_department_machine">
+        <field name="name">purchase.request.department.machine.form</field>
+        <field name="model">purchase.request</field>
+        <field name="inherit_id" ref="purchase_base_18.view_purchase_request_form"/>
+        <field name="arch" type="xml">
+            <field name="requested_by" position="after">
+            	<field name="y_department_id" readonly="not is_editable"/>
+            	<field name="y_maintenance_equipment_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}" readonly="not is_editable"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>

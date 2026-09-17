@@ -1,0 +1,40 @@
+<odoo>
+	<data>
+		<record id="stock_move_report_inherit_tree_view" model="ir.ui.view">
+		    <field name="name">stock.move,inherit.new</field>
+		    <field name="model">stock.move</field>
+		    <field name="arch" type="xml">
+		        <list edit="true" create="false" delete="0">  
+		            <field name="raw_material_production_id"/> 
+		            <field name="y_mrp_sale_order_id"/>
+		            <field name="state" invisible="1"/>
+		            <field name="y_stock_product_code" />
+		            <field name="product_id" />
+		            <field name="y_mrp_fg_product_code" />
+		            <field name="y_mrp_fg_product_id" />
+		            <field name="location_dest_id" />
+		            <field name="product_uom_qty" />
+					<!-- reserved_availability field not in odoo 17 .......................................................  -->
+		            <!-- <field name="reserved_availability" string="Qty.Reserved"/> -->
+					<!-- reserved_availability field not in odoo 17 .......................................................  -->
+		            <field name="quantity" string="Qty.Done"/>
+		            <field name="product_uom" />
+		            <field name="y_mrp_due_date" />
+		            <field name="y_remaining_quantity" string="Remaining.Qty"/>
+		        </list>
+		    </field>
+    	</record>
+
+    	<record id="product_template_form_view_stock_move_bom_button" model="ir.ui.view">
+            <field name="name">product.template.stock_move</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="mrp.product_template_form_view_bom_button"/>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='action_used_in_bom']" position="after">          
+                    <button class="oe_stat_button" name="action_stock_move_report" type="object" string="Component Lines" icon="fa-list-alt">
+                    </button>
+                </xpath>
+            </field>
+        </record>
+	</data>
+</odoo>

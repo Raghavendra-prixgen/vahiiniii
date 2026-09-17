@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_ax_access_model_form" model="ir.ui.view">
+        <field name="name">ax.access.model.form</field>
+        <field name="model">ax.access.model</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="disable_develop_mode"/>
+                            <field name="ax_user_ids" widget="many2many_tags"/>
+                            <field name="make_readonly_whole_system"/>
+                        </group>
+
+                        <group>
+                            <field name="create_uid" readonly="1"/>
+                            <field name="create_date" readonly="1"/>
+                            <field name="write_uid" readonly="1"/>
+                            <field name="write_date" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Read-only Models">
+                            <group>
+                                <field name="is_readonly_models"/>
+                                <field name="readonly_model_ids" widget="many2many_tags" invisible="not is_readonly_models"/>
+                            </group>
+                        </page>
+                        <page string="Accessories">
+                            <group>
+                                <field name="hide_chatter"/>
+                                <field name="hide_send_message"/>
+                                <field name="hide_log_note"/>
+                                <field name="hide_schedule_activity"/>
+                                <field name="hide_import"/>
+                                <field name="hide_export"/>
+                            </group>
+                        </page>
+                        <page string="IP Whitelisting">
+                            <field name="allowed_ips">
+                                <list editable="bottom" delete="1">
+                                    <field name="ip_address"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Menu Visibility Control">
+                            <list>
+                                <field name="hide_menu_ids"/>
+                                <field name="is_admin" invisible="1"/>
+                            </list>
+                        </page>
+                        <page string="View Access Control">
+                            <field name="view_ids">
+                                <list>
+                                    <field name="model_id"/>
+                                    <field name="type"/>
+                                    <field name="inherit_id"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Button Access Control">
+                            <field name="button_model_ids">
+                                <list>
+                                    <field name="model_id" required="True"/>
+                                    <field name="button_object_id" required="True"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Field Access Control">
+                            <field name="field_ids"/>
+
+                        </page>
+
+                        <page string="Tab Access Control">
+                            <field name="hide_tab_ids">
+                                <list>
+                                    <field name="model_id" required="True"/>
+                                    <field name="tab_object_id" required="True"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Model Domain Access">
+                            <field name="model_domain_ids">
+                                <list>
+                                    <field name="model_id" required="1"/>
+                                    <field name="ax_domain" string="Domain" widget="domain"/>
+                                    <!--            <field name="domain" widget="domain"/>-->
+                                </list>
+                            </field>
+                        </page>
+
+
+
+                    </notebook>
+                </sheet>
+                <chatter></chatter>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_ax_access_model_list" model="ir.ui.view">
+        <field name="name">ax.access.model.list</field>
+        <field name="model">ax.access.model</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="disable_develop_mode"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_ax_access_model" model="ir.actions.act_window">
+        <field name="name">Access Controls</field>
+        <field name="res_model">ax.access.model</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- <menuitem id="menu_root_ax" name="Access Management" sequence="10"/> -->
+    <menuitem id="menu_ax_access_model" name="Access Controls" parent="base.menu_administration" action="action_ax_access_model" groups="centralized_access_management.group_access_user_cam" sequence="20"/>
+</odoo>

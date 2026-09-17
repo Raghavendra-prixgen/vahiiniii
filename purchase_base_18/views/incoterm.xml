@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_partner_inherit_view_form_incoterm" model="ir.ui.view">
+        <field name="name">res.partner.inherit.view.form.incoterm</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='industry_id']" position="after">
+                <field name="incoterm_id" string="Incoterms :"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="purchase_order_inherit_view_form_incoterm" model="ir.ui.view">
+        <field name="name">purchase.order.inherit.view.form.incoterm</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+          <xpath expr="//page[@name='purchase_delivery_invoice']/group/group/field[@name='incoterm_id']" position="attributes">
+            <attribute name="options">{'no_create': True,'no_edit':True}</attribute>
+         </xpath>
+        </field>
+    </record>
+</odoo>

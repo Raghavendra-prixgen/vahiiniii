@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Paper Format -->
+        <record id="gate_management_report" model="report.paperformat">
+            <field name="name">Gate Management In Report</field>
+            <field name="default" eval="True"/>
+            <field name="format">A4</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">30</field>
+            <field name="margin_bottom">25</field>
+            <field name="margin_left">7</field>
+            <field name="margin_right">7</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">22</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <record id="gate_management_in_id" model="ir.actions.report">
+            <field name="name">Gate Pass</field>
+            <field name="model">gate.management</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">gate_management.gate_management_in_temp</field>
+            <field name="report_file">gate_management.gate_management_in_temp</field>
+            <field name="print_report_name">(object.y_state in ('draft','processed') and 'Gate Management - %s (NTB)' % (object.y_name)) or ' Gate Management  - %s (NTB)' % (object.y_name)</field>
+            <field name="binding_model_id" ref="gate_management.model_gate_management"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="gate_management.gate_management_report"/>
+        </record>
+    
+       
+        <template id="gate_management_in_temp">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-if="not o and doc">
+                        <t t-set="o" t-value="doc"/>
+                    </t>
+                    <t t-if="o and 'company_id' in o">
+                        <t t-set="company" t-value="o.company_id.sudo()"/>
+                    </t>
+                    <t t-if="not o or not 'company_id' in o">
+                        <t t-set="company" t-value="res_company"/>
+                    </t>
+                    <t t-call="gate_management.external_layout_for_headerfooter_gate_management">
+                    <div class="page">
+                    <table class="table" style="width:100%;font-size: 15px;border:1px solid black;font-family: calibri;">
+                        <thead>
+                        <tr>
+                            <td class="text-center" colspan="3" style="font-size:20px;border:1px solid black !important;">
+                                <t t-if="o.y_entry_type == 'in'">
+                                    <Strong><span>Gate INWARD</span></Strong>
+                                </t>
+                                <t t-else="">
+                                    <Strong><span>Gate OUTWARD</span></Strong>
+                                </t>
+                            </td>
+                        </tr>
+                            <tr>
+                                <td colspan="2" style="border:1px solid black !important;color: black;width:50%;">
+                                    <Strong><span>Gate Pass No : </span></Strong><span t-esc="o.y_name"/><br/>
+                                    <!-- <Strong><span>Gate Pass Type:</span></Strong><span t-esc="o.value"/><br/> -->
+                                    <Strong><span>Station From : </span></Strong><span t-esc="o.y_warehouse_id.name"/><br/>
+                                    <Strong><span>Document Date : </span></Strong><span t-esc="o.y_doc_datetime.strftime('%d-%m- %Y')"/><br/>
+                                    <Strong><span>Posted Date : </span></Strong><span t-esc="o.y_post_datetime.strftime('%d-%m-%Y')"/><br/>
+                                </td>
+                                <td  style="border:1px solid black !important;color: black;width:50%;">
+                                    <t t-if="o.y_vehicle_no_id">
+                                    <Strong><span>Internal Vehicle No : </span></Strong><span t-esc="o.y_vehicle_no_id.name"/><br/></t>
+                                    <t t-if="o.y_external_vehicle_no">
+                                        <Strong><span>External Vehicle No : </span></Strong><span t-esc="o.y_external_vehicle_no"/><br/></t>
+                                    <t t-if="o.y_lr_rr_no">
+                                    <Strong><span>LR/RR No : </span></Strong><span t-esc="o.y_lr_rr_no"/><br/></t>
+                                    <t t-if="o.y_lr_rr_date">
+                                    <Strong><span>LR/RR Date : </span></Strong><span t-esc="o.y_lr_rr_date.strftime('%d-%m-%Y')"/><br/></t>
+                                   <Strong><span>Description : </span></Strong><span t-esc="o.y_description"/><br/>
+                                    <Strong><span>Document Time : </span></Strong> <span t-esc="o.y_doc_datetime.strftime('%H:%M:%S')"/><br/>
+                                    <Strong><span>Posting Time:</span></Strong> <span t-esc="o.y_post_datetime.strftime('%H:%M:%S')"/><br/>
+                                </td>
+                            </tr>
+                        </thead>
+                            <thead>
+                                <tr>
+                                    <th class="text-center" style="vertical-align:middle;width:25%">Challan Reference</th>
+                                    <th class="text-center" style="border:1px solid black;vertical-align:middle;width:25%;">Posting Type</th>
+                                    <th class="text-center" style="border:1px solid black;vertical-align:middle;width:50%">Item Description</th>
+                                </tr>
+                            </thead> 
+                           <tbody>
+                                <tr t-foreach="o.y_gate_line" t-as="line">
+                                    <td  class="text-left" style="border:1px solid black;width:25%">
+                                        <span t-field="line.y_challan_no"/>
+                                    </td>
+                                    <td  class="text-left" style="border:1px solid black;width:25%">
+                                        <t t-if="o.y_entry_type == 'in'">
+                                            <span t-field="line.y_gate_id.y_order_type_inward"/>
+                                        </t>
+                                    </td>
+                                    <td  class="text-left" style="border:1px solid black;width:50%">
+                                        <span t-field="line.y_description"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td  colspan="2" style="border:1px solid black;border-right:none !important;width:50%">
+                                    </td>
+                                    <td class="text-center" style="border:1px solid black;border-left:none !important;width:50%">
+                                        <b>Security Name : </b><span t-esc="o.y_username.y_username"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+    </data>
+</odoo>  

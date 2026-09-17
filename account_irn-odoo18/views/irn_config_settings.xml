@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+   
+  
+
+
+<record id="view_company_form_view_form_irn" model="ir.ui.view">
+        <field name="name">res.company.form.inherit.irn</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <notebook position="inside">
+                <page string="IRN Settings">
+                    <group>
+                     <field name="Version"/>
+                        <field name="einv_server"/>
+                        <field name="einv_engine"/>
+                        <field name="einv_gst_src"/>                        
+                        <field name="einv_engine_uname"/>
+                        <field name="einv_engine_pass"/>
+                     </group>
+                    </page>
+            </notebook>
+        </field>
+    </record>
+</odoo>

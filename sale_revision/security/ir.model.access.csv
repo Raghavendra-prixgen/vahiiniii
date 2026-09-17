@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_sale_order_revision,sale.order.revision,model_sale_order_revision,base.group_user,1,0,1,0
+access_sale_order_revision_line,sale.order.revision.line,model_sale_order_revision_line,base.group_user,1,0,1,0
+

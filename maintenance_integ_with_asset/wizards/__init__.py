@@ -1,0 +1,1 @@
+from . import genrate_equipment_wiz

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="sub_equipment_categ_1_tree_view" model="ir.ui.view">
+            <field name="name">sub_equipment_categ_1_tree_view</field>
+            <field name="model">sub.equipment.categ.1</field>
+            <field name="arch" type="xml">
+                <list editable="bottom">
+                    <field name="name" string="Description" required="1"/>
+                    <field name="parent_equipment_categ" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}" required="1"/>
+                </list>
+            </field>
+        </record>
+        <record id="sub_equipment_categ_2_tree_view" model="ir.ui.view">
+            <field name="name">sub_equipment_categ_2_tree_view</field>
+            <field name="model">sub.equipment.categ.2</field>
+            <field name="arch" type="xml">
+                <list editable="bottom">
+                    <field name="name" string="Description" required="1"/>
+                    <field name="parent_sub_equipment_categ_1" options="{'no_create': True, 'no_create_edit':True,'no_open': True}" required="1"/>
+                </list>
+            </field>
+        </record>
+        <record id="sub_equipment_categ_3_tree_view" model="ir.ui.view">
+            <field name="name">sub_equipment_categ_3_tree_view</field>
+            <field name="model">sub.equipment.categ.3</field>
+            <field name="arch" type="xml">
+                <list editable="bottom">
+                    <field name="name" string="Description" required="1"/>
+                    <field name="parent_sub_equipment_categ_2" options="{'no_create': True, 'no_create_edit':True,'no_open': True}" required="1"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="sub_equipment_categ_1_action" model="ir.actions.act_window">
+            <field name="name">Sub-Category 1</field>
+            <field name="res_model">sub.equipment.categ.1</field>
+            <field name="view_mode">list</field>
+        </record>
+        <record id="sub_equipment_categ_2_action" model="ir.actions.act_window">
+            <field name="name">Sub-Category 2</field>
+            <field name="res_model">sub.equipment.categ.2</field>
+            <field name="view_mode">list</field>
+        </record>
+        <record id="sub_equipment_categ_3_action" model="ir.actions.act_window">
+            <field name="name">Sub-Category 3</field>
+            <field name="res_model">sub.equipment.categ.3</field>
+            <field name="view_mode">list</field>
+        </record>
+
+
+        <menuitem id="menu_sub_equipment_categ"
+                    name="Sub Categories"
+                    parent="maintenance.menu_maintenance_configuration"
+                    sequence="2"/>
+
+
+
+        <menuitem id="menu_sub_equipment_categ_1"
+                    name="Sub-Category 1"
+                    action="sub_equipment_categ_1_action"
+                    parent="menu_sub_equipment_categ"
+                    sequence="10"/>
+        
+        <menuitem id="menu_sub_equipment_categ_2"
+                    name="Sub-Category 2"
+                    action="sub_equipment_categ_2_action"
+                    parent="menu_sub_equipment_categ"
+                    sequence="15"/>
+        
+        <menuitem id="menu_sub_equipment_categ_3"
+                    name="Sub-Category 3"
+                    action="sub_equipment_categ_3_action"
+                    parent="menu_sub_equipment_categ"
+                    sequence="20"/>
+
+    </data>
+</odoo>

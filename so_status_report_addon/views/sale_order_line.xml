@@ -1,0 +1,27 @@
+<odoo>
+    <data>
+        <record id="sale_line_tree_view_inherit_1" model="ir.ui.view">
+            <field name="name">sale Order Line Tree</field>
+            <field name="model">sale.order.line</field>
+            <field name="inherit_id" ref="so_status_report.sh_pol_sale_line_tree_view_inherit"/>
+            <field name="arch" type="xml">
+                <field name="y_pending_order_value" position="after">
+                    <field name="y_pending_value_after_discount"/>
+                </field>
+                <field name="customer_lead" position="after">
+                    <field name="y_unit_price_after_discount"/>
+                </field>
+                <field name="price_unit" position="attributes">
+                    <attribute name="column_invisible">1</attribute>
+                </field>
+                <field name="y_pending_order_value" position="attributes">
+                    <attribute name="column_invisible">1</attribute>
+                </field>
+                            
+                
+            </field>
+        </record>
+
+      
+    </data>
+</odoo>

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+    <record id="purchase_order_form_inherit_purchase_revision" model="ir.ui.view">
+        <field name="name">purchase.order.form.inherit</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='button_cancel']" position="after">
+                <button string="Purchase Revision" name="action_revision" type="object" class="oe_highlight" invisible="state in ('purchase','done','cancel')"/>
+            </xpath>
+            <div class="oe_button_box" position="inside">
+                <button name="open_purchase_revision" type="object" class="oe_stat_button" icon="fa-bar-chart" invisible="y_revision_count==0">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_text">Purchase Revision</span>
+                    </div>
+                </button>
+                
+            </div>
+
+            <xpath expr="//field[@name='origin']" position="after">
+                <field name="y_revision_count" readonly="1"></field>
+            </xpath>
+
+            
+
+        </field>
+    </record>
+
+
+    <record id="purchase_order_revision_view_list" model="ir.ui.view">
+        <field name="name">purchase.order.revision.view.list</field>
+        <field name="model">purchase.order.revision</field>
+        <field name="arch" type="xml">
+            <list string="Purchase Order Revision">
+                <field name="y_partner_ref"/>
+                <field name="y_name"/>
+                <field name="y_partner_id"/>
+                <field name="y_user_id" widget="many2one_avatar_user"/>
+                <field name="y_date_order"/>
+                <field name="y_date_planned"/>
+                <field name="y_origin"/>
+                <field name="y_amount_untaxed"  sum="Untaxed" widget="monetary"/>
+                <field name="y_amount_total"  sum="amount" widget="monetary"/>
+            
+            </list>
+        </field>
+    </record>
+
+
+
+    <record id="purchase_order_revision_form" model="ir.ui.view">
+        <field name="name">purchase.order.revision.form</field>
+        <field name="model">purchase.order.revision</field>
+        <field name="arch" type="xml">
+            <form string="Purchase Order Revision" class="o_purchase_order">
+                <header>
+                    <button string="Purchase Revision" name="action_revision" type="object" class="oe_highlight"/>
+                </header>
+            <sheet>
+               
+                <div class="oe_title">
+                    <h1 class="d-flex">
+                        <field name="y_name" readonly="1"/>
+                    </h1>
+                </div>  
+                <group>
+                    <group>
+                        <field name="y_partner_id"/>
+                        <field name="y_partner_ref"/>
+                        
+                    </group>
+                    <group>
+                        <field name="y_date_order"/>
+                        <field name="y_date_planned"/>
+                    </group>
+                </group>
+                <notebook>
+                    <page string="Products" name="products">
+                        <field name="y_purchase_order_revision_line_ids">
+                            <list string="Purchase Order  revision Lines" editable="bottom">
+                                <field name="y_product_id"/>
+                                <field name="y_name"/>
+                                <field name="y_date_planned"/>
+                                <field name="y_product_qty"/>
+                                <field name="y_price_unit"/>
+                                <field name="y_taxes_id" widget="many2many_tags"/>
+                                <field name="y_discount"/>
+                                <field name="y_price_subtotal" widget="monetary"/>
+                                <field name="y_price_total" widget="monetary"/>
+                            </list>
+                           </field>
+                           </page>
+                    <page string="Other Information" name="purchase_delivery_invoice">
+                        <group>
+                            <group name="other_info">
+                                <field name="y_user_id"  widget="many2one_avatar_user"/>
+                                <field name="y_origin"/>
+                            </group>
+                            <group name="invoice_info">
+                                <field name="y_payment_term_id"  options="{'no_create': True}"/>
+                                <field name="y_fiscal_position_id" options="{'no_create': True}" />
+                            </group>
+                        </group>
+                    </page>
+                </notebook>
+                
+            </sheet>
+            
+            </form>
+        </field>
+    </record>
+
+    <record id="purchase_order_revision_action" model="ir.actions.act_window">
+        <field name="name">Purchase Order Revision</field>
+        <field name="res_model">purchase.order.revision</field>
+        <field name="view_mode">list,form</field>
+       
+    </record>
+
+    <menuitem
+        id="purchase_order_revision_menu"
+        name="Purchase Order Revision"
+        action="purchase_order_revision_action"
+        parent="purchase.menu_procurement_management"
+        sequence="12"/>
+   
+
+
+
+
+
+
+ 
+
+
+
+    
+</odoo>

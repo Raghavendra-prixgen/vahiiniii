@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <data>
+        <record id="view_purchase_analysis_report_list" model="ir.ui.view">
+            <field name="name">purchase.analysis.report.list</field>
+            <field name="model">purchase.analysis.report</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="y_date_done" string="Date"/>
+                    <field name="y_po_name" />
+                    <field name="y_picking_id" />
+                    <field name="y_display_name" />
+                    <field name="y_product_id" string="Product"/>
+                    <field name="y_product_cat_id" string="Product Category"/>
+                    <field name="y_quantity" string="Quantity"/>
+                    <field name="y_price_unit" string="Actual Price"/>
+                    <field name="y_value" string="Value"/>
+                    <field name="y_avg_price" string="Avg Price"/>
+                   
+                </list>
+            </field>
+        </record>
+    </data>
+</odoo> 

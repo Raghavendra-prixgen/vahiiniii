@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <record id="view_account_asset_form_inherit" model="ir.ui.view">
+    <field name="name">account.asset.form.inherit</field>
+    <field name="model">account.asset</field>
+    <field name="inherit_id" ref="account_asset.view_account_asset_form"/>
+    <field name="arch" type="xml">
+      <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='main_page']/group[1]/group[@name='current_values']/span[1]" position="after">
+        <field name="y_quantity"/>
+      </xpath>
+      <xpath expr="//div[hasclass('oe_button_box')]" position="inside">
+        <button name="equipments_view"
+            type="object"
+            class="oe_stat_button"
+            icon="fa-wrench">
+            <field string="Equipments" name="y_equipment_counts" widget="statinfo"/>
+        </button>
+
+      </xpath>
+    </field>
+  </record>
+</odoo>

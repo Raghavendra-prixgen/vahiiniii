@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="view_res_bank_inheritss" model="ir.ui.view">
+            <field name="name">res.bank.inherit</field>
+            <field name="model">res.bank</field>
+            <field name="inherit_id" ref="base.view_res_bank_form"/>
+            <field name="arch" type="xml">
+                <field name="email" position="after">
+                    <field name="y_house_bank" widget="boolean_toggle"/>
+                </field>
+            </field>
+        </record>
+
+        
+        <record id="view_purchase_order_inheritss" model="ir.ui.view">
+            <field name="name">purchase.order.inherit</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml">
+                <field name="fiscal_position_id" position="after">
+                    <field name="y_letter_of_credit_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': False}"/>
+                </field>
+            </field>
+        </record>
+
+
+    <record id="view_account_move_inheritss" model="ir.ui.view">
+        <field name="name">account.move.inherit</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field name="y_letter_of_credit_id"  invisible="1" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_sale_order_move_inheritss" model="ir.ui.view">
+        <field name="name">sale.order.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <field name="journal_id" position="after">
+                <field name="y_letter_of_credit_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+            </field>
+        </field>
+    </record> 
+
+
+    <record id="letter_of_credit_tree_view" model="ir.ui.view">
+        <field name="name">Letter Of Credit</field>
+        <field name="model">letter.of.credit</field>
+        <field name="arch" type="xml">
+            <list string="Letter Of Credit" >
+                <field name="y_name"/>
+                <field name="y_transaction_type"/>
+                <field name="y_partner_id" />
+                <field name="y_date_of_issue"/>
+                <field name="y_expiry_date" />
+                <field name="y_company_id"/>
+                <field name="y_currency_id"/>
+                <field name="y_exchange_rate"/>
+                <field name="y_lc_boe_value"/>
+                <field name="y_lc_state"/>
+            </list>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="search_view_letter_of_credit">
+        <field name="name">letter.of.credit.search</field>
+        <field name="model">letter.of.credit</field>
+        <field name="arch" type="xml">
+            <search>
+              <field name="y_name"/>
+              <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+
+    <record id="letter_of_credit_form_view" model="ir.ui.view">
+        <field name="name">Letter Of Credit</field>
+        <field name="model">letter.of.credit</field>
+        <field name="arch" type="xml">
+            <form string="Letter Of Credit">
+                <header>
+                    <button name="action_confirm" type="object" string="Confirm" invisible="y_state != 'draft'"/>
+                    <field name="y_state" widget="statusbar" statusbar_visible="draft,confirmed"/>
+                </header>
+                <sheet>
+                    <notebook>
+                        <page string="General">
+                            <group>
+                                <group>
+                                    <field name="y_name" readonly="1"/>
+                                    <field name="y_boe_id" required="1"/>
+                                    <field name="y_description" />
+                                    <field name="y_transaction_type"/>
+                                    <field name="y_partner_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                                    <field name="y_issuing_bank_id" domain="[('y_house_bank', '=', True)]" invisible="y_transaction_type != 'purchase'"  options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                                    <field name="y_receiving_bank_id" domain="[('y_house_bank', '=', True)]" invisible="y_transaction_type != 'sale'"  options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                                     <field name="y_date_of_issue" />
+                                    <field name="y_expiry_date" />
+                                    <field name="active"/>
+                                </group>
+                                <group>
+                                    <field name="y_company_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}" required="1"/>
+                                    <field name="y_company_currency_id" invisible="1" />               
+                                    <field name="y_lc_type"/>
+                                    <field name="y_currency_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}" required="1"/>
+                                    <field name="y_exchange_rate"/>
+                                    <field name="y_lc_boe_value"/>
+                                    <field name="y_lcy_value" invisible="0"/>
+                                    <field name="y_utilised_value"/>
+                                    <field name="y_utilised_value_lcy"/>
+                                    <field name="y_remaining_fcy_value"/>
+                                    <field name="y_remaining_lcy_value"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page name="Invoice/Bills" string="Invoice/Bills">
+                            <field name="y_bill_ids" widget="one2many" readonly="1">
+                                <list >
+                                    <field name="name"/>
+                                    <field name="partner_id" />
+                                    <field name="company_id"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+       
+
+        <record id="letter_of_credit_master_tree_view" model="ir.ui.view">
+            <field name="name">Letter Of Credit</field>
+            <field name="model">lettercredit.master</field>
+            <field name="arch" type="xml">
+              <list string="Letter Credit Master" >
+                   <field name="y_name"/>
+                    <field name="y_bank_id" />
+                    <field name="y_utilised_value" />
+                    <field name="y_remaining_value"/>
+                    <field name="y_lc_boe_value_lcy"/>
+                </list>
+            </field>
+        </record>
+
+
+    <record id="letter_of_credit_master_form_view" model="ir.ui.view">
+        <field name="name">Letter Of Credit</field>
+        <field name="model">lettercredit.master</field>
+        <field name="arch" type="xml">
+            <form string="Letter Credit Master">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="y_name" required="1"/>           
+                        </h1>
+                    </div> 
+                    <group>
+                        <group>
+                            <field name="y_bank_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}" required="1"/>
+                            <field name="y_utilised_value" />
+                            <field name="y_remaining_value"/>
+                            <field name="y_lc_boe_value_lcy"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.rule" id="letter_of_credit_record_restricted_company_rule">
+        <field name="name">Letter Of Credit Restricted Record: multi-company</field>
+        <field name="model_id" ref="model_letter_of_credit"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">
+            ['|', ('y_company_id', '=', False), ('y_company_id', 'in', company_ids)]
+        </field>
+    </record>
+
+    <record id="action_letter_of_credit" model="ir.actions.act_window">
+        <field name="name">Letter Of Credit</field>
+        <field name="res_model">letter.of.credit</field>
+        <field name="view_mode">list,form</field>
+    </record>
+        
+    <menuitem id="letter_of_credit_menu"  parent="account.menu_finance_entries" action="action_letter_of_credit" name="Letter Of Credit"/>
+
+        
+    </data>
+</odoo>        

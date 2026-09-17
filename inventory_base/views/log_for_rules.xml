@@ -1,0 +1,69 @@
+<odoo>
+    <record model="ir.ui.view" id="log_for_rules_inventory_base">
+        <field name="name">log.for.rules.inventory.base</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form//sheet" position="after">
+                <chatter/>
+            </xpath>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="log_for_rules_product_pricelist">
+        <field name="name">log.for.rules.product.pricelist</field>
+        <field name="model">product.pricelist</field>
+        <field name="inherit_id" ref="product.product_pricelist_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form//sheet" position="after">
+                <chatter/>
+            </xpath>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="log_for_rules_delivery_carrier">
+        <field name="name">log.for.rules.delivery.carrier</field>
+        <field name="model">delivery.carrier</field>
+        <field name="inherit_id" ref="delivery.view_delivery_carrier_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form//sheet" position="after">
+                <chatter/>
+            </xpath>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="log_for_rules_uom_uom">
+        <field name="name">log.for.rules.uom.uom</field>
+        <field name="model">uom.uom</field>
+        <field name="inherit_id" ref="uom.product_uom_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form//sheet" position="after">
+                <chatter/>
+            </xpath>
+        </field>
+    </record>\
+
+    <record model="ir.ui.view" id="log_for_rules_uom_category">
+        <field name="name">log.for.rules.uom.category</field>
+        <field name="model">uom.category</field>
+        <field name="inherit_id" ref="uom.product_uom_categ_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form//sheet" position="after">
+               <chatter/>
+            </xpath>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="log_for_rules_mail_activity_type">
+        <field name="name">log.for.rules.mail.activity.type</field>
+        <field name="model">mail.activity.type</field>
+        <field name="inherit_id" ref="mail.mail_activity_type_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form//sheet" position="after">
+                <chatter/>
+            </xpath>
+        </field>
+    </record>
+
+
+</odoo>

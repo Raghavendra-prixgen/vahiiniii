@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record model="ir.ui.view" id="search_check_stock_valuation">
+            <field name="name">check.stock.valuation.search</field>
+            <field name="model">check.stock.valuation</field>
+            <field name="arch" type="xml">
+                <search>
+                  <field name="y_lot_id"/>
+                  <field name="y_product_id"/>
+                </search>
+            </field>
+        </record>
+
+
+        <record id="view_check_stock_valuation_tree" model="ir.ui.view">
+            <field name="name">check.stock.valuation.view.tree.value</field>
+            <field name="model">check.stock.valuation</field>
+            <field name="arch" type="xml">
+                <list create="0" edit="0" import="0" sample="1">
+                    <field name="y_lot_id"/>
+                    <field name="y_product_id"/>
+                    <field name="y_positive_quantity"/>
+                    <field name="y_negative_quantity"/>
+                    <field name="y_difference"/>
+                </list>
+            </field>
+        </record>
+
+
+        <record id="check_stock_valuation_wizard_view_form" model="ir.ui.view">
+            <field name="name">check.stock.valuation.wizard.view.form</field>
+            <field name="model">check.stock.valuation.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Lot Cost Reconciliation">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="y_start_date"/>
+                                <field name="y_company_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            </group>
+                            <group>
+                                <field name="y_end_date"/>
+                                
+                            </group>
+                        </group>
+                        <footer>
+                            <button string="View Report" type="object" name="action_open_valuation_values_report" class="oe_highlight"/>
+                            <button string="Cancel" special="cancel" type="object" class="btn btn-secondary oe_inline"/>
+                        </footer>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="check_stock_valuation_wizard_report_action" model="ir.actions.act_window">
+            <field name="name">Lot Cost Reconciliation</field>
+            <field name="res_model">check.stock.valuation.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem id="check_stock_valuation_menu" name="Lot Cost Reconciliation"
+            parent="stock.menu_warehouse_report" sequence="110"
+            action="check_stock_valuation_wizard_report_action"/>
+    </data>
+
+</odoo>

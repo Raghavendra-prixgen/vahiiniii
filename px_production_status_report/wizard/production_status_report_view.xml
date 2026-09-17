@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+   
+    <record id="form_view_production_report" model="ir.ui.view">
+        <field name="name">production.report.wiz.chart</field>
+        <field name="model">production.report.wiz</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="start_date" required="True" />
+                            <field name="product_categ_ids" widget="many2many_tags" options="{'no_open': True,'no_create': True}" required="1"/>
+                            <field name="file_name" invisible="1" colspan="4" />
+                            <br/>
+                            <field name="file" filename="file_name"
+                                nolabel="1" invisible="exported == False" readonly="exported == True"
+                                colspan="4" />
+                            <field name="exported" invisible="1" colspan="4" />
+                        </group>
+                        <group>
+                            <field name="end_date" required="True" />
+                            <field name="company_id" required="True" options="{'no_open': True,'no_create': True}"/>
+                        </group>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="View Report" name="generate_production_report"
+                        type="object" class="btn-primary" />
+                    <button string="Print Report" name="print_xls_report"
+                        type="object" class="btn-primary" />
+                    <button string="Cancel" class="btn-secondary"
+                        special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="production_report_line_tree" model="ir.ui.view">
+        <field name="name">production.report.line.tree</field>
+        <field name="model">production.report.line</field>
+        <field name="arch" type="xml">
+            <list string="Production Report Lines" create="0" delete="0" duplicate="0">
+                <field name="date"/>
+                <field name="mo_id"/>
+                <field name="work_center"/>
+                <field name="product_code"/>
+                <field name="product_description"/>
+                <field name="category_id"/>
+                <field name="actual_quantity_produced"/>
+                <field name="standard_weight"/>
+                <field name="actual_weight"/>
+                <field name="consumed_material"/>
+                <field name="standard_material_consumption"/>
+                <field name="actual_material_consumption"/>
+                <field name="company_id" required="True" options="{'no_open': True,'no_create': True}"/>
+            </list>
+        </field>
+    </record>
+
+     <record id="production_report_line_search" model="ir.ui.view">
+        <field name="name">production.report.line.search</field>
+        <field name="model">production.report.line</field>
+        <field name="arch" type="xml">
+            <search string="Invoices Analysis">
+                <field name="mo_id"/>
+                <field name="category_id"/>
+                <group expand="1" string="Group By">
+                    <filter string="Category" name='category_id' context="{'group_by':'category_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action Window for Report Wizard -->
+    <record id="action_production_report_view" model="ir.actions.act_window">
+        <field name="name">Production Report</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">production.report.line</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+
+    <record id="action_production_report"
+        model="ir.actions.act_window">
+        <field name="name">Production Report</field>
+        <field name="res_model">production.report.wiz</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="form_view_production_report" />
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_mrp_production_report"
+        name="Production Report" parent="mrp.menu_mrp_reporting" action="action_production_report"
+        sequence="2" />
+       
+</odoo>
+
+
+

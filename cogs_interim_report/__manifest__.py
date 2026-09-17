@@ -1,0 +1,21 @@
+{
+    'name': "COGS Interim Report",
+    'summary': " ",
+    'description': """ """,
+    'author': 'Prixgen Tech Solutions Pvt. Ltd.',
+    'company': 'Prixgen Tech Solutions Pvt. Ltd.',
+    'website': 'https://www.prixgen.com',
+    'category': 'Accounting',
+    'version': '18.0.0.1',
+    'App origin': "Base",
+    'license': 'LGPL-3',
+    'depends': ['base', 'stock', 'sale', 'account', 'picking_to_accounts', 'account_additional_reports'],
+    'data': [
+        'security/ir.model.access.csv',
+        'security/cogs_interim_report_security.xml',
+        'views/cogs_interim_report_views.xml',
+    ],
+    'installable': True,
+    'application': True,
+    'auto_install': False,
+}

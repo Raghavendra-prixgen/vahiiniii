@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_stock_move_line_detailed_operation_tree_view_inherit" model="ir.ui.view">
+      <field name="name">stock.move.line.operations.list.view</field>
+      <field name="model">stock.move.line</field>
+      <field name="inherit_id" ref="stock.view_stock_move_line_detailed_operation_tree"/>
+      <field name="arch" type="xml">
+          <field name="product_id" position="attributes">
+            <attribute name="context">{'default_type': 'product'}</attribute>
+          </field>
+          <field name="location_id" position="attributes">
+            <attribute name="domain">[('id', 'child_of', parent.location_id), '|', ('company_id', '=', False), ('company_id', '=', company_id)]</attribute>
+          </field>
+          <field name="location_dest_id" position="attributes">
+            <attribute name="domain">[('id', 'child_of', parent.location_dest_id), '|', ('company_id', '=', False), ('company_id', '=', company_id)]</attribute>
+          </field>
+          <field name="lot_id" position="attributes">
+            <attribute name="domain">[('company_id','=',company_id),('product_id','=',product_id),('y_show_lot','=',True)]</attribute>
+            <attribute name="context">{'default_product_id': product_id, 'default_company_id': company_id, 'active_picking_id': picking_id}</attribute>
+          </field>
+      </field>
+    </record>
+
+    <record  id="product_template_form_inherit_standard_price"  model="ir.ui.view"> 
+        <field name="name">product.template.form.inherit.standard.price</field>  
+        <field name="model">product.template</field>
+        <field name="inherit_id"  ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='standard_price_uom']/field[@name='standard_price']" position="attributes"> 
+                <attribute name="readonly">1</attribute> 
+            </xpath>
+        </field>
+    </record> 
+
+    <record id="view_production_lot_form_cost_edit" model="ir.ui.view">
+        <field name="name">stock.production.lot.form.cost.edit</field>
+        <field name="model">stock.lot</field>
+        <field name="inherit_id" ref="stock_account.view_production_lot_form_stock_account"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='standard_price']" position="attributes">
+              <attribute name="readonly">1</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="vview_production_lot_form_form_location_edit" model="ir.ui.view">
+        <field name="name">stock.production.lot.form.location.edit</field>
+        <field name="model">stock.lot</field>
+        <field name="inherit_id" ref="stock.view_production_lot_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='location_id']" position="attributes">
+              <attribute name="readonly">1</attribute>
+            </xpath>
+            <xpath expr="//group[@name='main_group']/group/field[@name='company_id']" position="attributes">
+              <attribute name="readonly">1</attribute>
+            </xpath>
+        </field>
+    </record>
+
+
+
+</odoo>

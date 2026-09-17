@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+     <!-- Down Payment Request:multi company rule  -->
+     <record model="ir.rule" id="purchase_account_payment_multi_company_rule">
+        <field name="name">Down Payment Request:multi company rule</field>
+        <field name="model_id" ref="model_purchase_account_payment"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">
+            ['|', ('y_company_id', '=', False), ('y_company_id', 'parent_of', company_ids)]
+        </field>
+    </record>
+
+    <record model="ir.rule" id="purchase_advance_request_approval_form">
+        <field name="name">Down Payment Request Approval Configuration:multi company rule</field>
+        <field name="model_id" ref="model_advance_request_approval_form"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">
+            ['|', ('y_company_id', '=', False), ('y_company_id', 'parent_of', company_ids)]
+        </field>
+    </record>
+
+    
+</odoo>

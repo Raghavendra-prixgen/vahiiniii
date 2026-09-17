@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_grir_reconciliation_report_list" model="ir.ui.view">
+            <field name="name">grir.reconciliation.report.list</field>
+            <field name="model">grir.reconciliation.report</field>
+            <field name="arch" type="xml">
+                <list string="GRN Not Billed Report" export_xlsx="false">
+                    <header>
+                        <!-- Two supported selections:
+                             1) One PO row + one/more manual (non-PO) rows
+                                -> folds the manual entries into that PO's
+                                   row on the next run (same PO number).
+                             2) Two/more non-PO rows, no PO
+                                -> groups them under a shared manual match
+                                   number instead.
+                             Never touches Odoo's native accounting
+                             reconciliation. -->
+                        <button name="action_manual_reconcile_lines"
+                                type="object"
+                                string="Manual Reconcile"
+                                class="btn-primary"
+                                confirm="This will manually mark the selected lines as reconciled in the GRIR report (does not affect Accounting's own reconciliation). Continue?"/>
+                        <!-- Select previously manually-reconciled row(s)
+                             (PO row with folded-in manual entries, or a
+                             standalone manual-match row) and clear the
+                             tag(s) so the report reverts to its original
+                             state. -->
+                        <button name="action_revoke_manual_reconcile"
+                                type="object"
+                                string="Revoke Manual Reconcile"
+                                class="btn-secondary"
+                                confirm="This will remove the manual reconcile match from the selected lines. Continue?"/>
+                    </header>
+                    <field name="y_purchase_id"/>
+                    <field name="y_partner_id"/>
+                    <!-- <field name="y_picking_id"/> -->
+                    <!-- <field name="y_date_done"/> -->
+                    <field name="y_bill_journal_entry_reference"/>
+                    <field name="y_manual_reco_ref" optional="hide"/>
+                    <field name="y_has_manual_match"  optional="hide" column_invisible="True"/>
+                    <field name="y_credit" sum="Credit"/>
+                    <field name="y_debit" sum="Debit"/>
+                    <field name="y_diffrence_value" sum="Diffrence"/>
+                    <field name="y_status"/>
+                    <field name="y_company_id"/>
+                </list>
+            </field>
+        </record>
+        <record id="view_grir_reconciliation_report_filter" model="ir.ui.view">
+            <field name="name">grir.reconciliation.report.search.view</field>
+            <field name="model">grir.reconciliation.report</field>
+            <field name="arch" type="xml">
+                <search string="Search GNB">
+                    <field name="y_purchase_id" string="Purchase Order"/>
+                    <field name="y_partner_id"/>
+                    <field name="y_picking_id"/>
+                    <field name="y_manual_reco_ref"/>
+                    <filter name="filter_unreconciled" string="Unreconciled" domain="[('y_status', '=', 'un_reconciled')]"/>
+                    <filter name="filter_partially" string="Partially Reconciled" domain="[('y_status', '=', 'partially')]"/>
+                    <filter name="filter_manually_matched" string="Has Manual Entry" domain="[('y_has_manual_match', '=', True)]"/>
+                    <group expand="0" string="Group By">
+                      <filter name="y_status" string="Status" domain="[]" context="{'group_by':'y_status'}"/>
+                    </group>
+               </search>
+            </field>
+        </record>
+
+        <!-- <record id="action_grir_reconciliation_report" model="ir.actions.server">
+            <field name="name">GRIR Register(New)1</field>
+            <field name="type">ir.actions.server</field>
+            <field name="model_id" ref="model_grir_reconciliation_report"/>
+            <field name="binding_model_id" eval="False"/>
+            <field name="state">code</field>
+            <field name="code">action = model.button_view_report()</field>
+        </record> -->
+
+        <record id="action_grir_reconciliation_report" model="ir.actions.server">
+            <field name="name">GRIR Register(New)1</field>
+            <field name="type">ir.actions.server</field>
+            <field name="model_id" ref="model_grir_reconciliation_report"/>
+            <field name="binding_model_id" eval="False"/>
+            <field name="state">code</field>
+            <field name="code">action = model.button_view_report()</field>
+        </record>
+
+        <menuitem id="menu_grir_reconciliation_report"
+                  name="GRIR Register(New)1"
+                  parent="account_additional_reports.menu_additional_reports"
+                  action="action_grir_reconciliation_report"
+                  sequence="20"/>
+    </data>
+</odoo>

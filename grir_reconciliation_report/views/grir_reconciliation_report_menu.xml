@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem
+        id="menu_grir_reconciliation_report"
+        name="GRIR Reconciliation"
+        parent="account.menu_finance_reports"
+        action="action_grir_reconciliation_server"
+        sequence="99"
+        groups="account.group_account_user"/>
+</odoo>

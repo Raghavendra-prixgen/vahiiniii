@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="port_of_discharger_payment_form" model="ir.ui.view">
+                <field name="name">account.payment.form</field>
+                <field name="model">account.payment</field>
+                <field name="inherit_id" ref="purchase_down_payment.account_payment_form_inherited_view"/>
+                <field name="arch" type="xml">
+                <field name="y_purchase_account_payment_id" position="before">
+                  <field name="y_port_discharge_id" force_save="1" readonly="1" invisible="partner_type != 'supplier' or payment_type != 'outbound'"/>
+                </field>
+                    
+                </field>
+            </record>
+
+    <record id="action_boe_template_new" model="ir.actions.server">
+            <field name="name">Down Payment Request</field>
+            <field name="model_id" ref="import_duty_autocalculation.model_boe_template"/>
+            <field name="binding_model_id" ref="import_duty_autocalculation.model_boe_template"/>
+            
+            <field name="state">code</field>
+            <field name="code">
+                if record:
+                    action = model.create_down_payment(record)
+            </field>
+        </record>
+
+
+        <record id="boe_wizard_form_view" model="ir.ui.view">
+            <field name="name">boe.wizard.form.view</field>
+            <field name="model">boe.advance.payment.wizard</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form create="false" edit="false">
+                    <group>
+                        <group>
+                          
+                            <field name="y_payment_amount" force_save="1"  string="Payment Amount"/>
+                            <field name="y_invoice_date_due" />
+                            <field name="y_remark" string="Remark"/>
+                        </group>
+                        <group>
+                            <!-- <field name="y_payment_term_id" readonly="1"/> -->
+                            <field name="y_currency_id" readonly="1" options="{ 'no_create_edit':True, 'no_open': True}"/>
+                            <field name="y_port_discharge_id" readonly="1"/>
+                            <field name="y_company_id"/>
+                            
+
+                            
+                        </group>
+                    </group>
+                    <footer>
+                        <button class="oe_highlight" type="object" name="create_advance_payment" string="Down Payment Request"/>
+                        <button string="Cancel" class="oe_link btn" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="boe_form_view_action_id" model="ir.actions.act_window">
+            <field name="name">BOE Advance Payment</field>
+            <field name="res_model">boe.advance.payment.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="context">{'y_boe_id':y_boe_id}</field>
+            <field name="view_id" ref="boe_wizard_form_view"/>
+        </record>
+
+
+
+</odoo>

@@ -1,0 +1,11 @@
+<odoo>
+    <data noupdate="1">
+        <record id="seq_vehicle_name" model="ir.sequence">
+            <field name="name">Vehiclename</field>
+            <field name="code">vehicle.vehicle.sequence</field>
+            <field name="prefix">VFL-</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"></field>
+        </record>
+    </data>
+</odoo>

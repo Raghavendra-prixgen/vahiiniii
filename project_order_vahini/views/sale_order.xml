@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+   <record id="sale_form_inherit" model="ir.ui.view">
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/sheet/notebook/page[@name='other_information']/group/group[@name='sales_person']/field[@name='company_id']" position="after">
+                <field name="y_doc_type_project_order" invisible="1"/>
+            </xpath>
+          
+          <xpath expr="//field[@name='order_line']/list/field[@name='price_unit']" position="before">
+            <field name="y_base_price" column_invisible="parent.y_doc_type_project_order != True"/>
+            <field name="y_weight" column_invisible="parent.y_doc_type_project_order != True"/>
+        </xpath>
+
+        </field>
+    </record>
+
+    <record id="sale_base_form_inherit" model="ir.ui.view">
+        <field name="model">sale.doc.type</field>
+        <field name="inherit_id" ref="sale_base_18.sale_doc_type_view_form"/>
+        <field name="arch" type="xml">
+           
+            <field name="y_description" position="after">
+                <field name="y_is_project_order" widget="boolean_toggle"/>
+            </field>
+        </field>
+    </record>
+</odoo>

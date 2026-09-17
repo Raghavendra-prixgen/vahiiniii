@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="account_followup.template_followup_report">
+           <!-- doc is a 'res.partner' -->
+           <t t-set="report" t-value="doc.env['account.followup.report']"/>
+           <t t-set="options" t-value="report._get_followup_report_options(doc, options)"/>
+            <div class='o_account_reports_body'>
+                <div class="o_account_reports_page o_account_reports_no_print o_account_followup">
+                    <t t-call="account_followup.followup_filter_info_template"/>
+
+                    <div class="o_account_reports_header">
+                        <div class="print_only">
+                            <h2>
+                            <strong>
+                                Pending Invoices
+                            </strong>
+                            </h2>
+                        </div>
+                    </div>
+
+                    <div class="o_account_reports_summary">
+                        <t t-set="report_summary" t-value="report._get_main_body(options)"/>
+                        <div class="o_account_report_summary" role="alert">
+                            <span class="o_account_report_summary_content" t-att-style="'' if report_summary else 'display: none;'">
+                                <span t-out="report_summary" t-options="{'widget': 'text'}">Invoices Analysis</span>
+                            </span>
+                            <span t-if="not report_summary and not context.get('print_mode')" class="o_account_report_summary_placeholder">
+                                Add a note
+                            </span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <table class="o_account_reports_table" t-att-width="'100%'" style="page-break-inside: avoid">
+                            <t t-call="account_followup.table_header_template_followup_report">
+                                <t t-set="column_headers" t-value="[report._get_followup_report_columns_name()]"/>
+                            </t>
+
+                            <t t-call="account_followup.line_template">
+                                <t t-set="lines" t-value="report._get_followup_report_lines(options)"/>
+                            </t>
+                        </table>
+                        <div class="oe_structure"></div>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+
+    </data>
+</odoo>

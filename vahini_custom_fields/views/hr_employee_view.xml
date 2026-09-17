@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<data>
+		<record model="ir.ui.view" id="manage_form_rank_inherited">
+			<field name="name">manage.form.emp.rank</field>
+			<field name="model">hr.employee</field>
+			<field name="inherit_id" ref="hr.view_employee_form" />
+			<field name="arch" type="xml">
+				<field name="bank_account_id" position="after">
+					<field name="y_pan_no" string="PAN Number" />
+				</field>
+
+				<field name="work_phone" position="after">
+					<field name="y_joining_date" />
+					<field name="y_date_of_resignation" />
+					<field name="y_date_of_relieving" />
+				</field>
+				<field name="identification_id" position="after">
+					<field name="y_epf_uan_no" />
+					<field name="y_esi_number" />
+				</field>
+				<field name="gender" position="after">
+					<field name="y_age" />
+					<field name="y_caste" />
+					<field name="y_handicap" />
+					<field name="y_height" />
+					<field name="y_weight" />
+					<field name="y_personal_mark_of_identification" />
+				</field>
+				<xpath
+					expr="//form[1]/sheet[1]/notebook[1]/page[@name='hr_settings']/group[1]/group[@name='active_group']"
+					position="inside">
+					<field name="y_esi_applicable" />
+					<field name="y_vpf_applicable" />
+					<field name="y_vpf_amount" column_invisible="[('vpf_applicable', '=',False)]" />
+				</xpath>
+				<field name="bank_account_id" position="before">
+					<label for="y_street" string=" Alternative Address" />
+					<div class="o_address_format">
+						<field name="y_street" placeholder="Street..." class="o_address_street" />
+						<field name="y_street2" placeholder="Street 2..." class="o_address_street" />
+						<field name="y_city" placeholder="City" class="o_address_city" />
+						<field name="y_state" class="o_address_state" placeholder="State"
+							options="{&quot;no_open&quot;:
+			True}" />
+						<field name="y_zip" placeholder="ZIP" class="o_address_zip" />
+						<field name="y_country" placeholder="Country" class="o_address_country"
+							options="{&quot;no_open&quot;: True}" />
+					</div>
+				</field>
+
+				<xpath
+					expr="//page[@name='personal_information']"
+					position="inside">
+					<group>
+						<group string="Eye Sight">
+							<field name="y_righteye" />
+							<field name="y_lefteye" />
+							<field name="y_total_no_of_dependents" />
+						</group>
+						<group string="Vehicle Details">
+							<field name="y_registeration_number" />
+							<field name="y_driving_license" />
+						</group>
+					</group>
+
+				</xpath>
+
+			</field>
+
+		</record>
+
+
+	</data>
+</odoo>

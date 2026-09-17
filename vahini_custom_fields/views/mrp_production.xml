@@ -1,0 +1,13 @@
+<odoo>
+ <record model="ir.ui.view" id="mrp_production_default_order_form">
+            <field name="name">mrp_production_form view</field>
+            <field name="model">mrp.production</field>
+            <field name="inherit_id" ref="mrp.mrp_production_tree_view" />
+            <field name="arch" type="xml">
+
+                <xpath expr="//list" position="attributes">
+                  <attribute name="default_order">create_date desc</attribute>
+              </xpath>
+            </field>
+        </record>
+</odoo>

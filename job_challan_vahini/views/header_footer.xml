@@ -1,0 +1,111 @@
+
+
+<odoo>
+  <data>
+    <template id="external_header_footer_job_work">
+    <div class="header">
+        <t t-set="doc_dict" t-value="doc.get_transportation_details()"/>
+        <table class="table" style="border:1px solid #143980;width:100%;margin-bottom:0;">
+            <tr>
+                <td colspan="2" style="border:1px solid white;text-align:center;padding:1px;font-size:16px;color:#84302e;border-bottom:1px solid #143980"><u><strong style="font-size:16px;margin-right:50px;">Job Work Challan</strong></u></td>
+            </tr>
+            <tr>
+                <td rowspan="3" style="border:1px solid #143980;padding:5px;width:70%;">
+                    <div class="row">
+                        <div class="col-4" style="font-size:11px;">
+                            <div style="margin-bottom:10px;">
+                               <img t-att-src="image_data_uri(doc.company_id.logo)"  width="130"  alt="Logo" />
+                               
+                            </div>
+                        </div>
+                        <div class="text-center col-8" style="line-height: initial;">
+                            <strong>
+                                <span style="font-size:15px;" t-if="doc.company_id.name" t-field="doc.company_id.name"/>
+                            </strong>
+                            <br/>
+                            <strong><span style="color:#143980;font-size:13px;padding:1px;" t-if="doc.company_id.partner_id.street" t-field="doc.company_id.partner_id.street"/>
+                            <span style="color:#143980;font-size:13px;padding:1px;" t-if="doc.company_id.partner_id.street2" t-field="doc.company_id.partner_id.street2"/> <br/>
+                            <span style="color:#143980;font-size:13px;padding:1px;" t-if="doc.company_id.city" t-field="doc.company_id.city"/>
+                            <span style="color:#143980;">-</span>
+                            <span style="color:#143980;font-size:13px;padding:1px;"  t-if="doc.company_id.partner_id.zip" t-field="doc.company_id.partner_id.zip"/>
+                            <span style="color:#143980;font-size:13px;padding:1px;" t-if="doc.company_id.state_id.name" t-field="doc.company_id.state_id.name"/>
+                            <span style="color:#143980;font-size:13px;padding:1px;" t-if="doc.company_id.country_id.name" t-field="doc.company_id.country_id.name"/>
+                            <br/></strong>
+                            <strong style="font-size:13px;padding:1px;">
+                            <t t-esc="'Phone'"/>:
+                                <span style="color:#143980;font-size:13px;" t-if="doc.company_id.phone" t-field="doc.company_id.phone"/>
+                            </strong><br/>
+                            <t t-if="doc.company_id.email">
+                                <strong style="font-size:13px;padding:1px;"><t t-esc="'E Mail'"/>:</strong>
+                                <strong><span style="color:#143980;font-size:13px;" t-if="doc.company_id.email" t-field="doc.company_id.email"/></strong><br/>
+                            </t>
+                            <strong style="font-size:13px;padding:1px;">
+                              <t t-esc="'Website'"/>:
+                                <span style="color:#143980;font-size:13px;" t-if="doc.company_id.website" t-field="doc.company_id.website"/>
+                              </strong>
+                        </div>
+                    </div>
+                </td>
+                <td style="border:1px solid #143980;font-size:12px;">
+                    <strong style="color:#143980;">Order No. :</strong>
+                    <t t-if="doc.name">
+                        <b><span t-esc="doc_dict['request_no']"/></b>
+                    </t><br/>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:30%;border-bottom:1px solid #143980;">
+                    <strong style="color:#143980;font-size:12px;">Job Work Challan No. :</strong>
+                    <strong style="color:#f7412c;font-size:12px;">&#160;&#160;&#160;&#160;&#160;
+                    <span t-esc="doc_dict['jobwork_challan_no']"/>
+                    </strong>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:30%;border-bottom:1px solid #143980;">
+                    <strong style="color:#143980;font-size:12px;padding:1px;">Job Work Challan Date. :&#160;&#160;</strong>
+                    <strong style="font-size:12px;">
+                      <span t-field="doc.scheduled_date" t-options="{'widget':'date'}"/>
+                    </strong>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="padding:1px;padding:3px;border-bottom:1px solid #143980;color:#143980;">
+                    <div class="row">
+                        <div class="col-4" style="font-size:10px;">
+                            <strong><t t-esc="'GSTIN'"/>:</strong>
+                            <strong>
+                              <span  t-if="doc.company_id.vat" t-field="doc.company_id.vat"/>
+                            </strong>
+                        </div>
+                        <div class="col-3" style="font-size:10px;">
+                            <strong><t t-esc="'PAN'"/>:</strong> 
+                            <strong>
+                            <span t-field="doc.company_id.partner_id.l10n_in_pan"/>
+                            </strong>
+                        </div>
+                        <div class="col-3" style="font-size:9px;">
+                            <strong><t t-esc="'STATE'"/>:</strong>
+                            <strong>
+                              <span style="text-transform:uppercase" t-if="doc.company_id.state_id" t-field="doc.company_id.state_id.name"/>
+                            </strong>
+                        </div>
+                        <div class="col-2" style="font-size:10px;">
+                            <strong><t t-esc="'STATE CODE'"/>:</strong>
+                            <strong>
+                              <span t-if="doc.company_id.state_id.l10n_in_tin" t-field="doc.company_id.state_id.l10n_in_tin"/>
+                            </strong>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="article o_report_layout_standard" t-att-data-oe-model="doc._name" t-att-data-oe-id="doc.id" t-att-data-oe-lang="doc.env.context.get('lang')">
+        <t t-call="web.address_layout"/>
+        <t t-raw="0"/>
+    </div>
+  </template>
+
+  </data>
+</odoo>

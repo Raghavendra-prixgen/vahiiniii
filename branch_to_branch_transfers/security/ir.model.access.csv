@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_branch_to_branch_transfer_config,branch_to_branch_transfer_config,model_branch_to_branch_transfer_config,base.group_user,1,1,1,0
+access_branch_to_branch_transfer,branch_to_branch_transfer,model_branch_to_branch_transfer,base.group_user,1,1,1,1
+access_branch_to_branch_transfer_line,branch_to_branch_transfer_line,model_branch_to_branch_transfer_line,base.group_user,1,1,1,1
+access_barch_transfer_short_close,barch_transfer_short_close,model_barch_transfer_short_close,base.group_user,1,1,1,0
+access_barch_transfer_short_close_reason,barch_transfer_short_close_reason,model_barch_transfer_short_close_reason,base.group_user,1,1,1,0
+
+access_btb_stock_warehouse,btb_stock_warehouse,model_btb_stock_warehouse,,1,0,0,0

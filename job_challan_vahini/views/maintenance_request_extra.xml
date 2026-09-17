@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="view_maintenance_request_form">
+            <field name="name">equipment.request.delivery.form.inherit</field>
+            <field name="model">equipment.request.delivery</field>
+            <field name="inherit_id" ref="maintenance_base.equipment_request_delivery_view_inherited_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook" position="inside">
+                    <page name="maintenance_info" string="Maintenance Info">
+                        <group name="main_group">
+                            <group name="group_one">
+                                <field name="y_vehicle_no" readonly="state == 'done'"/>
+                                <field name="y_transporter" readonly="state == 'done'"/>
+                            </group>
+                            <group name="group_two">
+                                <field name="y_customer_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}" readonly="state == 'done'"/>
+                                 <field name="y_dispatch_from_id" options="{'no_create': True, 'no_open': True}"/>
+                            </group>
+                          </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

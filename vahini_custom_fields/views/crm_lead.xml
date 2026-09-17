@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="crm_case_form_view_leads_inherit" model="ir.ui.view">
+            <field name="model">crm.lead</field>
+            <field name="inherit_id" ref="crm.crm_lead_view_form" />
+            <field name="arch" type="xml">
+                <xpath
+                    expr="//form[1]/sheet[1]/notebook[1]/page[@name='lead']/group[1]/group[1]/field[@name='website']"
+                    position="before">
+                    <field name="y_gst" />
+                    <field name="y_project_place" />
+                    
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>        
+            

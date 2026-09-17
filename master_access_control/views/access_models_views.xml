@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<record id="list_access_model_view" model="ir.ui.view">
+		<field name="name">list_access.model</field>
+		<field name="model">access.model</field>
+		<field name="arch" type="xml">
+			<list string="Remove [Create/Edit/Delete]" editable="top">
+				<field name="y_ir_model_ids" widget="many2many_tags" required="1"/>
+				<field name="y_user_ids" widget="many2many_tags" required="1" />
+                <field name="y_remove_create"/>
+                <field name="y_remove_edit"/>
+                <field name="y_remove_delete"/>
+            </list>
+		</field>
+	</record>
+	<record id="action_access_model" model="ir.actions.act_window">
+		<field name="name">Master Access Control</field>
+		<field name="type">ir.actions.act_window</field>
+		<field name="res_model">access.model</field>
+		<field name="view_mode">list</field>
+	</record>
+	<menuitem id="menu_access_model" action="action_access_model" name="Master Access Control" parent="base.menu_users" />
+</odoo>

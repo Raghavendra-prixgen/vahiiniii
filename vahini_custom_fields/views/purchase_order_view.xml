@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+
+
+
+        <record id="view_purchase_order_form" model="ir.ui.view">
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form" />
+            <field name="arch" type="xml">
+                <field name="notes" position="after">
+                    <field name="y_remark" placeholder="Remarks ..." />
+                </field>
+                <notebook>
+                    <page name="import" string="Import">
+                        <group>
+                            <group>
+                                <field name="y_place_of_delivery" />
+                                <field name="y_delivery_schedule" />
+                            </group>
+                            <group>
+                            </group>
+                        </group>
+                    </page>
+                </notebook>
+            </field>
+        </record>
+
+
+
+    </data>
+</odoo>        
+            

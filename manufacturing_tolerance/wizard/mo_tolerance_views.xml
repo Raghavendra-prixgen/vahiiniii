@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="mo_tolerance_approve_form" model="ir.ui.view">
+        <field name="name">mo.tolerance.approve</field>
+        <field name="model">mo.tolerance.approve</field>
+        <field name="arch" type="xml">
+            <form string="Reason wizard">
+                <group>
+                    <field name="y_message" invisible="not y_message" nolabel="1" readonly="1"/>
+                    <field name="y_reason" /> 
+                </group>
+                <footer>
+                    <button name="get_approve"
+                        string="Request For Approval"
+                        type="object"
+                        class="btn-primary"/>
+                    <button string="Discard"
+                        class="btn-secondary"
+                        special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="button_approve_view_action" model="ir.actions.act_window">
+        <field name="name">Reason</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">mo.tolerance.approve</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="mo_tolerance_approve_form"/>
+        <field name="target">new</field>
+    </record>
+</odoo>

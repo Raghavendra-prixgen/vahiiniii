@@ -1,0 +1,32 @@
+<odoo>
+    <data>
+
+        <record id="view_account_tax_counterpart_account_id_form" model="ir.ui.view">
+            <field name="name">account.account.form.inherit</field>
+            <field name="inherit_id" ref="account.view_account_journal_form"/>
+            <field name="model">account.journal</field>
+            <field name="arch" type="xml">
+                <field name="default_account_id" position="after">
+                    <field name="y_tax_counterpart_account_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                </field>
+                
+            </field>
+        </record> 
+
+        <record id="view_move_form_free_of_charge" model="ir.ui.view">
+            <field name="name">account.move.form</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='invoice_line_ids']/list/field[@name='price_unit']"
+                    position="before">
+                    <field name="y_is_free_of_charge_visible"  column_invisible="parent.move_type != 'out_invoice'" string="FOC" optional="hide" />
+                </xpath>
+                <xpath expr="//field[@name='line_ids']/list/field[@name='account_id']" position="after" >
+                    <field name="y_is_free_of_charge_visible" column_invisible="1"/>
+                    <field name="y_is_free_of_charge" column_invisible="1"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding='UTF-8'?>
+<odoo>
+    <record id="jobwork_challan" model="ir.actions.report">
+        <field name="name">Jobwork Challan</field>
+        <field name="model">maintenance.request</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">maintenance_base.report_jobwork_challan</field>
+        <field name="report_file">maintenance_base.report_jobwork_challan</field>
+        <field name="binding_model_id" ref="model_maintenance_request"/>
+        <field name="binding_type">report</field>
+        <!-- <field name="paperformat_id" ref="pack_slip.cf_page_format"/> -->
+    </record>
+
+    <template id="report_jobwork_challan">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-foreach="doc[0]" t-as="o">
+                    <t t-call="web.external_layout">
+                        <div class="page">
+                             <h2>
+                                <span t-field="o.jobwork_challan_no"/>
+                            </h2>
+                            <table class="table table-sm" >
+                                <thead>
+                                    <tr>
+                                        <th><strong>Equipment Name</strong></th>
+                                        <th ><strong>Equipment Number </strong></th>
+                                        <th ><strong>Quantity </strong></th>
+                                        <th ><strong>Cost </strong></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    <tr t-foreach="doc" t-as="rec">
+                                        <td>
+                                            <span t-esc="rec.equipment_id.name"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="rec.equipment_id.equipment_number"/>
+                                        </td>
+                                          <td>
+                                            <span t-esc="1.0"/>
+                                        </td>
+                                          <td>
+                                            <span t-esc="rec.equipment_id.cost"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

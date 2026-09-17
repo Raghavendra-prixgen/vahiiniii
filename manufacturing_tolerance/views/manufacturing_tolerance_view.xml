@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data> 
+        <record model="ir.ui.view" id="product_template_inherited_view">
+            <field name="name">product_template_inherited_view</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_form_view"/>    
+            <field name="arch" type="xml">
+              <group name="group_lots_and_weight" position="after">
+                    <group>
+                        <field name="y_is_manufacturing_tolerance" style="vertical-align:baseline"/>
+                        <field name="y_manufacturing_tolerance" invisible="y_is_manufacturing_tolerance == False"/>
+                    </group>
+                </group>
+            </field>                   
+        </record>
+
+        <!-- Approval Code -->
+
+        <record id="view_manufacturing_tolerance_approval_form" model="ir.ui.view">
+            <field name="name">manufacturing.tolerance.approval.form</field>
+            <field name="model">manufacturing.tolerance.approval</field>
+            <field name="arch" type="xml">
+            <form string="Manufacturing Tolerance Approval" >
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="y_company_id" invisible="1"/>
+                            <field name="y_parent_company_id" invisible="1"/>
+                            <field name="y_name" required="1"/>
+                            <field name="y_product_category_id" required='1' options="{'no_create': True, 'no_open': True}"/>
+                        </group>
+                        <group>
+                            <field name="y_company_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}" groups="base.group_multi_company" required="1"/>
+                            <field name="active" widget="boolean_toggle"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Approvals" name="lvlandamount">
+                            <field name="y_lvl_amt_approval_lines" widget="section_and_note_one2many" >
+                                <list string="Lvl and Amt Approval Lines" editable="bottom">
+                                    <field name='y_approval_level' required="1"/>
+                                    <field name='y_lvl1_user_id' options="{'no_create': True, 'no_open': True}" required ="y_approval_level in ('1stlvlapproval','2ndlvlapproval','3rdlvlapproval','4thlvlapproval','5thlvlapproval')"/>
+                                    <field name='y_lvl2_user_id'   options="{'no_create': True, 'no_open': True}" readonly ="y_approval_level == '1stlvlapproval'" required="y_approval_level in ('3rdlvlapproval','2ndlvlapproval','4thlvlapproval','5thlvlapproval')" force_save="1"/>
+                                    <field name='y_lvl3_user_id'   options="{'no_create': True, 'no_open': True}" readonly ="y_approval_level in ('1stlvlapproval','2ndlvlapproval')" required ="y_approval_level in ('3rdlvlapproval','4thlvlapproval','5thlvlapproval')" force_save="1"/>
+                                    <field name='y_lvl4_user_id'   options="{'no_create': True, 'no_open': True}" readonly ="y_approval_level in ('1stlvlapproval','2ndlvlapproval','3rdlvlapproval')" required ="y_approval_level in ('4thlvlapproval','5thlvlapproval')" force_save="1"/>
+                                    <field name='y_lvl5_user_id'   options="{'no_create': True, 'no_open': True}" readonly ="y_approval_level in ('1stlvlapproval','2ndlvlapproval','3rdlvlapproval','4thlvlapproval')" required="y_approval_level == '5thlvlapproval'" force_save="1"/>
+                                                                            
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="search_view_manufacturing_tolerance_approval">
+            <field name="name">manufacturing.tolerance.approval.search</field>
+            <field name="model">manufacturing.tolerance.approval</field>
+            <field name="arch" type="xml">
+                <search>
+                  <field name="y_product_category_id"/>
+                  <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="view_manufacturing_tolerance_approval_form_tree" model="ir.ui.view">
+            <field name="name">manufacturing.tolerance.approval.list</field>
+            <field name="model">manufacturing.tolerance.approval</field>
+            <field name="arch" type="xml">
+                <list string="Manufacturing Tolerance Approval" >
+                    <field name="y_name"/>
+                    <field name="y_product_category_id"/>
+                    <field name="y_company_id"/>
+                </list>
+            </field>
+        </record>
+
+        <record model="ir.rule" id="manufacturing_tolerance_approval_record_restricted_company_rule">
+            <field name="name">Manufacturing Tolerance Approval Restricted Record: multi-company</field>
+            <field name="model_id" ref="model_manufacturing_tolerance_approval"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">
+                ['|', ('y_company_id', '=', False), ('y_company_id', 'parent_of', company_ids)]
+            </field>
+        </record>
+
+
+
+        <record id="action_manufacturing_tolerance_approval" model="ir.actions.act_window">
+            <field name="name">Manufacturing Tolerance Approval</field>
+            <field name="res_model">manufacturing.tolerance.approval</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+        <menuitem 
+            id="menu_manufacturing_tolerance_approval" 
+            name="Manufacturing Tolerance Approval" 
+            parent="mrp.menu_mrp_configuration"
+            action="action_manufacturing_tolerance_approval"/>
+
+        <!-- Approval Code End -->
+
+
+        <record model="ir.ui.view" id="mrp_production_form_inherited_view">
+            <field name="name">mrp_production_form_inherited_view</field>
+            <field name="model">mrp.production</field>
+            <field name="inherit_id" ref="mrp.mrp_production_form_view"/>    
+            <field name="arch" type="xml">
+                <xpath expr="/form/header/field[@name='state']" position="replace">
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,to_approved,approved,progress,done" invisible="not y_is_approval_required"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,progress,done" invisible="y_is_approval_required"/>
+                </xpath>
+
+                <xpath expr="//form/header/button[@name='action_cancel']" position="before">
+                    <!-- <button name="request_for_approval"  string="Request For Approval" type="object" invisible="state != 'waiting_for_approval'"/> -->
+                    <button name="confirm_approval"  string="Approve" type="object" invisible="state != 'to_approved'" class="oe_highlight"/>
+                </xpath>
+               
+                <!-- <field name="move_raw_ids" position="attributes">
+                    <attribute name="readonly">state in ('cancel','to_approved','approved','progress') or (state == 'done' and is_locked)</attribute>
+                </field> -->
+                <field name="company_id" position='after'>
+                    <field name="y_to_approve_states"  invisible='1'/>
+                    <field name="y_is_approval_required" invisible="1"/>
+                    <field name="y_is_approval_show" invisible="1"/>
+                </field>
+
+                <notebook position="inside">
+                    <page string="Approvals" invisible="y_is_approval_show == False">
+                        <field name='y_mrp_approval_line_ids' widget="section_and_note_one2many" readonly="1">
+                            <list>
+                                <field name='y_approval_level'/>
+                                <field name='y_lvl_user_id' widget="badge" decoration-success="1"/>
+                                <button name="view_code_users" type="object" string="" icon="fa-eye" class="btn-secondary" help="View Users"/>
+                                <field name="y_approved_date"/>
+                                <field name="y_approved_id"/>
+                                <field name='y_mrp_approval_id' column_invisible="True" string="Purchase Request lvl"/>
+                                <field name="y_approval_status" widget="badge" decoration-success="y_approval_status == 'approved'" decoration-primary="y_approval_status == 'approval_pending'" decoration-info="y_approval_status == 'rejected'"/>
+                                <field name="y_is_approval_completed" string="Approval Completed" column_invisible="True"/>
+                                <field name="y_remarks"/>
+                            </list>
+                        </field>
+                    </page>
+                </notebook>
+            </field>                   
+        </record>
+
+        <record id="sale_order_production_form_view_approve_status" model="ir.ui.view">
+            <field name="name">mrp.production.form.view.approve.status.origin</field>
+            <field name="model">mrp.production</field>
+            <field name="inherit_id" ref="mrp.mrp_production_tree_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='state']" position="before">
+                    <field name="y_to_approve_states" widget="badge" optional="hide"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_to_do_status_view_mrp_production_filter" model="ir.ui.view">
+            <field name="name">mrp.production.form.view.inherit.to.do</field>
+            <field name="model">mrp.production</field>
+            <field name="inherit_id" ref="mrp.view_mrp_production_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//filter[@name='todo']" position="attributes">
+                    <attribute name="domain">[('state', 'in', ('draft', 'confirmed', 'progress', 'to_close','to_approved','approved'))]</attribute>
+                </xpath>
+            </field>
+        </record>
+
+    
+    </data>
+</odoo>     

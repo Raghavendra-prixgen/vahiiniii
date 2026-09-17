@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<template>
+    <div t-name='hide_load_demo_data.res_config_dev_tools' t-inherit="web.res_config_dev" t-inherit-mode="primary" owl="1" primary="1">
+        <xpath expr="//a[hasclass('o_web_settings_force_dem')]" position="replace">
+        </xpath>
+
+    </div>
+</template>
+

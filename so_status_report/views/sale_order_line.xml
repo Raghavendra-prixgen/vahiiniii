@@ -1,0 +1,101 @@
+<odoo>
+    <data>
+        <record id="sh_pol_sale_line_tree_view_inherit" model="ir.ui.view">
+            <field name="name">sale Order Line Tree</field>
+            <field name="model">sale.order.line</field>
+            <field name="arch" type="xml">
+                <list create="false" action="sale_order_view" type="object">
+                    <field name="y_client_order_ref" optional="hide"/>
+                    <field name="order_id" string="Order"/>
+                    <field name="y_order_date" options="{'show_time': false}" optional='show'/>
+                    <field name="scheduled_date" options="{'show_time': false}" optional="show"/>
+                    <field name="y_so_expected_date" options="{'show_time': false}" optional="show"/>
+                    <field name="y_so_effective_date" options="{'show_time': false}" optional="show"/>
+                    <field name="product_id"/>
+                    <field name="y_product_catag_id" optional="show"/>
+                    <field name="name" optional='show'/>
+                    <field name="y_partner_id"/>
+                    <field name="y_doc_type_id"/>
+                    <field name="product_uom_qty" string="Quantity"/>
+                    <field name="qty_delivered" string= "Delivered Quantity"/>
+                    <field name="qty_invoiced"/>
+                    <field name="y_remaining_qty" optional="show"/>
+                    <field name="y_pending_order_value" optional="show"/>
+                    <field name="y_invoice_pending_qty" optional="show"/>
+                    <field name="y_invoice_pending_value" optional="show"/>
+                    <field name="customer_lead"/>
+                    <field name="price_unit"/>
+                    <field name="y_is_short_close" optional="hide"/>
+                    <field name ="y_short_close_description" optional="hide"/>
+                    <field name="y_currency_id" optional='show'/>
+                    <field name="tax_id" widget="many2many_tags" optional='show'/>
+                    <field name="price_subtotal"/>
+                    <field name="y_status" decoration-info="y_status == 'Pending for Invoice'"
+                           decoration-danger="y_status == 'Cancel'" decoration-success="y_status == 'Pending Order'"/>
+                    <field name="state"  optional='show' decoration-success="state == 'sale'" decoration-info="state == 'draft'" decoration-primary="state == 'sent'" widget="badge"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="sh_pol_sale_line_search_view_inherit" model="ir.ui.view">
+            <field name="name">sale Order Line Tree</field>
+            <field name="model">sale.order.line</field>
+            <field name="inherit_id" ref="sale.view_sales_order_line_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//search" position="inside">
+                   
+                    <separator orientation="vertical"/>
+                    <filter string="Order Confirm Date" name="filter_create_date" date="y_order_date"/>
+                    <searchpanel>
+						<field name="y_partner_id"/>
+						<!-- <field name="order_id" /> -->
+						<field name="product_id"/>
+                    </searchpanel>
+                   <!--  <separator/>
+                    <filter string="OPEN SO" name="open_so" domain="[('y_open_close_so', '=', 'open_so' )]"/>
+                    <filter string="CLOSE SO" name="close_so" domain="[('y_open_close_so', '=', 'close_so' )]"/> -->
+                </xpath>
+                <filter name='product' position='after'>
+                    <filter string="Status" name="y_status" domain="[]" context="{'group_by':'y_status'}"/>                    
+                  
+                    <filter string="Delivered Quantity" name="qty_delivered" domain="[]" context="{'group_by':'qty_delivered'}"/>
+                </filter>
+                <filter name='y_status' position='after'>
+                    <filter string="Product Category" name="y_product_catag_id" domain="[]"
+                            context="{'group_by':'y_product_catag_id'}"/>
+                    <!-- <filter string="Order Status" name="y_open_close_so" context="{'group_by':'y_open_close_so'}"/> -->
+                    <!--<separator orientation="vertical"/>-->
+                    <filter string="Order Confirm Date" name="y_order_date" context="{'group_by':'y_order_date'}"/>
+                </filter>
+            </field>
+        </record>
+
+
+        <record id="sh_action_sale_order_lines" model="ir.actions.act_window">
+            <field name="name">Sale Order Status</field>
+            <field name="res_model">sale.order.line</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">list</field>
+            <field name="target">current</field>
+            <field name="domain">[('state','in',('sale','done'))]</field>
+            <field name="view_id" ref="sh_pol_sale_line_tree_view_inherit"/>
+        </record>
+
+
+        <menuitem id="sh_sol_order_line" name="Sale Order Status" action="sh_action_sale_order_lines" parent="sale.menu_sale_report"/>
+
+    	<record model="ir.actions.server" id="action_short_close_sol">
+            <field name="name">Short Close</field>
+            <field name="model_id" ref="sale.model_sale_order_line"/>
+            <field name="binding_model_id" ref="sale.model_sale_order_line"/>
+            <field name="binding_view_types">list</field>
+            <field name="state">code</field>
+            <field name="code">
+                if records:
+                    action = records.short_close_form_wizard_sol()
+            </field>
+        </record>
+
+
+    </data>
+</odoo>

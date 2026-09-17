@@ -1,0 +1,586 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+	<template id="portal_my_home_quotation_request" name="Portal My Home Quotation Request" inherit_id="sale.portal_my_home_sale" priority="25">
+		<xpath expr="//div[@id='portal_client_category']/t[@t-call='portal.portal_docs_entry'][1]" position="before">
+			<t t-call="portal.portal_docs_entry">
+				<t t-set="icon" t-value="'/customer_portal_standard/static/description/img/request_icon.png'"/>
+				<t t-set="title">Request Your Order</t>
+				<t t-set="url" t-value="'/quotes/new/view'"/>
+				<t t-set="text">Request/Create your order</t>
+				<t t-set="placeholder_count" t-value="'order_count'"/>
+				<t t-set="config_card" t-value="True"/>
+			</t>
+		</xpath>
+	</template>
+
+	<template id="sale.portal_my_quotations" name="My Quotations">
+		<t t-call="portal.portal_layout">
+			<t t-set="breadcrumbs_searchbar" t-value="True" />
+			<t t-call="portal.portal_searchbar">
+				<t t-set="title">
+					Quotations
+				</t>
+				<t t-if="quot_create">
+					<div class="form-inline">
+						<a href="/quotes/new/view" class="btn btn-success" style="margin-left:15px;">
+							<i class="fa fa-solid fa-plus"></i>
+							 Create Quotation
+						</a>
+					</div>
+				</t>
+			</t>
+			<t t-if="not quotations">
+				<p>
+					There are currently no quotations for your account.
+				</p>
+			</t>
+			<t t-if="quotations" t-call="portal.portal_table">
+				<thead>
+					<tr class="active">
+						<th>
+							Quotation #
+						</th>
+						<th class="text-right">
+							Quotation Date
+						</th>
+						<th class="text-right">
+							Valid Until
+						</th>
+						<th class="text-center">
+							Status
+						</th>
+						<th class="text-right">
+							Total
+						</th>
+
+					</tr>
+				</thead>
+				<t t-foreach="quotations" t-as="quotation">
+					<tr>
+						<td>
+							<a t-att-href="quotation.get_portal_url()">
+								<t t-esc="quotation.name" />
+							</a>
+						</td>
+						<td class="text-right">
+							<span t-field="quotation.date_order" />
+						</td>
+						<td class="text-right">
+							<span t-field="quotation.validity_date" />
+						</td>
+						<td class="text-center">
+							<span t-if="quotation.state == 'draft'" class="badge rounded-pill text-bg-primary">
+								Draft
+							</span>
+							<span t-if="quotation.state == 'sent'" class="badge rounded-pill text-bg-info">
+								Quotation Sent
+							</span>
+							<span t-if="quotation.state == 'sale'" class="badge rounded-pill text-bg-success">
+								Sales Order
+							</span>
+							<span t-if="quotation.state == 'cancel'" class="badge rounded-pill text-bg-danger">
+								Cancelled
+							</span>
+						</td>
+						<td class="text-right">
+							<span t-field="quotation.amount_total" />
+						</td>
+
+					</tr>
+				</t>
+			</t>
+		</t>
+	</template>
+
+	<template id="quotation_form" name="PortalQuotation">
+		<t t-call="portal.portal_layout">
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js">
+			</script>
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.2/jquery.modal.min.js">
+			</script>
+			<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.2/jquery.modal.min.css" />
+			<div id="wrap">
+				<div class="container mt-1">
+					<form action="" class="catalogue_div modal" id="ex2" style="display:none;">
+						<div class="cat_header">
+							<b>
+								<h3 id="select_produts" class="mt-2" style="font-weight:400;">
+									Select Products
+								</h3>
+							</b>
+						</div>
+						<div class="modal-footer d-flex flex-wrap" style="justify-content:space-around;">
+							<div class="col-12 col-md-3 d-flex mb-2">
+								<a href="#" class="btn btn-primary label-text-align me-2" rel="modal:close">
+            						CLOSE
+								</a>
+								<a href="#" class="btn btn-primary label-text-align update_items" rel="modal:close">
+            						UPDATE
+								</a>
+							</div>
+							<div class="col-12 col-md-4 mb-2">
+								<input type="text" id="product-search" class="form-control" placeholder="Search Products" />
+							</div>
+							<div class="col-12 col-md-3 d-flex align-items-center justify-content-center">
+								<label for="sortOption" class="me-2 text-center">
+            						Sort By
+								</label>
+								<select id="sortOption" class="form-select" style="width: 150px;">
+									<option value="default"></option>
+									<option value="name">Name</option>
+									<option value="price">Price</option>
+									<option value="code">Code</option>
+								</select>
+							</div>
+						</div>
+
+						<div class="product_block m-4">
+							<!-- <t t-set="group_product_variant" t-value="request.env['ir.config_parameter'].sudo().get_param('group_product_variant', False)"/>
+							<t t-if="group_product_variant">
+								<t t-set="product_variants" t-value="request.env['product.product'].sudo().search([('sale_ok','=',True),('y_product_portal_boolean', '=', True)])" />
+							</t>
+							<t t-else="">
+								<t t-set="product_variants" t-value="request.env['product.product'].sudo().search([('sale_ok','=',True),('product_tmpl_id.y_product_portal_boolean', '=', True)])" />
+							</t>
+ -->
+							<t t-foreach="product" t-as="po">
+								<div class="product-card" t-att-value="po.id">
+									<div class="product-card-head">
+										<div class="product-image" style="margin:auto; height: 90px;">
+											<img t-attf-src="/web/image/product.product/#{po.id}/image_1920" alt="Product Image" width="75" height="75" />
+										</div>
+										<div class="product-details">
+											<h3 class="product-title">
+												<t t-esc="po.name" />
+											</h3>
+											<p class="product-code">
+												<span class="">
+													CODE :
+													<t t-esc="po.default_code" />
+												</span>
+											</p>
+											<p class="product-price">
+												Unit price:
+												<span class="">
+													<t t-esc="po.currency_id.symbol" />
+												</span>
+												<t t-esc="po.lst_price" />
+											</p>
+											<t t-if="po.product_template_variant_value_ids">
+												<div class="product-options">
+													<span class="option-label">
+														<t t-foreach="po.product_template_variant_value_ids" t-as="ids">
+															<span class="o_badge badge rounded-pill bg-primary">
+																<t t-esc="ids.display_name" />
+															</span>
+														</t>
+													</span>
+												</div>
+											</t>
+										</div>
+									</div>
+									<div class="d-flex">
+										<div class="product-card-foot">
+											<button class="add-button" type="button">
+												Add
+											</button>
+										</div>
+										<div class="">
+											<button class="pkg-options-btn" type="button">
+												<i class="fa fa-solid fa-bars">
+												</i>
+											</button>
+										</div>
+									</div>
+									<!-- Package Selection Dialog -->
+									<div class="pkg-select-dialog" style="display: none;">
+										<div class="pkg-select-header">
+											<h3 class="pkg-select-title">
+												Product Packages
+											</h3>
+											<button class="pkg-select-close">
+												×
+											</button>
+										</div>
+										<t t-set="packages" t-value="request.env['product.packaging'].sudo().search([('product_id', '=', po.id)])" />
+										<div class="pkg-select-content">
+											<t t-if="packages">
+												<div class="pkg-select-list">
+													<t t-foreach="packages" t-as="pkg">
+														<div class="pkg-select-item">
+															<input type="radio" t-att-name="'pkg_option_' + str(po.id)" t-att-id="pkg.id" t-att-value="pkg.qty" t-att-data-name="pkg.name" />
+															<label t-att-for="'pkg_' + str(pkg.id)">
+																<t t-esc="pkg.name" />
+															</label>
+														</div>
+													</t>
+												</div>
+												<div class="pkg-select-quantity">
+													<label t-att-for="'pkg_count_' + str(po.id)">
+													No of packages required:
+													</label>
+													<input type="number" t-att-id="'pkg_count_' + str(po.id)" min="1" value="1" />
+												</div>
+												<div class="pkg-select-total">
+												Total quantity:
+													<span t-att-id="'pkg_total_units_' + str(po.id)">
+													0
+													</span>
+												units
+												</div>
+												<div class="pkg-select-footer">
+													<button class="pkg-select-save">
+														Save
+													</button>
+												</div>
+											</t>
+											<t t-else="">
+												<div class="">No Packages found for this product.</div>
+											</t>
+										</div>
+									</div>
+								</div>
+							</t>
+						</div>
+					</form>
+				</div>
+				<div class="container mt-1">
+					<div class="col-md-12 bg-white shadow-sm rounded">
+						<form id="my_form" action="/my/quotes">
+							<input type="hidden" id="csrf" name="csrf_token" t-att-value="request.csrf_token()" />
+							<t t-esc="csrf_token" />
+							<div class="container">
+								<div class="border-bottom border-primary border-right d-flex">
+									<h3 class="p-1 text-primary">
+										New Quotation
+									</h3>
+								</div>
+								<div class="row col-12 p-2 mt-1 d-flex flex-row flex-wrap justify-content-between gap-4">
+									<div class="s_website_form_field" style="width:30rem;">
+										<div class="mx-1 row s_col_no_resize fw-bold">
+											<label class="col-6 col-sm-auto s_website_form_label mb-0" for="name">
+												Customer
+											</label>
+										</div>
+										<div class="col-12 px-2">
+											<input type="text" class="form-control s_website_form_input" t-att-value="name" disabled="1" />
+										</div>
+									</div>
+									<div class="s_website_form_field" style="width:30rem;">
+										<div class="mx-1 row s_col_no_resize fw-bold">
+											<label class="col-6 col-sm-auto s_website_form_label mb-0" for="address">
+												Address
+											</label>
+										</div>
+										<div class="col-12 px-2">
+											<input type="text" class="form-control s_website_form_input" t-att-value="address" disabled="1" />
+										</div>
+									</div>
+
+									<div class="s_website_form_field" style="width:30rem;">
+										<div class="mx-1 row s_col_no_resize fw-bold">
+											<label class="col-6 col-sm-auto s_website_form_label mb-0" for="date">
+												Quotation Date
+											</label>
+										</div>
+										<div class="col-12 px-2">
+											<input type="text" class="form-control s_website_form_input" t-att-value="date" disabled="1" />
+										</div>
+									</div>
+
+									<div class="s_website_form_field" style="width:30rem;">
+										<div class="mx-1 row s_col_no_resize fw-bold">
+											<label class="col-6 col-sm-auto s_website_form_label mb-0" for="date">
+												Deliver To
+											</label>
+										</div>
+										<div class="col-12 px-2">
+											<input type="text" class="form-control s_website_form_input delivered_to" />
+										</div>
+									</div>
+
+									<div class="s_website_form_field" style="width:30rem;">
+										<div class="mx-1 row s_col_no_resize fw-bold">
+											<label class="col-6 col-sm-auto s_website_form_label mb-0" for="quotation_template">
+												Quotation Template
+											</label>
+										</div>
+										<div class="col-12 px-2">
+											<t t-set="quote_templates" t-value="request.env['sale.order.template'].search([('company_id', '=', request.env.user.company_id.id)])" />
+											<select class="form-select" name="quotation_template">
+												<option id="0">
+													Select Template
+												</option>
+												<t t-foreach="quote_templates" t-as="qt">
+													<option t-att-id="qt.id">
+														<t t-esc="qt.name" />
+													</option>
+												</t>
+											</select>
+										</div>
+									</div>
+
+								</div>
+								<br />
+
+								<div class="card-body px-1">
+									<div class="card border-0">
+										<div id="table-container" class="table-products p-2" style="">
+											<table class="table table-bordered text-center prod_table" id="table_id" style="">
+												<thead>
+													<tr class="bg-primary text-white" style="">
+														<th style="width:27%;" class="text-center">
+															Product
+														</th>
+														<th class="text-center" style="width:80px;">
+															Quantity
+														</th>
+														<th class="text-center" style="width: 80px;">
+															Packaging Quantity
+														</th>
+														<th class="text-center" style="width: 165px;">
+															Packaging
+														</th>
+
+														<th class="text-center" style="width: 60px;">
+															UOM
+														</th>
+														<th class="text-center" style="width:85px;">
+															Unit Price
+														</th>
+														<th class="text-center" style="width:120px;">
+															Subtotal
+														</th>
+														<th class="text-center" style="width:85px;">
+															Taxes
+														</th>
+														<th class="text-center" style="display:none;width:10%;">
+															Tax Amount
+														</th>
+														<th class="text-center" style="width:115px;">
+															Total
+														</th>
+														<th class="text-center" style="width:70px;">
+
+														</th>
+													</tr>
+												</thead>
+												<tbody class="data-body" style="border: 1px solid #dee2e6;">
+												</tbody>
+												<tr style="display:none;" class="add_itm_block">
+													<td>
+														<div>
+															<input style="width:100%; border-top: none;border-left: none;border-right: none;border-width: thin;border-radius: 0px; border-color:#8595A2;" class="select_prod" name="selected_product" list="browsers" placeholder="Search Product" />
+															<datalist id="browsers">
+																<t t-foreach="product" t-as="obj">
+																	<t t-if="obj.default_code">
+																		<option t-att-value="str([obj.default_code]) + obj.name" t-att-product_uom="obj.uom_id.name" t-att-price="obj.list_price" t-att-taxes="obj.taxes_id.ids" t-att-tmpl_id="obj.id" />
+																	</t>
+																	<t t-else="">
+																		<option t-att-value="obj.name" t-att-product_uom="obj.uom_id.name" t-att-price="obj.list_price" t-att-taxes="obj.taxes_id.ids" t-att-tmpl_id="obj.id" />
+																	</t>
+																</t>
+															</datalist>
+														</div>
+													</td>
+													<td>
+														<input style="width:100%; border-top: none;border-left: none;border-right: none;border-width: thin;border-radius: 0px; border-color:#8595A2;" class="select_qty" type="number" min="0"/>
+													</td>
+													<td class="">
+														<input style="width:100%; border-top: none;border-left: none;border-right: none;border-width: thin;border-radius: 0px; border-color:#8595A2;" class="product_packaging_qty_value" type="number" min="0" value="0" />
+													</td>
+													<td class="product_packaging_id">
+														<select style="width:100%; border: none; border-radius: 0px; border-color:#8595A2;" class="packaging_type_select_option form-select">
+														</select>
+													</td>
+
+													<td class="sugg_uom">
+														??
+													</td>
+													<td class="sugg_price">
+														0.0
+													</td>
+													<td class="sugg_amount">
+														0.0
+													</td>
+													<td class="sugg_taxes">
+														0.0
+													</td>
+													<td class="sugg_tax_am" style="display:none;">
+														0.0
+													</td>
+													<td class="sugg_total_amount">
+														0.0
+													</td>
+													<td>
+														<div class="d-flex">
+															<center class="m-1">
+																<span class="btn btn-sm add-btn" style="width: auto; transition: background-color 0.3s;">
+																	<i class="fa fa-lg fa-cloud-download" aria-hidden="true"></i>
+																</span>
+															</center>
+															<center class="mx-2 mt-1">
+																<span class="btn btn-danger btn-sm cancel-btn" style="width: auto;" onclick="(function(){
+																	$('.add_itm_block').hide();
+																	})();">
+																	<i class="fa fa-sm fa-times" aria-hidden="true"></i>
+																</span>
+															</center>
+														</div>
+													</td>
+												</tr>
+												<tr class="add_icon" style="">
+													<td colspan="12">
+														<div class="float-left" style="display:flex;">
+															<span class="fw-lighter" onclick="(function(){
+																	$('.add_itm_block').show();
+																})();">
+																<div class="text-nowrap bd-highlight" style="width: 8rem;">
+																	<p class="" style="cursor: pointer;">
+																		<b class="btn btn-addrow text-primary mx-2">
+																			Add a Product
+																		</b>
+																	</p>
+																</div>
+															</span>
+															<span class="">
+																<div class="text-nowrap bd-highlight" style="width: 8rem;">
+																	<p class="text-primary" style="cursor: pointer;">
+																		<a class="btn text-primary" href="#ex2" rel="modal:open">
+																			Catalog
+																		</a>
+																	</p>
+																</div>
+															</span>
+														</div>
+													</td>
+												</tr>
+											</table>
+										</div>
+									</div>
+								</div>
+								<!-- <div class="col-md-12 d-flex justify-content-around">
+									<div class=""></div>
+									<div class="" style="margin-top: 1.25rem;">
+										<table class="table table-sm" style="width: 100%; ">
+											<tbody>
+												<tr class="border-black">
+													<td>
+														<h6>
+															Gross Amount
+														</h6>
+													</td>
+													<td class="text-end">
+														<span data-id="total_untaxed">
+															<span class="oe_currency_value total_untaxed_amount">
+																0.00
+															</span>
+														</span>
+													</td>
+												</tr>
+												<tr class="border-black">
+													<td>
+														<h6>
+															Taxes
+														</h6>
+													</td>
+													<td class="text-end">
+														<span data-id="total_tax">
+															<span class="oe_currency_value total_tax_val">
+																0.00
+															</span>
+														</span>
+													</td>
+												</tr>
+												<tr class="border-black">
+													<td>
+														<strong>
+															Total
+														</strong>
+													</td>
+													<td class="text-end">
+														<span data-id="total_amount">
+															<span class="oe_currency_value total_amount">
+																0.00
+															</span>
+														</span>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div> -->
+								<div class="col-12 d-flex" style="flex-direction: row-reverse; width:97%">
+
+									<div class="mx-1 total_divs" style="width:35%;margin-top: 1.25rem;">
+										<table class="table table-sm" style="width: 100%; ">
+											<tbody>
+												<tr class="border-black">
+													<td>
+														<h6>
+															Gross Amount
+														</h6>
+													</td>
+													<td class="text-end">
+														<span data-id="total_untaxed">
+															<span class="oe_currency_value total_untaxed_amount">
+																0.00
+															</span>
+														</span>
+													</td>
+												</tr>
+												<tr class="border-black">
+													<td>
+														<h6>
+															Taxes
+														</h6>
+													</td>
+													<td class="text-end">
+														<span data-id="total_tax">
+															<span class="oe_currency_value total_tax_val">
+																0.00
+															</span>
+														</span>
+													</td>
+												</tr>
+												<tr class="border-black">
+													<td>
+														<strong>
+															Total
+														</strong>
+													</td>
+													<td class="text-end">
+														<span data-id="total_amount">
+															<span class="oe_currency_value total_amount">
+																0.00
+															</span>
+														</span>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+								<div class="col-12">
+									<div class="w-100 text-start">
+										<div class="form-group mt-3 mb-1 me-1">
+											<span class="btn btn-primary mx-2 submit_class">
+												Save
+											</span>
+											<a href="/my/quotes" class="btn btn-secondary">
+												Cancel
+											</a>
+										</div>
+										<hr />
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</t>
+	</template>
+</odoo>

@@ -1,0 +1,1510 @@
+<odoo>
+    <data>
+        <record id="sale_order_report_vahini" model="report.paperformat">
+            <field name="name">vahini sale order page format</field>
+            <field name="default" eval="True" />
+            <field name="format">A4</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">47</field>
+            <field name="margin_bottom">38</field>
+            <field name="margin_left">5</field>
+            <field name="margin_right">5</field>
+            <field name="header_line" eval="False" />
+            <field name="header_spacing">37</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <record id="vahini_sale_report" model="ir.actions.report">
+            <field name="name">Sale Order Report</field>
+            <field name="model">sale.order</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">vahini_sale_report.sale_order_report_template</field>
+            <field name="report_file">vahini_sale_report.sale_order_report_template</field>
+            <field name="print_report_name"> (object.name)</field>
+            <field name="binding_model_id" ref="sale.model_sale_order" />
+            <field name="binding_type">report</field>
+            <field name="domain" eval="[('state','=','sale')]" />
+            <field name="paperformat_id" ref="vahini_sale_report.sale_order_report_vahini" />
+        </record>
+
+        <template id="sale_order_report_template">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <t t-set="partner" t-value="doc.fetch_warehouse_address_so()" />
+                    <t t-call="vahini_sale_report.external_layout_standard_vahini">
+                        <!-- <table class="table-borderless table-sm m-0 p-0"
+                        style="border-top:none;width:100%;font-size:12px;">
+                            <thead style="page-break-inside:avoid;">
+                                <tr>
+                                    <td class="text-center p-1" colspan="100%" style="background:#fffdaf;border:1px solid black;">
+                                        <span class="fw-bold fs-6">SALE ORDER</span>
+                                    </td>
+                                </tr>
+                                <tr class="">
+                                    <td colspan="100%" class="p-0" style="border-left:1px solid black;border-right:1px solid black;">
+                                        <div class="col-12 d-flex" style="">
+                                            <div class="col-6 p-1" style="border-right:1px solid black;border-bottom:1px solid black;">
+                                                <div class="d-flex">
+                                                    <div style="width:25%;">
+                                                        <span class="fw-bold">Account No </span>
+                                                    </div>
+                                                    <div class="px-1" style="width:3%">
+                                                        <span>:</span>
+                                                    </div>
+                                                    <div style="width:72%;">
+                                                        <span t-field="doc.client_order_ref"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex">
+                                                    <div style="width:25%;">
+                                                        <span class="fw-bold">Customer Name</span>
+                                                    </div>
+                                                    <div class="px-1" style="width:3%">
+                                                        <span>:</span>
+                                                    </div>
+                                                    <div style="width:72%;">
+                                                        <span t-field="doc.partner_id.name" />
+                                                        <span t-field="doc.partner_id.contact_address_complete" />
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex">
+                                                    <div style="width:25%;">
+                                                        <span class="fw-bold">GSTIN</span>
+                                                    </div>
+                                                    <div class="px-1" style="width:3%">
+                                                        <span>:</span>
+                                                    </div>
+                                                    <div style="width:72%;">
+                                                        <span t-field="doc.partner_id.vat" />
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex">
+                                                    <div style="width:25%;">
+                                                        <span class="fw-bold">Mobile No</span>
+                                                    </div>
+                                                    <div class="px-1" style="width:3%">
+                                                        <span>:</span>
+                                                    </div>
+                                                    <div style="width:72%;">
+                                                        <span t-field="doc.partner_id.mobile" />
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex">
+                                                    <div style="width:25%;">
+                                                        <span class="fw-bold">Email</span>
+                                                    </div>
+                                                    <div class="px-1" style="width:3%">
+                                                        <span>:</span>
+                                                    </div>
+                                                    <div style="width:72%;">
+                                                        <span t-field="doc.partner_id.email" />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-6 p-1" style="border-bottom:1px solid black;">
+                                                <div class="d-flex">
+                                                    <div style="width:25%;">
+                                                        <span class="fw-bold">Delivery Address</span>
+                                                    </div>
+                                                    <div class="px-1" style="width:3%">
+                                                        <span>:</span>
+                                                    </div>
+                                                    <div style="width:72%;">
+                                                        <t t-if="doc.partner_shipping_id">
+                                                            <span t-field="doc.partner_shipping_id.name" />
+                                                            <br />
+                                                            <span t-field="doc.partner_shipping_id.contact_address_complete" />
+                                                        </t>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex">
+                                                    <div style="width:25%;">
+                                                        <span class="fw-bold">Phone No</span>
+                                                    </div>
+                                                    <div class="px-1" style="width:3%">
+                                                        <span>:</span>
+                                                    </div>
+                                                    <div style="width:72%;">
+                                                        <span t-field="doc.partner_shipping_id.mobile" />
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex">
+                                                    <div style="width:25%;">
+                                                        <span class="fw-bold">GSTIN</span>
+
+                                                    </div>
+                                                    <div class="px-1" style="width:3%">
+                                                        <span>:</span>
+                                                    </div>
+                                                    <div style="width:72%;">
+                                                        <span t-field="doc.partner_shipping_id.vat" />
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex">
+                                                    <div style="width:25%;">
+                                                        <span class="fw-bold">Email</span>
+                                                    </div>
+                                                    <div class="px-1" style="width:3%">
+                                                        <span>:</span>
+                                                    </div>
+                                                    <div style="width:72%;">
+                                                        <span t-field="doc.partner_shipping_id.email" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12 d-flex">
+                                            <div class="col-6 p-1" style="border-right:1px solid black;">
+                                                <div class="d-flex">
+                                                    <div style="width:25%;">
+                                                        <span class="fw-bold">Sale Order No</span>
+                                                    </div>
+                                                    <div class="px-1" style="width:3%">
+                                                        <span>:</span>
+                                                    </div>
+                                                    <div style="width:72%;">
+                                                        <span t-field="doc.name" />
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex">
+                                                    <div style="width:25%;">
+                                                        <span class="fw-bold">Sale Order Date</span>
+                                                    </div>
+                                                    <div class="px-1" style="width:3%">
+                                                        <span>:</span>
+                                                    </div>
+                                                    <div style="width:72%;">
+                                                        <t t-if="doc.date_order">
+                                                            <span t-esc="doc.date_order.strftime('%d-%m-%Y')" />
+                                                        </t>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex">
+                                                    <div style="width:25%;">
+                                                        <span class="fw-bold">Salesperson</span>
+                                                    </div>
+                                                    <div class="px-1" style="width:3%">
+                                                        <span>:</span>
+                                                    </div>
+                                                    <div style="width:72%;">
+                                                        <t t-if="doc.user_id">
+                                                            <span t-field="doc.user_id" />
+                                                        </t>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex">
+                                                    <div style="width:25%;">
+                                                        <span class="fw-bold">Currency</span>
+                                                    </div>
+                                                    <div class="px-1" style="width:3%">
+                                                        <span>:</span>
+                                                    </div>
+                                                    <div style="width:72%;">
+                                                        <t t-if="doc.currency_id">
+                                                            <span t-field="doc.currency_id" />
+                                                        </t>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-6 p-1" style="">
+                                                <div class="d-flex">
+                                                    <div style="width:25%;">
+                                                        <span class="fw-bold">Delivery To</span>
+                                                    </div>
+                                                    <div class="px-1" style="width:3%">
+                                                        <span>:</span>
+                                                    </div>
+                                                    <div style="width:72%;">
+                                                        <t t-if="doc.y_delivered_to">
+                                                            <span t-field="doc.y_delivered_to" />
+                                                        </t>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex">
+                                                    <div style="width:25%;">
+                                                        <span class="fw-bold">Customer PO No</span>
+                                                    </div>
+                                                    <div class="px-1" style="width:3%">
+                                                        <span>:</span>
+                                                    </div>
+                                                    <div style="width:72%;">
+                                                        <span t-field="doc.y_custom_po_no" />
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex">
+                                                    <div style="width:25%;">
+                                                        <span class="fw-bold">Customer PO Date</span>
+                                                    </div>
+                                                    <div class="px-1" style="width:3%">
+                                                        <span>:</span>
+                                                    </div>
+                                                    <div style="width:72%;">
+                                                        <span t-field="doc.y_po_date" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th class="p-1 text-center" style="width:4%;border:1px solid black;">
+                                        <strong>Sl.No</strong>
+                                    </th>
+                                    <th class="p-1 text-center" style="width:9%;border:1px solid black;">
+                                        <strong>Item Code</strong>
+                                    </th>
+                                    <th colspan="2" class="p-1 text-center break-word" style="width:34%;border:1px solid black;">
+                                        <strong>Description</strong>
+                                    </th>
+                                    <th class="p-1 text-center fw-bold" style="width:9%;border:1px solid black;">HSN/SAC</th>
+                                    <th class="p-1 text-center" style="width:7%;border:1px solid black;">
+                                        <strong>Qty</strong>
+                                    </th>
+                                    <th class="p-1 text-center" style="width:6%;border:1px solid black;">
+                                        <strong>UOM</strong>
+                                    </th>
+                                    <th colspan="2" class="p-1 text-center" style="width:9%;border:1px solid black;">
+                                        <strong>Unit Price</strong>
+                                    </th>
+                                    <th class="p-1 text-center" style="width:9%;border:1px solid black;">
+                                        <strong>Taxes</strong>
+                                    </th>
+                                    <th class="p-1 text-center" style="width:13%;border:1px solid black;">
+                                        <strong>Amount</strong>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="i" t-value="1" />
+                                <t t-set="disc" t-value="0" />
+                                <t t-set="disc_tot" t-value="0" />
+                                <t t-set="amttotal" t-value="0" />
+                                <t t-set="current_subtotal" t-value="0" />
+                                <t t-foreach="doc.order_line" t-as="line">
+                                    <t t-if="line.display_type == 'line_section' or line.display_type == 'line_note'">
+                                        <tr>
+                                            <td colspan="100%" style="border:1px solid black;">
+                                                <span t-field="line.name"></span>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                    <t t-else="">
+                                        <tr style="page-break-inside:avoid;">
+                                            <td class="text-center" style="border:1px solid black;">
+                                                <span t-esc="i" />
+                                                <t t-set="i" t-value="i+1" />
+                                            </td>
+                                            <td class="text-center" style="border:1px solid black;">
+                                                <span t-esc="line.product_id.default_code" />
+                                            </td>
+                                            <td colspan="2" class="text-left" style="border:1px solid black;">
+                                                <span t-esc="line.product_id.name" />
+                                            </td>
+                                            <td class="text-center" style="border:1px solid black;">
+                                                <span t-field="line.product_id.l10n_in_hsn_code" />
+                                            </td>
+                                            <td class="text-center" style="border:1px solid black;">
+                                                <span t-field="line.product_qty" t-options="{'widget': 'float', 'precision': 0}" />
+                                            </td>
+                                            <td class="text-center" style="border:1px solid black;">
+                                                <span t-esc="line.product_uom.name" />
+                                            </td>
+                                            <td colspan="2" class="text-center" style="border:1px solid black;">
+                                                <span t-field="line.price_unit" t-options="{'widget': 'float', 'precision': 2}" />
+                                            </td>
+                                            <td class="text-center" style="border:1px solid black;">
+                                                <t t-if="line.tax_id">
+                                                    <t t-foreach="line.tax_id" t-as="tax">
+                                                        <span t-esc="tax.name" />
+                                                    </t>
+                                                </t>
+                                            </td>
+                                            <td class="text-right" style="text-align:right;border:1px solid black;">
+                                                <span t-esc="line.price_unit * line.product_qty" />
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </t>
+                                <tr style="page-break-inside:avoid;">
+                                    <td colspan="9" class="text-left" style="padding:1px;font-size:12px;border:1px solid
+                        black;border-right:none;"></td>
+                                    <td class="text-center" style="padding:1px;border:1px solid
+                        black;font-size:12px;border-left:none;width:10%">
+                                        <strong>Subtotal</strong>
+                                    </td>
+                                    <td class="text-right" style="text-align:right;padding:1px;font-size:12px;border:1px solid
+                        black;width:12px">
+                                        <span t-field="doc.y_gross_amount" />
+                                    </td>
+                                </tr>
+                            </tbody>
+
+                            <tbody style="border:1px solid black;font-size:12px; ">
+                                <t t-if="doc.currency_id.name == 'INR'">
+                                    <t t-set="i" t-value="1" />
+                                    <t t-set="disc" t-value="0" />
+                                    <t t-set="disc_tot" t-value="0" />
+                                    <t t-set="amttotal" t-value="0" />
+                                    <t t-set="current_subtotal" t-value="0" />
+                                    <t t-set="gt" t-value="0.0" />
+                                    <t t-set="tam" t-value="0.0" />
+
+                                    <t style="page-break-inside:avoid;">
+                                        <tr style="page-break-inside:avoid;">
+                                            <td colspan="11" class="text-center" style="font-size:12px;border:1px solid black;">
+                                                <strong style="color:black;font-size:12px">Category,Discount and GST Summary</strong>
+                                            </td>
+                                        </tr>
+                                        <tr style="color:black;font-size:12px;width:100%;page-break-inside:avoid;">
+                                            <th rowspan="2" class="text-center" style="border:1px solid black;">
+                                                <strong>Sl.No</strong>
+                                            </th>
+                                            <th rowspan="2" class="text-center" style="border:1px solid black;">
+                                                <strong>Category</strong>
+                                            </th>
+                                            <th rowspan="2" class="text-center" style="border:1px solid black;">
+                                                <strong>Amount</strong>
+                                            </th>
+                                            <th colspan="2" class="text-center" style="border:1px solid black;">
+                                                <strong>Trade Discount(%)</strong>
+                                            </th>
+                                            <th colspan="2" class="text-center" style="border:1px solid black;">
+                                                <strong>Qty Discount(%)</strong>
+                                            </th>
+                                            <th colspan="2" class="text-center" style="border:1px solid black;">
+                                                <strong>SPL Discount(%)</strong>
+                                            </th>
+                                            <th rowspan="2" class="text-center" style="border:1px solid black;">
+                                                <strong>Discount Amount</strong>
+                                            </th>
+                                        </tr>
+                                        <tr t-if="doc.currency_id.name == 'INR'" style="color:black;font-size:12px;width:100%">
+                                            <th class="text-center" style="border:1px solid black;">
+                                                <strong>Rate</strong>
+                                            </th>
+                                            <th class="text-center" style="border:1px solid black;">
+                                                <strong>Amount</strong>
+                                            </th>
+                                            <th class="text-center" style="border:1px solid black;">
+                                                <strong>Rate</strong>
+                                            </th>
+                                            <th class="text-center" style="border:1px solid black;">
+                                                <strong>Amount</strong>
+                                            </th>
+                                            <th class="text-center" style="border:1px solid black;">
+                                                <strong>Rate</strong>
+                                            </th>
+                                            <th class="text-center" style="border:1px solid black;">
+                                                <strong>Amount</strong>
+                                            </th>
+                                        </tr>
+
+                                        <t t-foreach="doc.y_discount_line_ids" t-as="line">
+                                            <tr style="page-break-inside:avoid;">
+                                                <td class="text-center" style="font-size:12px;border:1px solid black;">
+                                                    <span t-esc="i" />
+                                                    <t t-set="i" t-value="i+1" />
+                                                </td>
+                                                <td class="text-left" style="border:1px solid black;">
+                                                    <span t-field="line.y_category" />
+                                                </td>
+                                                <td class="text-center" style="border:1px solid black;">
+                                                    <span t-field="line.y_amount" />
+                                                </td>
+                                                <td class="text-center" style="border:1px solid black;">
+                                                    <span t-field="line.y_trade_discounts" />
+                                                </td>
+                                                <td class="text-center" style="border:1px solid black;">
+                                                    <span t-field="line.y_trade_amount" />
+                                                </td>
+                                                <td class="text-center" style="border:1px solid black;">
+                                                    <span t-field="line.y_quantity_discount" />
+                                                </td>
+                                                <td class="text-center" style="border:1px solid black;">
+                                                    <span t-field="line.y_quantity_amount" />
+                                                </td>
+                                                <td class="text-center" style="border:1px solid black;">
+                                                    <span t-field="line.y_special_discount" />
+                                                </td>
+                                                <td class="text-center" style="border:1px solid black;">
+                                                    <span t-field="line.y_special_amount" />
+                                                </td>
+                                                <td style="text-align:right;border:1px solid black;">
+                                                    <span t-field="line.y_total_discount_amount" />
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </t>
+
+                                    <tr style="page-break-inside:avoid;">
+                                        <td colspan="2" class="text-center" style="font-size:12px;padding:1px;border:1px solid black;">
+                                            <strong style="color:black">Gross Total</strong>
+                                        </td>
+                                        <td class="text-center" style="font-size:12px;padding:1px;border:1px solid black;">
+                                            <strong style="color:black">
+                                                <span t-field="doc.y_gross_amount" />
+                                            </strong>
+                                        </td>
+                                        <td colspan="5" class=""></td>
+                                        <td colspan="2" class="px-2" style="text-align:Right;font-size:12px;padding:1px;border:1px solid
+                        black;">
+                                            <strong style="color:black">Total Discount Amount</strong>
+                                        </td>
+                                        <td style="text-align:right;font-size:12px;width:13%;padding:1px;border:1px solid black;">
+                                            <t t-set="total_discount" t-value="0" />
+                                            <t t-foreach="doc.y_discount_line_ids" t-as="line">
+                                                <t t-set="total_discount" t-value="total_discount + line.y_total_discount_amount" />
+                                            </t>
+                                            <span t-field="doc.currency_id.symbol" />
+                                            <span t-esc="total_discount" t-options="{'widget': 'float', 'precision': 2}" />
+                                        </td>
+                                    </tr>
+                                    <tr style="page-break-inside:avoid;">
+                                        <td colspan="8" class="text-center" style="font-size:12px;padding:1px;border:1px solid black;">
+                                        </td>
+
+                                        <td colspan="2" class="text-left" style="text-align:Right;font-size:12px;padding:1px;border:1px
+                        solid black;padding-right:1%">
+                                            <strong style="color:black">Taxable Amount</strong>
+                                        </td>
+                                        <td style="text-align:right;font-size:12px;width:13%;padding:1px;border:1px solid black;">
+                                            <span t-field="doc.currency_id.symbol" />
+                                            <span t-field="doc.amount_untaxed" t-options="{'widget': 'float', 'precision': 2}" />
+                                        </td>
+                                    </tr>
+                                    <tr style="page-break-inside:avoid;">
+                                        <td colspan="8" class="text-center" style="font-size:12px;padding:1px;border:1px solid black;">
+                                        </td>
+
+                                        <td colspan="2" class="text-left" style="text-align:Right;font-size:12px;padding:1px;border:1px
+                        solid black;padding-right:1%">
+                                            <strong style="color:black">Tax Amount</strong>
+                                        </td>
+                                        <td style="text-align:right;font-size:12px;width:13%;padding:1px;border:1px solid black;">
+                                            <span t-field="doc.currency_id.symbol" />
+                                            <span t-field="doc.amount_tax" t-options="{'widget': 'float', 'precision': 2}" />
+                                        </td>
+                                    </tr>
+                                    <tr style="page-break-inside:avoid;">
+                                        <td colspan="8" class="text-center" style="font-size:12px;padding:1px;border:1px solid black;">
+                                        </td>
+                                        <td colspan="2" class="text-left" style="text-align:Right;font-size:12px;padding:1px;border:1px
+                        solid black;padding-right:1%">
+                                            <strong style="color:black">Round Off</strong>
+                                        </td>
+                                        <td style="text-align:right;font-size:12px;width:13%;padding:1px;border:1px solid black;">
+                                            <span t-if="doc.y_round_off_value" t-field="doc.currency_id.symbol" />
+                                            <span t-if="doc.y_round_off_value" t-esc="doc.y_round_off_value" t-options="{'widget': 'float',
+                        'precision': 2}" />
+                                        </td>
+                                    </tr>
+                                </t>
+
+                                <tr style="page-break-inside:avoid;">
+                                    <td colspan="9" class="text-left" style="font-size:12px;padding-left:2px;border:1px solid black;">
+                                        <span style="font-size:12px;">
+                                            <strong>Amount in Words: </strong>
+                                        </span>
+                                        <span class="">
+                                            <t t-if="doc.currency_id.name == 'INR'">
+                                                <t t-set="amountwords" t-value="doc.amount_in_words(doc.amount_total).title()" />
+                                                <span t-esc="amountwords" />
+                                            </t>
+                                            <t t-else="">
+                                                <span t-esc="doc.currency_id.amount_to_text(doc.amount_total).title()" />
+                                            </t>
+                                        </span>
+                                    </td>
+                                    <td colspan="1" style="text-align:right;font-size:12px;padding:1px;border:1px solid
+                        black;;padding-right:1%">
+                                        <strong style="color:black">Grand Total </strong>
+                                    </td>
+                                    <td class="text-right" style="font-size:12px;padding:1px;border:1px solid
+                        black;text-align:right;margin-right:2px">
+                                        <span t-field="doc.currency_id.symbol" />
+                                        <span t-if="doc.amount_total" t-field="doc.amount_total" t-options='{"widget": "float",
+                        "precision": 2}' />
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                            <table class="table table-borderless" style="page-break-av">
+                                <tbody>
+                                    <tr style="word-break: break-all;font-size:12px;">
+                                        <td style="padding:1px;width:100%;padding-top:3px">
+                                            <span class="fw-bold p-1">Terms and Conditions : </span>
+                                            <br class="" />
+                                            <div class="row p-2" style="word-break: break-all;">
+                                                <div style="width:98%;">
+                                                    <span style="word-break: break-all;" t-field="doc.note" />
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </table> -->
+
+                        <table class="table-borderless table-sm m-0 p-0"
+                            style="border-top:none;width:100%;font-size:12px;">
+                            <thead style="page-break-inside:avoid;">
+                                <tr class="page-break-inside:avoid;">
+                                    <td colspan="100%" class="p-0" style="border:1px solid black;">
+                                        <div class="p-1 text-center"
+                                            style="background:#fffdaf;width:100%;border-bottom:1px solid black; margin-bottom:0; ">
+                                            <span class="fw-bold fs-6" style="text-align:center;">SALE
+                                                ORDER</span>
+                                        </div>
+
+                                        <div class="col-12 d-flex"
+                                            style="font-size:12px;border-bottom:1px solid black;;">
+                                            <div class="col-6 p-1"
+                                                style="border-right:1px solid black;border-bottom:none;">
+                                                <div class="d-flex">
+                                                    <div style="width:25%;">
+                                                        <span class="fw-bold">Account No </span>
+                                                    </div>
+                                                    <div class="px-1" style="width:3%">
+                                                        <span>:</span>
+                                                    </div>
+                                                    <div style="width:72%;">
+                                                        <span t-field="doc.partner_id.ref"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex">
+                                                    <div style="width:25%;">
+                                                        <span class="fw-bold">Customer Name</span>
+                                                    </div>
+                                                    <div class="px-1" style="width:3%">
+                                                        <span>:</span>
+                                                    </div>
+                                                    <div style="width:72%;">
+                                                        <span t-field="doc.partner_id.name" />
+                                                        <br />
+
+                                                        <span t-if="doc.partner_id.street"
+                                                            t-esc="doc.partner_id.street" />
+                                                        <span t-if="doc.partner_id.street2"
+                                                            t-esc="doc.partner_id.street2" />
+                                                        <br />
+                                                        <t t-if="doc.partner_id.city">
+                                                            <span t-field="doc.partner_id.city" />
+                                                        </t>
+                                                        <t t-if="doc.partner_id.city">
+                                                            <t t-if="doc.partner_id.state_id">,</t>
+                                                        </t>
+                                                        <t t-if="doc.partner_id.state_id">
+                                                            <span t-field="doc.partner_id.state_id" />
+                                                        </t>
+
+                                                        <t t-if="doc.partner_id.state_id">
+                                                            <t t-if="doc.partner_id.country_id">, </t>
+                                                        </t>
+                                                        <t t-if="doc.partner_id.country_id">
+                                                            <span
+                                                                t-field="doc.partner_id.country_id" />
+                                                        </t>
+
+                                                        <t t-if="doc.partner_id.zip">,</t>
+                                                        <t t-if="doc.partner_id.zip">
+                                                            <span t-field="doc.partner_id.zip" />
+                                                        </t>
+
+
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex">
+                                                    <div style="width:25%;">
+                                                        <span class="fw-bold">GSTIN</span>
+                                                    </div>
+                                                    <div class="px-1" style="width:3%">
+                                                        <span>:</span>
+                                                    </div>
+                                                    <div style="width:72%;">
+                                                        <span t-field="doc.partner_id.vat" />
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex">
+                                                    <div style="width:25%;">
+                                                        <span class="fw-bold">Mobile No</span>
+                                                    </div>
+                                                    <div class="px-1" style="width:3%">
+                                                        <span>:</span>
+                                                    </div>
+                                                    <div style="width:72%;">
+                                                        <span t-field="doc.partner_id.mobile" />
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex">
+                                                    <div style="width:25%;">
+                                                        <span class="fw-bold">Email</span>
+                                                    </div>
+                                                    <div class="px-1" style="width:3%">
+                                                        <span>:</span>
+                                                    </div>
+                                                    <div style="width:72%;">
+                                                        <span t-field="doc.partner_id.email" />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-6 p-1"
+                                                style="">
+                                                <div class="d-flex">
+                                                    <div style="width:25%;">
+                                                        <span class="fw-bold">Delivery Address</span>
+                                                    </div>
+                                                    <div class="px-1" style="width:3%">
+                                                        <span>:</span>
+                                                    </div>
+                                                    <div style="width:72%;">
+                                                        <t t-if="doc.partner_shipping_id">
+                                                            <span
+                                                                t-field="doc.partner_shipping_id.name" />
+                                                            <br />
+                                                            <span
+                                                                t-if="doc.partner_shipping_id.street"
+                                                                t-esc="doc.partner_shipping_id.street" />
+                                                            <span
+                                                                t-if="doc.partner_shipping_id.street2"
+                                                                t-esc="doc.partner_shipping_id.street2" />
+                                                            <br />
+                                                            <t t-if="doc.partner_shipping_id.city">
+                                                                <span
+                                                                    t-field="doc.partner_shipping_id.city" />
+                                                            </t>
+                                                            <t t-if="doc.partner_shipping_id.city">
+                                                                <t
+                                                                    t-if="doc.partner_shipping_id.state_id">
+                                                                    ,</t>
+                                                            </t>
+                                                            <t
+                                                                t-if="doc.partner_shipping_id.state_id">
+                                                                <span
+                                                                    t-field="doc.partner_shipping_id.state_id" />
+                                                            </t>
+
+                                                            <t
+                                                                t-if="doc.partner_shipping_id.state_id">
+                                                                <t
+                                                                    t-if="doc.partner_shipping_id.country_id">
+                                                                    , </t>
+                                                            </t>
+                                                            <t
+                                                                t-if="doc.partner_shipping_id.country_id">
+                                                                <span
+                                                                    t-field="doc.partner_shipping_id.country_id" />
+                                                            </t>
+
+                                                            <t t-if="doc.partner_shipping_id.zip">,</t>
+                                                            <t t-if="doc.partner_shipping_id.zip">
+                                                                <span
+                                                                    t-field="doc.partner_shipping_id.zip" />
+                                                            </t>
+
+                                                        </t>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex">
+                                                    <div style="width:25%;">
+                                                        <span class="fw-bold">Phone No</span>
+                                                    </div>
+                                                    <div class="px-1" style="width:3%">
+                                                        <span>:</span>
+                                                    </div>
+                                                    <div style="width:72%;">
+                                                        <span
+                                                            t-field="doc.partner_shipping_id.mobile" />
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex">
+                                                    <div style="width:25%;">
+                                                        <span class="fw-bold">GSTIN</span>
+
+                                                    </div>
+                                                    <div class="px-1" style="width:3%">
+                                                        <span>:</span>
+                                                    </div>
+                                                    <div style="width:72%;">
+                                                        <span t-field="doc.partner_shipping_id.vat" />
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex">
+                                                    <div style="width:25%;">
+                                                        <span class="fw-bold">Email</span>
+                                                    </div>
+                                                    <div class="px-1" style="width:3%">
+                                                        <span>:</span>
+                                                    </div>
+                                                    <div style="width:72%;">
+                                                        <span
+                                                            t-field="doc.partner_shipping_id.email" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12 d-flex"
+                                            style="font-size:12px;">
+                                            <div class="col-6 p-1"
+                                                style="border-right:1px solid black;">
+                                                <div class="d-flex">
+                                                    <div style="width:25%;">
+                                                        <span class="fw-bold">Sale Order No</span>
+                                                    </div>
+                                                    <div class="px-1" style="width:3%">
+                                                        <span>:</span>
+                                                    </div>
+                                                    <div style="width:72%;">
+                                                        <span t-field="doc.name" />
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex">
+                                                    <div style="width:25%;">
+                                                        <span class="fw-bold">Sale Order Date</span>
+                                                    </div>
+                                                    <div class="px-1" style="width:3%">
+                                                        <span>:</span>
+                                                    </div>
+                                                    <div style="width:72%;">
+                                                        <t t-if="doc.date_order">
+                                                            <span
+                                                                t-esc="doc.date_order.strftime('%d-%m-%Y')" />
+                                                        </t>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex">
+                                                    <div style="width:25%;">
+                                                        <span class="fw-bold">Salesperson</span>
+                                                    </div>
+                                                    <div class="px-1" style="width:3%">
+                                                        <span>:</span>
+                                                    </div>
+                                                    <div style="width:72%;">
+                                                        <t t-if="doc.user_id">
+                                                            <span t-field="doc.user_id" />
+                                                        </t>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex">
+                                                    <div style="width:25%;">
+                                                        <span class="fw-bold">Currency</span>
+                                                    </div>
+                                                    <div class="px-1" style="width:3%">
+                                                        <span>:</span>
+                                                    </div>
+                                                    <div style="width:72%;">
+                                                        <t t-if="doc.currency_id">
+                                                            <span t-field="doc.currency_id" />
+                                                        </t>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-6 p-1" style="">
+                                                <div class="d-flex">
+                                                    <div style="width:25%;">
+                                                        <span class="fw-bold">Delivery To</span>
+                                                    </div>
+                                                    <div class="px-1" style="width:3%">
+                                                        <span>:</span>
+                                                    </div>
+                                                    <div style="width:72%;">
+                                                        <t t-if="doc.y_delivered_to">
+                                                            <span t-field="doc.y_delivered_to" />
+                                                        </t>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex">
+                                                    <div style="width:25%;">
+                                                        <span class="fw-bold">Customer PO No</span>
+                                                    </div>
+                                                    <div class="px-1" style="width:3%">
+                                                        <span>:</span>
+                                                    </div>
+                                                    <div style="width:72%;">
+                                                        <span t-field="doc.y_custom_po_no" />
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex">
+                                                    <div style="width:25%;">
+                                                        <span class="fw-bold">Customer PO Date</span>
+                                                    </div>
+                                                    <div class="px-1" style="width:3%">
+                                                        <span>:</span>
+                                                    </div>
+                                                    <div style="width:72%;">
+                                                        <span t-field="doc.y_po_date" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </td>
+                                </tr>
+
+                                <tr style="page-break-inside:avoid;">
+                                    <th class="p-1 text-center"
+                                        style="width:4%;border:1px solid black;">
+                                        <strong>Sl.No</strong>
+                                    </th>
+                                    <th class="p-1 text-center"
+                                        style="width:9%;border:1px solid black;">
+                                        <strong>Item Code</strong>
+                                    </th>
+                                    <th colspan="2" class="p-1 text-center break-word"
+                                        style="width:34%;border:1px solid black;">
+                                        <strong>Description</strong>
+                                    </th>
+                                    <!-- <th class="p-1 text-center fw-bold"
+                                    style="width:9%;border:1px solid black;">HSN/SAC</th> -->
+                                    <th class="p-1 text-center"
+                                        style="width:7%;border:1px solid black;">
+                                        <strong>Qty</strong>
+                                    </th>
+                                    <th class="p-1 text-center"
+                                        style="width:6%;border:1px solid black;">
+                                        <strong>UOM</strong>
+                                    </th>
+                                    <th colspan="2" class="p-1 text-center"
+                                        style="width:9%;border:1px solid black;">
+                                        <strong>Unit Price</strong>
+                                    </th>
+                                    <th class="p-1 text-center"
+                                        style="width:9%;border:1px solid black;">
+                                        <strong>Taxes</strong>
+                                    </th>
+                                    <th class="p-1 text-center"
+                                        style="width:13%;border:1px solid black;">
+                                        <strong>Amount</strong>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="i" t-value="1" />
+                                <t t-set="disc" t-value="0" />
+                                <t t-set="disc_tot" t-value="0" />
+                                <t t-set="amttotal" t-value="0" />
+                                <t t-set="current_subtotal" t-value="0" />
+                                <t t-foreach="doc.order_line" t-as="line">
+                                    <t
+                                        t-if="line.display_type == 'line_section' or line.display_type == 'line_note'">
+                                        <tr style="page-break-inside:avoid;">
+                                            <td colspan="100%" style="border:1px solid black;">
+                                                <span t-field="line.name"></span>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                    <t t-else="">
+                                        <tr style="page-break-inside:avoid;">
+                                            <td class="text-center" style="border:1px solid black;">
+                                                <span t-esc="i" />
+                                                <t t-set="i" t-value="i+1" />
+                                            </td>
+                                            <td class="text-center" style="border:1px solid black;">
+                                                <span t-esc="line.product_id.default_code" />
+                                            </td>
+                                            <td colspan="2" class="text-left"
+                                                style="border:1px solid black;">
+                                                <span t-esc="line.name" />
+                                            </td>
+                                            <!-- <td class="text-center" style="border:1px solid
+                                            black;">
+                                                <span t-field="line.product_id.l10n_in_hsn_code" />
+                                            </td> -->
+                                            <td class="text-center" style="border:1px solid black;">
+                                                <span t-field="line.product_qty"
+                                                    t-options="{'widget': 'float', 'precision': 0}" />
+                                            </td>
+                                            <td class="text-center" style="border:1px solid black;">
+                                                <span t-esc="line.product_uom.name" />
+                                            </td>
+                                            <td colspan="2" class="text-center"
+                                                style="border:1px solid black;">
+                                                <span t-field="line.price_unit"
+                                                    t-options="{'widget': 'float', 'precision': 2}" />
+                                            </td>
+                                            <td class="text-center" style="border:1px solid black;">
+                                                <t t-if="line.tax_id">
+                                                    <t t-foreach="line.tax_id" t-as="tax">
+                                                        <span t-esc="tax.name" />
+                                                    </t>
+                                                </t>
+                                            </td>
+                                            <td class="text-right"
+                                                style="text-align:right;border:1px solid black;">
+                                                <t t-esc="(line.price_unit * line.product_qty)"
+                                                    t-options="{'widget': 'float', 'precision': 2}" />
+                                                <!-- <span t-field="line.price_subtotal"
+                                                t-options="{'widget': 'float', 'precision': 2}" /> -->
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </t>
+                                <t t-if="doc.currency_id.name == 'INR'">
+                                    <tr style="">
+
+                                        <td colspan="8" class="text-left"
+                                            style="padding:1px;font-size:12px;border:1px solid black;border-right:none;"></td>
+                                        <td class="text-center"
+                                            style="padding:1px;border:1px solid black;font-size:12px;border-left:none;width:10%">
+                                            <strong>Subtotal</strong>
+                                        </td>
+                                        <td class="text-right"
+                                            style="text-align:right;padding:1px;font-size:12px;border:1px solid black;width:12px">
+                                            <span t-field="doc.y_gross_amount" t-options='{"widget": "float", "precision": 2}' />
+                                        </td>   
+                                    </tr>
+                                </t>
+
+                                <t t-if="doc.currency_id.name != 'INR'">
+                                    <tr style="">
+
+                                        <td colspan="8" class="text-left"
+                                            style="padding:1px;font-size:12px;border:1px solid black;border-right:none;"></td>
+                                        <td class="text-center"
+                                            style="padding:1px;border:1px solid black;font-size:12px;border-left:none;width:10%">
+                                            <strong>Grand Total</strong>
+                                        </td>
+                                        <td class="text-right"
+                                            style="text-align:right;padding:1px;font-size:12px;border:1px solid black;width:12px">
+                                            <span t-field="doc.currency_id.symbol" />
+                                            <span t-if="doc.amount_total"
+                                                t-field="doc.amount_total"
+                                                t-options='{"widget": "float", "precision": 2}' />
+                                        </td>
+                                    </tr>
+                                    <tr style="">
+
+                                        <td colspan="10" class="text-left p-1"
+                                            style="border:1px solid black;font-size:12px;">
+                                            <span style="font-size:12px;">
+                                                <strong>Amount in Words: </strong>
+                                            </span>
+                                            <span class="">
+
+                                                <span
+                                                    t-esc="doc.currency_id.amount_to_text(doc.amount_total).title()" />
+
+                                            </span>
+                                        </td>
+
+                                    </tr>
+                                </t>
+
+                                <tr class="page-break-inside:avoid;">
+                                    <td colspan="10" class="p-0">
+                                        <t t-if="doc.currency_id.name == 'INR'">
+                                            <table colspan="10"
+                                                class="table table-borderless m-0 p-0"
+                                                style="">
+
+                                                <t t-set="i" t-value="1" />
+                                                <t t-set="disc" t-value="0" />
+                                                <t t-set="disc_tot" t-value="0" />
+                                                <t t-set="amttotal" t-value="0" />
+                                                <t t-set="current_subtotal" t-value="0" />
+                                                <t t-set="gt" t-value="0.0" />
+                                                <t t-set="tam" t-value="0.0" />
+
+                                                <tr style="page-break-inside:avoid;">
+                                                    <td colspan="10" class="text-center p-1"
+                                                        style="font-size:14px;border:1px solid black;border-top:none;word-wrap:break-word;word-break:break-word;">
+                                                        <span class="fw-bold">Category,Discount and
+                                                            GST Summary</span>
+                                                    </td>
+                                                </tr>
+                                                <tr
+                                                    style="color:black;font-size:12px;width:100%;page-break-inside:avoid;">
+                                                    <th rowspan="2" class="text-center"
+                                                        style="border:1px solid black;width:5%;word-wrap:break-word;word-break:break-word;">
+                                                        <strong>Sl.No</strong>
+                                                    </th>
+                                                    <th rowspan="2" class="text-center"
+                                                        style="border:1px solid black;width:20%;word-wrap:break-word;word-break:break-word;">
+                                                        <strong>Category</strong>
+                                                    </th>
+                                                    <th rowspan="2" class="text-center"
+                                                        style="border:1px solid black;width:15%;word-wrap:break-word;word-break:break-word;">
+                                                        <strong>Amount</strong>
+                                                    </th>
+                                                    <th colspan="2" class="text-center"
+                                                        style="border:1px solid black;width:15%;word-wrap:break-word;word-break:break-word;">
+                                                        <strong>Trade Discount(%)</strong>
+                                                    </th>
+                                                    <th colspan="2" class="text-center"
+                                                        style="border:1px solid black;width:15%;word-wrap:break-word;word-break:break-word;">
+                                                        <strong>Qty Discount(%)</strong>
+                                                    </th>
+                                                    <th colspan="2" class="text-center"
+                                                        style="border:1px solid black;width:15%;word-wrap:break-word;word-break:break-word;">
+                                                        <strong>SPL Discount(%)</strong>
+                                                    </th>
+                                                    <th rowspan="2" class="text-center"
+                                                        style="border:1px solid black;width:15%;word-wrap:break-word;word-break:break-word;">
+                                                        <strong>Discount Amount</strong>
+                                                    </th>
+                                                </tr>
+                                                <tr t-if="doc.currency_id.name == 'INR'"
+                                                    style="color:black;font-size:12px;width:100%">
+                                                    <th class="text-center"
+                                                        style="border:1px solid black;width:6%;word-wrap:break-word;word-break:break-word;">
+                                                        <strong>Rate</strong>
+                                                    </th>
+                                                    <th class="text-center"
+                                                        style="border:1px solid black;width:9%;word-wrap:break-word;word-break:break-word;">
+                                                        <strong>Amount</strong>
+                                                    </th>
+                                                    <th class="text-center"
+                                                        style="border:1px solid black;width:6%;word-wrap:break-word;word-break:break-word;">
+                                                        <strong>Rate</strong>
+                                                    </th>
+                                                    <th class="text-center"
+                                                        style="border:1px solid black;width:9%;word-wrap:break-word;word-break:break-word;">
+                                                        <strong>Amount</strong>
+                                                    </th>
+                                                    <th class="text-center"
+                                                        style="border:1px solid black;width:6%;word-wrap:break-word;word-break:break-word;">
+                                                        <strong>Rate</strong>
+                                                    </th>
+                                                    <th class="text-center"
+                                                        style="border:1px solid black;width:9%;word-wrap:break-word;word-break:break-word;">
+                                                        <strong>Amount</strong>
+                                                    </th>
+                                                </tr>
+
+                                                <t t-foreach="doc.y_discount_line_ids" t-as="line">
+                                                    <tr
+                                                        style="page-break-inside:avoid;font-size:12px;">
+                                                        <td class="text-center p-1"
+                                                            style="font-size:12px;border:1px solid black;word-wrap:break-word;word-break:break-word;">
+                                                            <span t-esc="i" />
+                                                            <t t-set="i" t-value="i+1" />
+                                                        </td>
+                                                        <td class="text-left p-1"
+                                                            style="border:1px solid black;word-wrap:break-word;word-break:break-word;">
+                                                            <span t-field="line.y_category" />
+                                                        </td>
+                                                        <td class="text-center p-1"
+                                                            style="border:1px solid black;word-wrap:break-word;word-break:break-word;">
+                                                            <span t-field="line.y_amount" 
+                                                             t-options="{'widget': 'float', 'precision': 2}"/>
+                                                        </td>
+                                                        <td class="text-center p-1"
+                                                            style="border:1px solid black;word-wrap:break-word;word-break:break-word;">
+                                                            <span t-field="line.y_trade_discounts" />
+                                                        </td>
+                                                        <td class="text-center p-1"
+                                                            style="border:1px solid black;word-wrap:break-word;word-break:break-word;">
+                                                            <span t-field="line.y_trade_amount"
+                                                                t-options="{'widget': 'float', 'precision': 2}" />
+                                                        </td>
+                                                        <td class="text-center p-1"
+                                                            style="border:1px solid black;word-wrap:break-word;word-break:break-word;">
+                                                            <span t-field="line.y_quantity_discount" />
+                                                        </td>
+                                                        <td class="text-center p-1"
+                                                            style="border:1px solid black;word-wrap:break-word;word-break:break-word;">
+                                                            <span t-field="line.y_quantity_amount"
+                                                                t-options="{'widget': 'float', 'precision': 2}" />
+                                                        </td>
+                                                        <td class="text-center p-1"
+                                                            style="border:1px solid black;word-wrap:break-word;word-break:break-word;">
+                                                            <span t-field="line.y_special_discount" />
+                                                        </td>
+                                                        <td class="text-center p-1"
+                                                            style="border:1px solid black;word-wrap:break-word;word-break:break-word;">
+                                                            <span t-field="line.y_special_amount"
+                                                                t-options="{'widget': 'float', 'precision': 2}" />
+                                                        </td>
+                                                        <td class="p-1"
+                                                            style="text-align:right;border:1px solid black;word-wrap:break-word;word-break:break-word;">
+                                                            <span
+                                                                t-field="line.y_total_discount_amount"
+                                                                t-options="{'widget': 'float', 'precision': 2}" />
+                                                        </td>
+                                                    </tr>
+                                                </t>
+
+                                                <tr style="page-break-inside:avoid;">
+                                                    <td colspan="2" class="text-center p-1"
+                                                        style="font-size:12px;border:1px solid black;word-wrap:break-word;word-break:break-word;">
+                                                        <strong style="color:black">Gross Total</strong>
+                                                    </td>
+                                                    <td class="text-center p-1"
+                                                        style="font-size:12px;border:1px solid black;word-wrap:break-word;word-break:break-word;">
+                                                        <strong style="color:black">
+                                                            <span t-field="doc.y_gross_amount"  t-options="{'widget': 'float', 'precision': 2}"/>
+                                                        </strong>
+                                                    </td>
+                                                    <td colspan="4" class=""></td>
+                                                    <td colspan="2" class="px-2 p-1"
+                                                        style="text-align:Right;font-size:12px;border:1px solid black;word-wrap:break-word;word-break:break-word;">
+                                                        <strong style="color:black">Total Discount</strong>
+                                                    </td>
+                                                    <td class="p-1"
+                                                        style="text-align:right;font-size:12px;width:13%;border:1px solid black;word-wrap:break-word;word-break:break-word;">
+                                                        <t t-set="total_discount" t-value="0" />
+                                                        <t t-foreach="doc.y_discount_line_ids"
+                                                            t-as="line">
+                                                            <t t-set="total_discount"
+                                                                t-value="total_discount + line.y_total_discount_amount" />
+                                                        </t>
+                                                        <span t-field="doc.currency_id.symbol" />
+                                                        <span t-esc="total_discount"
+                                                            t-options="{'widget': 'float', 'precision': 2}" />
+                                                    </td>
+                                                </tr>
+                                                <t>
+                                                    <tr style="page-break-inside:avoid;">
+                                                        <td colspan="7" class="text-center p-1"
+                                                            style="font-size:12px;border:1px solid black;word-wrap:break-word;word-break:break-word;">
+                                                        </td>
+                                                        <td colspan="2" class="text-left p-1"
+                                                            style="text-align:Right;font-size:12px;border:1px solid black;padding-right:1%;word-wrap:break-word;word-break:break-word;">
+                                                            <strong style="color:black">Taxable
+                                                                Amount</strong>
+                                                        </td>
+                                                        <td class="p-1"
+                                                            style="text-align:right;font-size:12px;width:13%;border:1px solid black;word-wrap:break-word;word-break:break-word;">
+                                                            <span t-field="doc.currency_id.symbol" />
+                                                            <span t-field="doc.amount_untaxed"
+                                                                t-options="{'widget': 'float', 'precision': 2}" />
+                                                        </td>
+                                                    </tr>
+                                                    <tr style="page-break-inside:avoid;">
+                                                        <td colspan="7" class="text-center p-1"
+                                                            style="font-size:12px;border:1px solid black;word-wrap:break-word;word-break:break-word;">
+                                                        </td>
+                                                        <td colspan="2" class="text-left p-1"
+                                                            style="text-align:Right;font-size:12px;border:1px solid black;padding-right:1%;word-wrap:break-word;word-break:break-word;">
+                                                            <strong style="color:black">Tax Amount</strong>
+                                                        </td>
+                                                        <td class="p-1"
+                                                            style="text-align:right;font-size:12px;width:13%;border:1px solid black;word-wrap:break-word;word-break:break-word;">
+                                                            <span t-field="doc.currency_id.symbol" />
+                                                            <span t-field="doc.amount_tax"
+                                                                t-options="{'widget': 'float', 'precision': 2}" />
+                                                        </td>
+                                                    </tr>
+
+                                                    <tr style="page-break-inside:avoid;">
+                                                        <td colspan="7" class="text-left p-1"
+                                                            style="font-size:12px;border:1px solid black;word-wrap:break-word;word-break:break-word;overflow-wrap:break-word;hyphens:auto;">
+                                                            <span style="font-size:12px;">
+                                                                <strong>Amount in Words: </strong>
+                                                            </span>
+                                                            <span class="">
+                                                                <t
+                                                                    t-if="doc.currency_id.name == 'INR'">
+                                                                    <t t-set="amountwords"
+                                                                        t-value="doc.amount_in_words(doc.amount_total).title()" />
+                                                                    <span t-esc="amountwords" />
+                                                                </t>
+                                                                <t t-else="">
+                                                                    <span
+                                                                        t-esc="doc.currency_id.amount_to_text(doc.amount_total).title()" />
+                                                                </t>
+                                                            </span>
+                                                        </td>
+                                                        <td colspan="2" class="p-1"
+                                                            style="text-align:right;font-size:12px;border:1px solid black;padding-right:1%;word-wrap:break-word;word-break:break-word;">
+                                                            <strong style="color:black">Grand Total </strong>
+                                                        </td>
+                                                        <td class="text-right p-1"
+                                                            style="font-size:12px;border:1px solid black;text-align:right;margin-right:2px;word-wrap:break-word;word-break:break-word;">
+                                                            <span t-field="doc.currency_id.symbol" />
+                                                            <span t-if="doc.amount_total"
+                                                                t-field="doc.amount_total"
+                                                                t-options='{"widget": "float", "precision": 2}' />
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                            </table>
+                                        </t>
+                                    </td>
+                                </tr>
+
+                                <!-- <tr style="">
+                                    <td colspan="100%" class="text-left p-0"
+                                        style="font-size:12px;">
+                                        <table class="table table-borderless"
+                                            style="width:100%; page-break-before: always; font-size:12px;">
+                                            <tr>
+                                                <td class="text-left p-0">
+                                                    <span class="fw-bold">Terms and Conditions:</span>
+                                                    <br />
+                                                    <span t-esc="doc.note" />
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr> -->
+                            </tbody>
+
+                            <!-- Second tbody with custom column widths -->
+                            <!-- <table class="table table-borderless m-0 p-0" style="width:100%;">
+                                <t t-if="doc.currency_id.name == 'INR'">
+                                    <t t-set="i" t-value="1" />
+                                    <t t-set="disc" t-value="0" />
+                                    <t t-set="disc_tot" t-value="0" />
+                                    <t t-set="amttotal" t-value="0" />
+                                    <t t-set="current_subtotal" t-value="0" />
+                                    <t t-set="gt" t-value="0.0" />
+                                    <t t-set="tam" t-value="0.0" />
+
+                                    <tr style="page-break-inside:avoid;">
+                                        <td colspan="10" class="text-center p-1"
+                                            style="font-size:14px;border:1px solid
+                            black;border-top:none;word-wrap:break-word;word-break:break-word;">
+                                            <span class="fw-bold">Category,Discount and GST Summary</span>
+                                        </td>
+                                    </tr>
+                                    <tr
+                                        style="color:black;font-size:12px;width:100%;page-break-inside:avoid;">
+                                        <th rowspan="2" class="text-center"
+                                            style="border:1px solid black;width:5%;word-wrap:break-word;word-break:break-word;">
+                                            <strong>Sl.No</strong>
+                                        </th>
+                                        <th rowspan="2" class="text-center"
+                                            style="border:1px solid black;width:20%;word-wrap:break-word;word-break:break-word;">
+                                            <strong>Category</strong>
+                                        </th>
+                                        <th rowspan="2" class="text-center"
+                                            style="border:1px solid black;width:15%;word-wrap:break-word;word-break:break-word;">
+                                            <strong>Amount</strong>
+                                        </th>
+                                        <th colspan="2" class="text-center"
+                                            style="border:1px solid black;width:15%;word-wrap:break-word;word-break:break-word;">
+                                            <strong>Trade Discount(%)</strong>
+                                        </th>
+                                        <th colspan="2" class="text-center"
+                                            style="border:1px solid black;width:15%;word-wrap:break-word;word-break:break-word;">
+                                            <strong>Qty Discount(%)</strong>
+                                        </th>
+                                        <th colspan="2" class="text-center"
+                                            style="border:1px solid black;width:15%;word-wrap:break-word;word-break:break-word;">
+                                            <strong>SPL Discount(%)</strong>
+                                        </th>
+                                        <th rowspan="2" class="text-center"
+                                            style="border:1px solid black;width:15%;word-wrap:break-word;word-break:break-word;">
+                                            <strong>Discount Amount</strong>
+                                        </th>
+                                    </tr>
+                                    <tr t-if="doc.currency_id.name == 'INR'"
+                                        style="color:black;font-size:12px;width:100%">
+                                        <th class="text-center"
+                                            style="border:1px solid black;width:6%;word-wrap:break-word;word-break:break-word;">
+                                            <strong>Rate</strong>
+                                        </th>
+                                        <th class="text-center"
+                                            style="border:1px solid black;width:9%;word-wrap:break-word;word-break:break-word;">
+                                            <strong>Amount</strong>
+                                        </th>
+                                        <th class="text-center"
+                                            style="border:1px solid black;width:6%;word-wrap:break-word;word-break:break-word;">
+                                            <strong>Rate</strong>
+                                        </th>
+                                        <th class="text-center"
+                                            style="border:1px solid black;width:9%;word-wrap:break-word;word-break:break-word;">
+                                            <strong>Amount</strong>
+                                        </th>
+                                        <th class="text-center"
+                                            style="border:1px solid black;width:6%;word-wrap:break-word;word-break:break-word;">
+                                            <strong>Rate</strong>
+                                        </th>
+                                        <th class="text-center"
+                                            style="border:1px solid black;width:9%;word-wrap:break-word;word-break:break-word;">
+                                            <strong>Amount</strong>
+                                        </th>
+                                    </tr>
+
+                                    <t t-foreach="doc.y_discount_line_ids" t-as="line">
+                                        <tr style="page-break-inside:avoid;font-size:12px;">
+                                            <td class="text-center p-1"
+                                                style="font-size:12px;border:1px solid black;word-wrap:break-word;word-break:break-word;">
+                                                <span t-esc="i" />
+                                                <t t-set="i" t-value="i+1" />
+                                            </td>
+                                            <td class="text-left p-1"
+                                                style="border:1px solid black;word-wrap:break-word;word-break:break-word;">
+                                                <span t-field="line.y_category" />
+                                            </td>
+                                            <td class="text-center p-1"
+                                                style="border:1px solid black;word-wrap:break-word;word-break:break-word;">
+                                                <span t-field="line.y_amount" />
+                                            </td>
+                                            <td class="text-center p-1"
+                                                style="border:1px solid black;word-wrap:break-word;word-break:break-word;">
+                                                <span t-field="line.y_trade_discounts" />
+                                            </td>
+                                            <td class="text-center p-1"
+                                                style="border:1px solid black;word-wrap:break-word;word-break:break-word;">
+                                                <span t-field="line.y_trade_amount"
+                                                    t-options="{'widget': 'float', 'precision': 2}" />
+                                            </td>
+                                            <td class="text-center p-1"
+                                                style="border:1px solid black;word-wrap:break-word;word-break:break-word;">
+                                                <span t-field="line.y_quantity_discount" />
+                                            </td>
+                                            <td class="text-center p-1"
+                                                style="border:1px solid black;word-wrap:break-word;word-break:break-word;">
+                                                <span t-field="line.y_quantity_amount"
+                                                    t-options="{'widget': 'float', 'precision': 2}" />
+                                            </td>
+                                            <td class="text-center p-1"
+                                                style="border:1px solid black;word-wrap:break-word;word-break:break-word;">
+                                                <span t-field="line.y_special_discount" />
+                                            </td>
+                                            <td class="text-center p-1"
+                                                style="border:1px solid black;word-wrap:break-word;word-break:break-word;">
+                                                <span t-field="line.y_special_amount"
+                                                    t-options="{'widget': 'float', 'precision': 2}" />
+                                            </td>
+                                            <td class="p-1"
+                                                style="text-align:right;border:1px solid black;word-wrap:break-word;word-break:break-word;">
+                                                <span t-field="line.y_total_discount_amount"
+                                                    t-options="{'widget': 'float', 'precision': 2}" />
+                                            </td>
+                                        </tr>
+                                    </t>
+
+                                    <tr style="page-break-inside:avoid;">
+                                        <td colspan="2" class="text-center p-1"
+                                            style="font-size:12px;border:1px solid black;word-wrap:break-word;word-break:break-word;">
+                                            <strong style="color:black">Gross Total</strong>
+                                        </td>
+                                        <td class="text-center p-1"
+                                            style="font-size:12px;border:1px solid black;word-wrap:break-word;word-break:break-word;">
+                                            <strong style="color:black">
+                                                <span t-field="doc.y_gross_amount" />
+                                            </strong>
+                                        </td>
+                                        <td colspan="4" class=""></td>
+                                        <td colspan="2" class="px-2 p-1"
+                                            style="text-align:Right;font-size:12px;border:1px solid
+                            black;word-wrap:break-word;word-break:break-word;">
+                                            <strong style="color:black">Total Discount</strong>
+                                        </td>
+                                        <td class="p-1"
+                                            style="text-align:right;font-size:12px;width:13%;border:1px solid
+                            black;word-wrap:break-word;word-break:break-word;">
+                                            <t t-set="total_discount" t-value="0" />
+                                            <t t-foreach="doc.y_discount_line_ids" t-as="line">
+                                                <t t-set="total_discount"
+                                                    t-value="total_discount + line.y_total_discount_amount" />
+                                            </t>
+                                            <span t-field="doc.currency_id.symbol" />
+                                            <span t-esc="total_discount"
+                                                t-options="{'widget': 'float', 'precision': 2}" />
+                                        </td>
+                                    </tr>
+                                    <t style="page-break-inside:avoid;">
+                                        <tr style="page-break-inside:avoid;">
+                                            <td colspan="7" class="text-center p-1"
+                                                style="font-size:12px;border:1px solid black;word-wrap:break-word;word-break:break-word;">
+                                            </td>
+                                            <td colspan="2" class="text-left p-1"
+                                                style="text-align:Right;font-size:12px;border:1px solid
+                            black;padding-right:1%;word-wrap:break-word;word-break:break-word;">
+                                                <strong style="color:black">Taxable Amount</strong>
+                                            </td>
+                                            <td class="p-1"
+                                                style="text-align:right;font-size:12px;width:13%;border:1px solid
+                            black;word-wrap:break-word;word-break:break-word;">
+                                                <span t-field="doc.currency_id.symbol" />
+                                                <span t-field="doc.amount_untaxed"
+                                                    t-options="{'widget': 'float', 'precision': 2}" />
+                                            </td>
+                                        </tr>
+                                        <tr style="page-break-inside:avoid;">
+                                            <td colspan="7" class="text-center p-1"
+                                                style="font-size:12px;border:1px solid black;word-wrap:break-word;word-break:break-word;">
+                                            </td>
+                                            <td colspan="2" class="text-left p-1"
+                                                style="text-align:Right;font-size:12px;border:1px solid
+                            black;padding-right:1%;word-wrap:break-word;word-break:break-word;">
+                                                <strong style="color:black">Tax Amount</strong>
+                                            </td>
+                                            <td class="p-1"
+                                                style="text-align:right;font-size:12px;width:13%;border:1px solid
+                            black;word-wrap:break-word;word-break:break-word;">
+                                                <span t-field="doc.currency_id.symbol" />
+                                                <span t-field="doc.amount_tax"
+                                                    t-options="{'widget': 'float', 'precision': 2}" />
+                                            </td>
+                                        </tr>
+
+                                        <tr style="page-break-inside:avoid;">
+                                            <td colspan="7" class="text-left p-1"
+                                                style="font-size:12px;border:1px solid
+                            black;word-wrap:break-word;word-break:break-word;overflow-wrap:break-word;hyphens:auto;">
+                                                <span style="font-size:12px;">
+                                                    <strong>Amount in Words: </strong>
+                                                </span>
+                                                <span class="">
+                                                    <t t-if="doc.currency_id.name == 'INR'">
+                                                        <t t-set="amountwords"
+                                                            t-value="doc.amount_in_words(doc.amount_total).title()" />
+                                                        <span t-esc="amountwords" />
+                                                    </t>
+                                                    <t t-else="">
+                                                        <span
+                                                            t-esc="doc.currency_id.amount_to_text(doc.amount_total).title()" />
+                                                    </t>
+                                                </span>
+                                            </td>
+                                            <td colspan="2" class="p-1"
+                                                style="text-align:right;font-size:12px;border:1px solid
+                            black;padding-right:1%;word-wrap:break-word;word-break:break-word;">
+                                                <strong style="color:black">Grand Total </strong>
+                                            </td>
+                                            <td class="text-right p-1"
+                                                style="font-size:12px;border:1px solid
+                            black;text-align:right;margin-right:2px;word-wrap:break-word;word-break:break-word;">
+                                                <span t-field="doc.currency_id.symbol" />
+                                                <span t-if="doc.amount_total"
+                                                    t-field="doc.amount_total"
+                                                    t-options='{"widget": "float", "precision": 2}' />
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </t>
+                                <tr style="page-break-inside:avoid;">
+                                    <td colspan="10" class="text-left p-2"
+                            style="font-size:12px;word-wrap:break-word;word-break:break-word;overflow-wrap:break-word;hyphens:auto;line-height:1.4;">
+                                        <span class="fw-bold">Terms and Conditions: </span>
+                                        <br />
+                                        <div style="margin-top:5px;line-height:1.4;">
+                                            <span style="font-size:12px;" t-field="doc.note" />
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table> -->
+                        </table>
+                        <table class="table table-borderless"
+                            style="page-break-avoid:auto;">
+                            <tr
+                                style="word-wrap: break-word; break-word; font-size:12px; page-break-avoid:auto; page-break-inside:avoid;">
+                                <td colspan="100%" style="width:100%;">
+                                    <span class="fw-bold p-0">Terms and Conditions : </span>
+                                    <br class="" />
+                                    <div class="row p-0" style="word-wrap: break-word; break-word;">
+                                        <div style="width:98%;">
+                                            <span style="word-wrap: break-word; break-word;"
+                                                t-esc="doc.note" />
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

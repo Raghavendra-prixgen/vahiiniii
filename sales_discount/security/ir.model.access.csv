@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_discount_structure,discount.structure,model_discount_structure,base.group_user,1,1,1,1
+access_price_group,price.group,model_price_group,base.group_user,1,1,1,1
+
+access_sale_discount,sale.discount,model_sale_discount,base.group_user,1,1,1,0
+access_sale_discount_lines,sale.discount.lines,model_sale_discount_lines,base.group_user,1,1,1,1
+access_account_discount_line,account.discount.line,model_account_discount_line,base.group_user,1,1,1,1

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+	<data>
+		<record id="inward" model="gate.management.type">
+			<field name="y_name">Inward</field>
+			<field name="y_entry_type">in</field>
+		</record>
+		
+		<record id="outward" model="gate.management.type">
+			<field name="y_name">Outward</field>
+			<field name="y_entry_type">out</field>
+
+		</record>
+		
+		<record id="activity_returnable" model="mail.activity.type">
+			<field name="name">Returnable</field>
+		</record>
+		<record id="activity_non_returnable" model="mail.activity.type">
+			<field name="name">Non Returnable</field>
+		</record>
+	</data>
+</odoo>

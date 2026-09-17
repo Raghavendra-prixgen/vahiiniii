@@ -1,0 +1,11 @@
+<odoo>
+     <record id="view_mrp_consumption_from_inherit" model="ir.ui.view">
+        <field name="model">mrp.consumption.warning</field>
+        <field name="inherit_id" ref="mrp.view_mrp_consumption_warning_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_set_qty']" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

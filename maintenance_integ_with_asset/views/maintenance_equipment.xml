@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="equipment_maintenance_inherit" model="ir.ui.view">
+        <field name="name">Manintenance Equipment Inherit</field>
+        <field name="model">maintenance.equipment</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_view_form"/>
+        <field name="arch" type="xml">
+            <field name="location" position="after">
+                <field name="y_account_assets_id"/>
+            </field>
+            <field name="cost" position="replace">
+                <label for="y_cost" groups="maintenance.group_equipment_manager"/>
+                <div class="o_row" name="cost" groups="maintenance.group_equipment_manager">
+                    <field name="y_cost" groups="maintenance.group_equipment_manager" nolabel="1"/>
+                    <button type="object"   name="update_cost" icon="fa-refresh" groups="maintenance.group_equipment_manager"/>
+                </div>
+            </field>
+        </field>
+    </record>
+
+    <record id="hr_equipment_view_kanban_inherit" model="ir.ui.view">
+        <field name="name">maintenance.equipment.kanban</field>
+        <field name="model">maintenance.equipment</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_view_kanban" />
+        <field name="arch" type="xml">
+            <xpath expr="//kanban" position="inside">
+                <header>
+                    <button name="button_generate_equipements" type="object" string="Generate Equipments" display="always"/>             
+                </header>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="hr_equipment_view_list_inherit" model="ir.ui.view">
+        <field name="name">maintenance.equipment.inherited.list</field>
+        <field name="model">maintenance.equipment</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_view_tree" />
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <header>
+                    <button name="button_generate_equipements" type="object" string="Generate Equipments" display="always"/>             
+                </header>
+            </xpath>            
+            <xpath expr="//list" position="inside">
+                <button type="object" name="update_cost" icon="fa-refresh" groups="maintenance.group_equipment_manager"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

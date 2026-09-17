@@ -1,0 +1,36 @@
+<odoo>
+    
+    <record id="prix_mrp_report_wizard_view_form" model="ir.ui.view">
+        <field name="name">prix.mrp.report.wizard.form</field>
+        <field name="model">prix.mrp.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Yield Analysis">
+                <group>
+                    <group>
+                        <field name="y_date_from" required="1"/>
+                        <field name="y_company_id" required="1" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                    </group>
+                    <group>
+                        <field name="y_date_to" required="1" />
+                    </group>                
+                </group>
+                <footer>
+                    <button string="Generate Report" type="object" name="action_manufucaturing_report_wiz" class="oe_highlight"/>
+                    <button string="Excel Report" type="object" name="action_manufucaturing_report_xlsx" class="oe_highlight"/>
+                    <button string="Cancel" special="cancel" type="object" class="btn btn-secondary oe_inline"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_prix_mrp_report_wizard_view_form" model="ir.actions.act_window">
+        <field name="name">Yield Analysis</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">prix.mrp.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="yield_management.prix_mrp_report_wizard_view_form"/>
+        <field name="target">new</field>
+    </record>
+    
+    <menuitem id="menu_manufacturing_report" name="Yield Management" parent="mrp.menu_mrp_reporting" action="action_prix_mrp_report_wizard_view_form"/>
+</odoo>

@@ -1,0 +1,21 @@
+
+<odoo>
+    <data>
+
+        <record id="shipment_sequence" model="ir.sequence">
+            <field name="name">Shipment Sequence</field>
+            <field name="code">shipment.tracking</field>
+            <field name="prefix">SHIP/</field>
+            <field name="padding">3</field>
+        </record>
+
+        <record id="master_shipment_sequence" model="ir.sequence">
+            <field name="name">Master Shipment Sequence</field>
+            <field name="code">master.shipment</field>
+            <field name="prefix">SM/</field>
+            <field name="padding">3</field>
+        </record>
+
+
+    </data>
+</odoo>

@@ -1,0 +1,16 @@
+<odoo>
+  <record id="stock_view_picking_type_form_branch_to_branch_operation" model="ir.ui.view">
+    <field name="name">stock.picking.type.view.form.branch.to.branch.operation</field>
+    <field name="model">stock.picking.type</field>
+    <field name="inherit_id" ref="stock.view_picking_type_form"/>
+    <field name="arch" type="xml">
+      <field name="company_id" position="after">
+        <field name="y_is_branch_to_branch_operation" invisible="code != 'internal'"/>
+      </field>
+      <field name="company_id" position="attributes">
+        <attribute name="required">y_is_branch_to_branch_operation != True</attribute>
+      </field>      
+    </field>
+  </record>
+  
+</odoo>

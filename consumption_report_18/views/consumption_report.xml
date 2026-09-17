@@ -1,0 +1,74 @@
+<odoo>
+    <data>
+        <record id="view_consumption_report_list" model="ir.ui.view">
+            <field name="name">consumption.report.list</field>
+            <field name="model">mrp.production.consumption.report</field>
+            <field name="arch" type="xml">
+                <list create="false" delete="false">
+                    <field name="id" column_invisible="1"/>
+                    <field name="y_date"  optional="show"/>
+                    <field name="y_lot_id" optional="show"/>
+                    <field name="y_product_code" optional="show"/>
+                    <field name="y_in_product_id" optional="show"/>
+                    <field name="y_product_uom" optional="show"/>
+                    <field name="y_planned_consu_qty" optional="show"/>
+                    <field name="y_actual_consu_qty"  optional="show"/>
+                    <field name="y_variance_qty" sum="Total Variance" optional="show"/>
+                
+                    <field name="y_planned_consu_val" sum="Total Planned Value" optional="show"/>
+                    <field name="y_actual_consu_val" sum="Total Planned Value" optional="show"/>
+                    <field name="y_variance_val" sum="Total Variance Value" optional="show"/>
+                
+                    <field name="y_unit_cost"  optional="show"/>
+                    <field name="y_out_product_id"  optional="show"/>
+                    <field name="y_mrp_name" optional="show"/>
+                    <field name="y_source_document"  optional="show"/>
+                    <field name="y_company_id"  optional="show"/>
+                    <!-- <field name="y_production_id" /> -->
+                
+                </list>
+            </field>
+        </record>
+
+        
+        
+    
+        <record id="view_consumption_report_list_filter" model="ir.ui.view">
+            <field name="name">consumption.report.search.view</field>
+            <field name="model">mrp.production.consumption.report</field>
+            <field name="arch" type="xml">
+                <search string="Search Consumption Report">
+                    <field name="y_mrp_name" />
+                    <field name="y_product_code"/>
+                    <field name="y_date" />
+                    <field name="y_out_product_id" />
+                   
+               </search>
+            </field>
+        </record>
+        
+
+
+<!-- 
+         <record id="view_consumption_report_list" model="ir.ui.view">
+            <field name="name">consumption.report.list</field>
+            <field name="model">mrp.production.consumption.report</field>
+            <field name="arch" type="xml">
+                <list create="false" delete="false">
+                    <field name="y_mo_id"/>
+                    <field name="y_fg_product_id"/>
+                    <field name="y_component_product_id"/>
+                    <field name="y_from_location_id"/>
+                    <field name="y_consume_qty"/>
+                    <field name="y_qty"/>
+                    <field name="y_uom_id"/>
+                    <field name="y_user_id"/>
+                    <field name="y_scheduled_date"/>
+                    <field name="y_stock_move_id"/>
+                    <field name="y_state"/>
+                </list>
+            </field>
+        </record> -->
+
+    </data>
+</odoo> 

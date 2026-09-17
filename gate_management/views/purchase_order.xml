@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>  
+    <!-- <record model="ir.ui.view" id="view_purchase_order_form_gate_management">
+        <field name="name">purchase.order.form.gate.management</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <page name="purchase_delivery_invoice" position="inside">
+                <group>
+                    <group string="Gate Management">
+                        <field name="y_warehouse_id"/>
+                    </group>
+                </group>
+            </page>
+        </field>
+    </record> -->
+
+  
+</odoo>

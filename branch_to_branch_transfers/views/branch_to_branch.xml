@@ -1,0 +1,205 @@
+<odoo>
+
+  <record model="ir.ui.view" id="view_move_line_tree_branch_to_barnch">
+      <field name="name">account.move.line.branch.to.branch.tree</field>
+      <field name="model">account.move.line</field>
+      <field name="inherit_id" ref="account.view_move_line_tree"/>
+      <field name="arch" type="xml">
+        <xpath expr="//list[@name='move_line_tree']/field[@name='partner_id']" position="after">
+          <field name="y_btb_id" optional="show"/>
+        </xpath>
+      </field>
+  </record>
+
+  <record id="view_move_form_form_branch_branch_transfer" model="ir.ui.view">
+    <field name="name">account.move.form</field>
+    <field name="model">account.move</field>
+    <field name="inherit_id" ref="account.view_move_form"/>
+    <field name="arch" type="xml">
+      <group id="other_tab_group" position="inside">
+        <group id="btb_data" string="Branch To Branch Transfer Order">
+          <field name="y_btb_id" options="{'no_create': True, 'no_create_edit':True}" 
+            readonly="state == 'posted'" invisible="move_type not in ('in_invoice','out_invoice')" domain="[('y_is_interstate','=',True),('y_state','=','released')]"/>
+          <field name="y_btb_in_picking_id" 
+            domain="[('y_btb_id','=',y_btb_id),
+                     ('state','=','done'),
+                     ('y_account_move_id','=',False),
+                     ('y_btb_picking_out_id','!=',False)]" 
+            invisible="move_type in ['out_invoice']"
+            readonly="state in ['posted']"
+            options="{'no_create': True, 'no_create_edit':True}"/>
+          <field name="y_btb_out_picking_id"
+            domain="[('y_btb_id','=',y_btb_id),
+                     ('state','=','done'),
+                     ('y_account_move_id','=',False),
+                     ('y_btb_picking_in_id','!=',False)]"
+            invisible="move_type in ['in_invoice']"
+            readonly="state in ['posted']"
+            options="{'no_create': True, 'no_create_edit':True}"/>
+        </group>
+      </group>
+      <button name="action_register_payment" position="attributes">
+        <attribute name="invisible">y_btb_id != False or state != 'posted' or payment_state not in ('not_paid', 'partial') or move_type not in ('out_invoice', 'out_refund', 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt')</attribute>
+      </button>
+    </field>
+  </record>
+
+  <record model="ir.ui.view" id="barch_transfer_short_close_form_view">
+    <field name="name">barch.transfer.short.close.form.view</field>
+    <field name="model">barch.transfer.short.close</field>
+    <field name="arch" type="xml">
+      <form>
+        <group>
+          <group>
+            <field name="y_reason_id"/>
+          </group>
+        </group>
+        <footer>
+          <button name="action_done" string="Confirm" type="object" class="btn-primary"/>
+          <button string="Cancel" class="btn-default" special="cancel" />
+        </footer>
+      </form>
+    </field>
+  </record>
+
+  <record model="ir.ui.view" id="branch_to_branch_transfer_tree_view">
+    <field name="name">branch.to.branch.transfer.list.view</field>
+    <field name="model">branch.to.branch.transfer</field>
+    <field name="arch" type="xml">
+      <list decoration-danger="y_value_diff &gt; 0 or y_value_diff &lt; 0">
+        <field name="y_name"/>
+        <field name="y_from_warehouse_id" options="{'no_create': True, 'no_create_edit':True}"/>
+        <field name="y_to_warehouse_id" options="{'no_create': True, 'no_create_edit':True}"/>
+        <field name="y_dispatch_date"/>
+        <field name="y_delivery_date"/>
+        <field name="y_btb_config_id" options="{'no_create': True, 'no_create_edit':True}" column_invisible="True"/>
+
+        <field name="y_invoiced_total" optional="hide"/>
+        <field name="y_billed_total" optional="hide"/>
+        <field name="y_value_diff"  column_invisible="True"/>
+
+
+        <field name="y_state" widget="badge" decoration-success="y_state == 'closed'"
+        decoration-primary="y_state == 'open'"
+        decoration-warning="y_state == 'approval'" optional="hide"/>
+        <field name="y_status" string="Status" widget="badge"
+        decoration-success="y_status == 'done'"
+        decoration-primary="y_status in ('delivready','rescvready')"
+        decoration-warning="y_status in ('delivpart','rescvpart')"
+        decoration-danger="y_status == 'close'"/>
+      </list>
+    </field>
+  </record>
+
+
+  <record model="ir.ui.view" id="branch_branch_transfer_order_form_view">
+    <field name="name">branch.to.branch.transfer.order.form.view</field>
+    <field name="model">branch.to.branch.transfer</field>
+    <field name="arch" type="xml">
+      <form>
+        <header>
+          <button name="request_approval" type="object" string="Request for Approval" invisible="y_state != 'open'"/>
+          <button name="process_btb" type="object" string="Release" invisible="y_state != 'approval'"/>
+          <button name="action_close" type="object" string="Close" invisible="y_state != 'released'"/>
+          <field name="y_state" widget="statusbar" statusbar_visible="open,released"/>
+        </header>
+        <sheet>
+          <div class="oe_button_box" name="button_box">
+            <button name="action_btb_picking" class="oe_stat_button" icon="fa-truck" type="object"
+              help="List view of picking operations" context="{'btb_id': id, 'create':False}">
+              <field name="y_transfer_count" widget="statinfo" string="Transfers"/>
+              
+            </button>
+            <button name="action_btb_inv" class="oe_stat_button" icon="fa-pencil-square-o" type="object"
+              help="List view of invoices" context="{'btb_id': id, 'create':False}">
+              <field name="y_invoice_count" widget="statinfo" string="Invoices"/>
+              
+            </button>
+            <button name="action_btb_bill" class="oe_stat_button" icon="fa-pencil-square-o" type="object"
+              help="List view of bills" context="{'btb_id': id, 'create':False}">
+              <field name="y_bill_count" widget="statinfo" string="Bills"/>
+              
+            </button>
+          </div>
+          <field name="y_status" invisible="1"/>
+          <widget name="web_ribbon" text="Completed" bg_color="bg-success" invisible="y_status != 'done' or y_state in ('approval','open')"/>
+          <widget name="web_ribbon" text="Ready to Ship" bg_color="bg-primary" invisible="y_status != 'delivready' or y_state in ('approval','open')"/>
+          <widget name="web_ribbon" text="Partially Shipped" bg_color="bg-warning" invisible="y_status != 'delivpart' or y_state in ('approval','open')"/>
+          <widget name="web_ribbon" text="Ready to Receive" bg_color="bg-primary" invisible="y_status != 'rescvready' or y_state in ('approval','open')"/>
+          <widget name="web_ribbon" text="Partially Received" bg_color="bg-warning" invisible="y_status != 'rescvpart' or y_state in ('approval','open')"/>
+          <widget name="web_ribbon" text="Short Closed" bg_color="bg-danger" invisible="y_status != 'close' or y_state in ('approval','open')"/>
+          <div class="oe_title">
+              <h1 class="d-flex">
+                  <field name="y_name" class="oe_inline" readonly="1"/>
+              </h1>
+          </div>
+          <group>
+            <group>
+              <field name="y_parent_company_id" invisible="1"/>
+              <field name="y_cust_from_warehouse_id" options="{'no_create': True, 'no_create_edit':True}" required="1" domain="[('id','!=',y_cust_to_warehouse_id),('y_company_id','=',y_parent_company_id)]" readonly="y_approved == True or y_processed == True or y_closed == True"/>
+              <field name="y_from_warehouse_id" options="{'no_create': True, 'no_create_edit':True}" required="1" domain="[('id','!=',y_to_warehouse_id)]" readonly="y_approved == True or y_processed == True or y_closed == True" invisible="1"/>
+              <field name="y_from_partner_id" required="1" widget="res_partner_many2one" context="{'show_address': 1, 'show_vat': True}" options='{"always_reload": True}' readonly="y_approved == True or y_processed == True or y_closed == True"/>
+              <field name="y_dispatch_date" required="True" readonly="y_approved == True or y_processed == True or y_closed == True"/>
+            </group>
+            <group>
+              <field name="y_cust_to_warehouse_id" options="{'no_create': True, 'no_create_edit':True}" required="True" domain="[('id','!=',y_cust_from_warehouse_id),('y_company_id','=',y_parent_company_id)]" readonly="y_approved == True or y_processed == True or y_closed == True"/>
+              <field name="y_to_warehouse_id" options="{'no_create': True, 'no_create_edit':True}" required="True" domain="[('id','!=',y_from_warehouse_id)]" readonly="y_approved == True or y_processed == True or y_closed == True" invisible="1"/>
+              <field name="y_to_partner_id" required="True" widget="res_partner_many2one" context="{'show_address': 1, 'show_vat': True}" options='{"always_reload": True}' readonly="y_approved == True or y_processed == True or y_closed == True"/>
+              <field name="y_delivery_date" required="True" readonly="y_approved == True or y_processed == True or y_closed == True"/>
+            </group>
+            <group>
+              <field name="y_external_document" readonly="y_approved == True or y_processed == True or y_closed == True"/>
+            </group>
+            <group>
+              <field name="y_short_close_reason_id" readonly="1" invisible="y_short_close_reason_id == False" widget="selection"/>
+              <field name="y_is_interstate" readonly="1" invisible="1"/>
+              <field name="y_btb_config_id" invisible="1"/>
+              <field name="y_approved" invisible="1"/>
+              <field name="y_processed" invisible="1"/>
+              <field name="y_closed" invisible="1"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Products">
+              <field name="y_btb_line_ids" readonly="y_approved != False or y_processed != False or y_closed != False">
+                <list string = "BTB Transfer Order Warehouse Lines" editable = "bottom">
+                  <field name="y_product_id" options="{'no_create': True, 'no_create_edit':True}" required="1"/>
+                  <field name="y_uom_id" options="{'no_create': True, 'no_create_edit':True}"/>
+                  <field name="y_deadline"/>
+                  <field name="y_quantity" required="1"/>
+                  <field name="y_deliv_qty"/>
+                  <field name="y_rescv_qty"/>
+                </list>
+              </field>
+            </page>
+          </notebook>
+        </sheet>
+      <chatter/>
+      </form>
+    </field>
+  </record>
+
+  <record model="ir.rule" id="branch_to_branch_transfer_record_restricted_company_rule">
+    <field name="name">Branch To Branch Transfer Restricted Record: multi-company</field>
+    <field name="model_id" ref="model_branch_to_branch_transfer"/>
+    <field name="global" eval="True"/>
+    <field name="domain_force">
+        ['|',('y_from_warehouse_id.company_id', 'in', company_ids),('y_to_warehouse_id.company_id', 'in', company_ids)]
+    </field>
+  </record>
+
+
+  <record model="ir.actions.act_window" id="branch_transfer_order_action_window">
+    <field name="name">Branch To Branch Transfer Orders</field>
+    <field name="res_model">branch.to.branch.transfer</field>
+    <field name="view_mode">list,form,search</field>
+  </record>
+
+  <menuitem
+    name="Branch To Branch Transfer Orders"
+    id="branch_to_branch_transfer_order_menu"
+    action="branch_transfer_order_action_window"
+    parent="stock.menu_stock_transfers"
+    sequence="50"/>
+
+</odoo>

@@ -1,0 +1,7 @@
+<odoo>
+  <data>
+        <record model="res.groups" id="material_request_new_group">
+            <field name="name">Material Request Approval</field>
+        </record>
+  </data>
+</odoo>

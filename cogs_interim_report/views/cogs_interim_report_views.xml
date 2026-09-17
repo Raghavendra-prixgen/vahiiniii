@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="view_cogs_interim_report_list" model="ir.ui.view">
+            <field name="name">cogs.interim.report.list</field>
+            <field name="model">cogs.interim.report</field>
+            <field name="arch" type="xml">
+                <list string="COGS Interim Report" export_xlsx="false" create="false" delete="false" edit="false">
+
+                    <field name="y_sale_id" string="Sale Order Number"/>
+                    <field name="y_customer_id" string="Customer"/>
+                    <field name="y_delivery_no" string="Delivery No"/>
+                    <field name="y_date_stock_move" string="Date of Stock Move"/>
+                    <field name="y_invoice_ref" string="Invoice / Journal Entry Reference"/>
+                    <field name="y_currency_id" string="Currency" column_invisible="1"/>
+                    <field name="y_credit" string="Credit" widget="monetary"
+                           options="{'currency_field': 'y_currency_id'}" sum="Total Credit"/>
+                    <field name="y_debit" string="Debit" widget="monetary"
+                           options="{'currency_field': 'y_currency_id'}" sum="Total Debit"/>
+                    <field name="y_difference" string="Difference" widget="monetary"
+                           options="{'currency_field': 'y_currency_id'}" sum="Total Difference"/>
+                    <field name="y_status"/>
+                    <field name="y_matching" string="Matching" widget="badge"/>
+                    <field name="y_company_id" string="Company" groups="base.group_multi_company"/>
+
+                </list>
+            </field>
+        </record>
+
+        <record id="view_cogs_interim_report_search" model="ir.ui.view">
+            <field name="name">cogs.interim.report.search</field>
+            <field name="model">cogs.interim.report</field>
+            <field name="arch" type="xml">
+                <search string="Search COGS Interim Report">
+                    <field name="y_sale_id" string="Sale Order Number"/>
+                    <field name="y_customer_id" string="Customer"/>
+                    <field name="y_delivery_no" string="Delivery No"/>
+                    <field name="y_invoice_ref" string="Journal Entry Reference"/>
+                    <field name="y_company_id" string="Company"/>
+
+                    <filter name="filter_reconciled"
+                            string="Reconciled"
+                            domain="[('y_status','=','reconciled')]"/>
+                    <filter name="filter_partially"
+                            string="Partially Reconciled"
+                            domain="[('y_status','=','partially')]"/>
+                    <filter name="filter_unreconciled"
+                            string="Unreconciled"
+                            domain="[('y_status','=','unreconciled')]"/>
+
+                    <separator/>
+
+                    <group expand="0" string="Group By">
+                        <filter name="group_by_so"
+                                string="Sale Order"
+                                context="{'group_by': 'y_sale_id'}"/>
+                        <filter name="group_by_customer"
+                                string="Customer"
+                                context="{'group_by': 'y_customer_id'}"/>
+                        <filter name="group_by_status"
+                                string="Status"
+                                context="{'group_by': 'y_status'}"/>
+                        <filter name="group_by_company"
+                                string="Company"
+                                context="{'group_by': 'y_company_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_cogs_interim_report_server" model="ir.actions.server">
+            <field name="name">COGS Interim Report</field>
+            <field name="type">ir.actions.server</field>
+            <field name="path">cogs-report</field>
+            <field name="model_id" ref="model_cogs_interim_report"/>
+            <field name="binding_model_id" eval="False"/>
+            <field name="state">code</field>
+            <field name="code">action = model.button_generate_report()</field>
+        </record>
+
+        <menuitem id="menu_cogs_interim_report"
+                  name="COGS Interim Report"
+                  parent="account_additional_reports.menu_additional_reports"
+                  action="action_cogs_interim_report_server"
+                  sequence="21"/>
+
+    </data>
+</odoo>

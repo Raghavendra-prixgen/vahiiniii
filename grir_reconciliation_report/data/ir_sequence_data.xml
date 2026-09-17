@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="seq_grir_manual_reco_ref" model="ir.sequence">
+            <field name="name">GRIR Manual Reconcile Reference</field>
+            <field name="code">grir.manual.reconcile.ref</field>
+            <field name="prefix">MREC/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+</odoo>

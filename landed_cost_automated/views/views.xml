@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="view_picking_form_landed_cost">
+			<field name="name">stock.picking.view.inherit</field>
+			<field name="model">stock.picking</field>
+			<field name="inherit_id" ref="stock.view_picking_form"/>
+			<field name="arch" type="xml">
+                <xpath expr="//sheet" position="before">
+                    <div class="alert alert-warning mb-0" role="alert"
+                        invisible="y_post_validate_button_warning == False or state != 'done'">
+                        Landed cost posting pending<b></b>.<br/>                        
+                    </div>
+                    <div class="alert alert-info mb-0" role="alert"
+                        invisible="y_post_validate_button_success == False">
+                        Landed cost posted successfull<b></b>.<br/>
+                    </div>
+                </xpath>  
+                <xpath expr="//header" position="inside">
+                    <button name="validate_lc" type='object' string="Post Landed Cost" class="oe_highlight" invisible="y_is_post_landedcost != False or state != 'done' or not y_landed_cost_ids"/>
+                </xpath>
+
+                <xpath expr="//form/sheet/div[@name='button_box']/button[@name='action_see_packages']" position="after">
+                    <button type="object" class="oe_inline oe_stat_button" name="view_landed_cost_tree" icon="fa-bars" string="Landed Cost" invisible="y_is_post_landedcost == False or not y_landed_cost_ids"/>
+                </xpath>
+                <field name="partner_id" position="after">
+                    <field name="y_post_validate_button_warning" invisible="1"/>
+                    <field name="y_post_validate_button_success"  invisible="1"/>
+                    <field name="y_is_post_landedcost" invisible="1"/>
+                </field>
+				<xpath expr="//sheet/notebook" position="inside">
+                    <page name="landed_cost_page" string="Landed Cost" invisible="not y_landed_cost_ids">
+                        <field name="y_landed_cost_ids" widget="one2many" >
+                            <list string='Landed Cost' editable="bottom">
+                                <field name="product_id" readonly="1"/>
+                                <field name="name" readonly="1"/>
+                                <field name="account_id"/>
+                                <field name="split_method" readonly="1"/>
+                                <field name="price_unit" readonly="1"/>
+                            </list>
+                        </field>
+                    </page>
+                </xpath>
+			</field>
+		</record>
+
+
+        <!-- <record id="view_stock_landed_form_custom_inherit_for_aa" model="ir.ui.view">
+            <field name="name">stock.landed.cost.form</field>
+            <field name="model">stock.landed.cost</field>
+            <field name="inherit_id" ref="stock_landed_costs.view_stock_landed_cost_form"/>
+            <field name="arch" type="xml">                
+                <xpath expr="//field[@name='valuation_adjustment_lines']/list/field[@name='additional_landed_cost']" position="after">
+                    <field name="y_calculated_landed_cost" readonly="1"/>
+                </xpath>
+                <xpath expr="//field[@name='valuation_adjustment_lines']/list/field[@name='quantity']" position="after">
+                    <field name="y_remaining_qty" readonly="1"/>
+                </xpath>           
+            </field>
+        </record>
+ -->
+
+        <record id="view_product_landed_cost_form_new" model="ir.ui.view">
+            <field name="name">product.template.landed.cost.form.new</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="stock_landed_costs.view_product_landed_cost_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@name='bill']/field[@name='landed_cost_ok']" position="after">
+                    <field name="y_automated_landed_cost"  invisible="not landed_cost_ok"/>
+                </xpath>                   
+            </field>
+        </record>
+        
+	</data>
+</odoo>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+    	<record id="action_print_weighment" model="ir.actions.report">
+            <field name="name">weighment</field>
+            <field name="model">weighment.picking</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">weighment.report_weighment</field>
+            <field name="report_file">weighment.report_weighment</field>
+            <field name="binding_model_id" ref="model_weighment_picking"/>
+            <field name="binding_type">report</field>
+        </record>
+    </data>
+</odoo>

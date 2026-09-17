@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data> 
+
+        <record model="ir.rule" id="exim_currency_restricted_company_rule">
+        <field name="name">Customs Exchange rate: multi-company</field>
+        <field name="model_id" ref="model_exim_currency"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">
+            ['|', ('y_company_id', '=', False), ('y_company_id', 'parent_of', company_ids)]
+        </field>
+    </record>
+
+  
+
+
+        <record id="view_exim_currency_search" model="ir.ui.view">
+            <field name="name">exim.currency.search</field>
+            <field name="model">exim.currency</field>
+            <field name="arch" type="xml">
+                <search string="Custom Exchange Rate">
+                    <field name="y_name" string="Date"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="exim_currency_rate_tree_view" model="ir.ui.view">
+            <field name="name">EXIM Currency Tree Details</field>
+            <field name="model">exim.currency</field>
+            <field name="arch" type="xml">
+              <list string="EXIM Currencies" decoration-muted="(not active)">
+                    <field name="y_name"/>
+                    <field name="y_symbol"/>
+                    <field name="y_full_name" string="Name" optional="show"/>
+                    <field name="y_date" string="Last Update"/>
+                    <field name="y_company_id"/>
+                    
+                    <field name="active" widget="boolean_toggle"/>
+                </list>
+            </field>
+        </record>
+
+
+    <record id="exim_currency_rate_form_view" model="ir.ui.view">
+            <field name="name">EXIM Currency Form</field>
+            <field name="model">exim.currency</field>
+            <field name="arch" type="xml">
+            <form string="EXIM Currency">
+                    
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="y_name"/>
+                                <field name="y_full_name" string="Name"/>
+                                <field name="active" widget="boolean_toggle"/>
+                                <field name="y_company_id"/>
+                                <field name="y_currency_id"/>
+
+                            </group>
+                            <group>
+                                <field name="y_symbol"/>
+                                <field name="y_currency_unit_label"/>
+                                <field name="y_currency_subunit_label"/>
+                                <field name="y_rate" invisible="1" digits="[12,12]"/>
+                                <field name="y_inverse_rate" invisible="1" digits="[12,12]"/>
+                            </group>
+                        </group>
+
+                        
+                        <notebook class="o_currency_rate_list" >
+                            <page string="Custom Exchange Rate" name="rates">
+                                <field name="y_exim_currency_line_ids" widget="one2many">
+                                    <list string="Custom Exchange Rate" editable="top" limit="25">
+                                        <field name="y_exim_no"/>
+                                        <field name="y_name"/>
+                                        <field name="y_company_id" groups="base.group_multi_company"/>
+                                        <field name="y_company_rate" digits="[12,12]"/>
+                                        <field name="y_inverse_company_rate" digits="[12,12]"/>
+                                        <field name="y_rate" optional="hide"/>
+                                        <field name="write_date" optional="hide"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <chatter/>
+
+                
+              </form>
+            </field>
+        </record>
+
+
+
+
+        <record id="action_exim_currency_rate" model="ir.actions.act_window">
+            <field name="name">Customs Exchange Rate</field>
+            <field name="res_model">exim.currency</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+
+
+        <menuitem id="exim_currency_rate_menu"  parent="account.menu_finance_entries" action="action_exim_currency_rate" name="Customs Exchange Rate"/>
+    </data>
+</odoo>        

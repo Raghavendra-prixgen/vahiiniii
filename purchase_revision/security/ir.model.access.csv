@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_purchase_order_revision,purchase.order.revision,model_purchase_order_revision,base.group_user,1,0,1,0
+access_purchase_order_revision_line,purchase.order.revision.line,model_purchase_order_revision_line,base.group_user,1,0,1,0
+

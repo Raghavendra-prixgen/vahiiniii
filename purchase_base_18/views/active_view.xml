@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <record id="search_res_company_view_delete_button" model="ir.ui.view">
+        <field name="name">product.product.category.search.view</field>
+        <field name="model">res.company</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+            </search>
+            
+        </field>
+    </record>
+  
+    <record id="search_product_category_list_view_view_delete_button" model="ir.ui.view">
+        <field name="name">product.product.category.search.view</field>
+        <field name="model">product.category</field>
+        <field name="inherit_id" ref="product.product_category_search_view"/>
+        <field name="arch" type="xml">
+            <field name="parent_id" position="after">
+                <filter name="active" string="Active" domain="[('active', '!=',False)]"/>
+                <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+            </field>
+        </field>
+    </record>
+
+
+
+    <record model="ir.ui.view" id="search_rules_uom_category_delete_button">
+        <field name="name">delete.button.search.rules.uom.category</field>
+        <field name="model">uom.category</field>
+        <field name="inherit_id" ref="uom.uom_categ_view_search"/>
+        <field name="arch" type="xml">
+            <field name="uom_ids" position="after">
+                <filter name="active" string="Active" domain="[('active', '!=',False)]"/>
+                <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>

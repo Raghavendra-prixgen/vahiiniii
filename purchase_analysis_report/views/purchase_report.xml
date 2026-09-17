@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_purchase_analysis_report_wizard" model="ir.actions.act_window">
+        <field name="name">Purchase Analysis Report</field>
+        <field name="res_model">purchase.analysis.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="view_purchase_report_analysis_wizard"/>
+    </record> 
+
+
+    <menuitem id="menu_purchase_analysis_report"
+            name="Purchase Analysis Report"
+            action="action_purchase_analysis_report_wizard"
+            parent="purchase.purchase_report"
+            sequence="99"/>
+</odoo>

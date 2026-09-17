@@ -1,0 +1,158 @@
+<odoo>
+    <data>
+        <template id="external_layout_standard_vahini_creditdebit">
+
+            <t t-set="partner" t-value="doc.fetch_invoice_warehouse_address()" />
+            <div class="header">
+                <div class="row" name="watermark" style="height:80px; width:100%; position:absolute; top:600px; left:0%; z-index:1000; text-align:center;">
+                    <div class="col-12">
+                        <span style="-webkit-transform:rotate(-45deg); -ms-transform:rotate(-45deg); transform:rotate(-45deg); color:gray; font-size:10em; position:absolute; opacity:0.3; width:100%;">
+                            <span t-if="doc.state == 'draft'">DRAFT</span>
+                            <span t-if="doc.state == 'cancel'">CANCELLED</span>
+                        </span>
+                    </div>
+                </div>
+
+                <div style="border:1px solid black; width:100%; margin-bottom:0; padding:10px;">
+                    <div class="col-12 d-flex" style="font-size:12px;">
+
+                        <div class="col-3 m-1">
+                            <img t-if="doc.company_id.sudo().parent_id.logo" t-att-src="image_data_uri(doc.company_id.sudo().parent_id.logo)" width="170" height="90" alt="Logo" />
+                            <t t-if="doc.company_id.logo" t-else="">
+                                <img t-att-src="image_data_uri(doc.company_id.logo)" width="170" height="90" alt="Logo" />
+                            </t>
+                        </div>
+                        <div class="col-6 text-center">
+                            <div class="fw-bold" style="font-size:16px;text-transform:uppercase;">
+                                <span class="fw-bold p-1" t-if="doc.company_id.sudo().parent_id" t-field="doc.company_id.sudo().parent_id.name" />
+                                <span class="fw-bold p-1" t-else="" t-field="doc.company_id.name" />
+                            </div>
+                            <div class="">
+                                <!-- <span t-if="doc.company_id.sudo().parent_id" t-field="doc.company_id.name" />
+                                <span t-if="partner.contact_address_complete" t-esc="partner.contact_address_complete" /> -->
+                                <span t-if="doc.company_id.sudo().parent_id and doc.company_id.y_is_registered_company" t-field="doc.company_id.name" />
+                                <span t-if="partner.street" t-esc="partner.street" />
+                                <span t-if="partner.street2" t-esc="partner.street2" />
+                                
+                                <t t-if="partner.city">
+                                    <span t-field="partner.city" />
+                                </t>
+                                <t t-if="partner.city">
+                                    <t t-if="partner.state_id">,</t>
+                                </t>
+                                <t t-if="partner.state_id">
+                                    <span t-field="partner.state_id" />
+                                </t>
+
+                                <t t-if="partner.state_id">
+                                    <t t-if="partner.country_id">, </t>
+                                </t>
+                                <t t-if="partner.country_id">
+                                    <span t-field="partner.country_id" />
+                                </t>
+
+                                <t t-if="partner.zip">,</t>
+                                <t t-if="partner.zip">
+                                    <span t-field="partner.zip" />
+                                </t>
+
+                            </div>
+
+                            <div >
+                                <t >
+                                    <strong>GSTIN:</strong>
+                                    <span t-if="doc.company_id.sudo().parent_id" t-field="doc.company_id.sudo().parent_id.vat"></span>
+                                    <span t-else="" t-field="doc.company_id.vat"></span>
+                                </t>
+                                <t >
+                                    <strong>CIN:</strong>
+                                    <span t-if="doc.company_id.sudo().parent_id" t-field="doc.company_id.sudo().parent_id.company_registry"></span>
+                                    <span t-else="" t-field="doc.company_id.company_registry"></span>
+                                </t>
+                                <br/>
+                            </div>
+                            <div >
+                                <t>
+                                    <strong>PAN:</strong>
+                                    <span t-if="doc.company_id.sudo().parent_id" t-field="doc.company_id.sudo().parent_id.l10n_in_pan"></span>
+                                    <span t-else="" t-field="doc.company_id.l10n_in_pan"></span>
+                                </t>
+
+                                <t t-if="doc.company_id.phone">
+                                    <strong>Phone:</strong>
+                                    <span t-field="doc.company_id.phone"></span>
+                                </t>
+                                <t>
+                                    <strong>Email:</strong>
+                                    <span t-esc="doc.company_id.email"></span>
+                                </t>
+                                <br/>
+                                <t t-if="doc.company_id.sudo().parent_id">
+                                    <span class="fw-bold">Regd. office :&#160; </span>
+                                    <span t-field="doc.company_id.sudo().parent_id.partner_id.contact_address_complete"></span>
+                                </t>
+                                <t t-else="">
+                                    <br/>
+                                    <span style="color:white">.</span>
+                                    <br/>
+                                </t>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <t t-if="doc.SignedQRCode">
+                                <img t-att-src="image_data_uri(doc.SignedQRCode)" width="140" height="140" style="margin-top:1%;margin-left:30px;margin-bottom:1%;" />
+                            </t>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="article doc_report_layout_standard" t-att-data-oe-model="doc and doc._name" t-att-data-oe-id="doc and doc.id" t-att-data-oe-lang="doc and doc.env.context.get('lang')">
+                <t t-call="web.address_layout" />
+                <t t-raw="0" />
+            </div>
+            <div class="footer doc_standard_footer " style="font-size:12px;margin-top:0">
+                <div class="col-12 d-flex" style=" border:1px solid black;">
+                    <div class="col-6">
+                        <span class="fw-bold p-1">Receiver's Seal and Signature</span>
+                        <br class=""/>
+                        <br class=""/>
+                        <br class=""/>
+                        <br class=""/>
+
+                        <span class="p-1">Name : </span>
+                    </div>
+                    <div class="col-6 text-end" style="border-left:1px solid black;">
+                        <span class="fw-bold p-1">FOR</span>
+                        <t t-if="doc.company_id.parent_id">
+                            <span class="fw-bold" t-field="doc.company_id.sudo().parent_id.name" />
+                        </t>
+                        <t t-else="">
+                            <span class="fw-bold" t-field="doc.company_id.name" />
+                        </t>
+                        <br />
+                        <br />
+                        <br />
+                        <br />
+                        <span class="fw-bold p-1 text-end" style="">Authorized Signatory</span>
+                    </div>
+                </div>
+                <div class="col-12 d-flex">
+                    <div class="col-3">
+                        <p class="text-muted" style="margin: 0;">
+                            <strong style=""> Page: <span class="page" style=""></span>
+                                <a style="">/</a>
+                                <span class="topage" style=""></span>
+                            </strong>
+                        </p>
+                    </div>
+                    <div class="col-6 text-center fw-bold">
+                        <span class="">"Tax Invoice issued u/s 31 of the CGST Act, 2017."</span>
+                    </div>
+                    <div class="col-3"></div>
+                </div>
+
+            </div>
+        </template>
+    </data>
+</odoo>

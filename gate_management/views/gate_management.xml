@@ -1,0 +1,470 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>  
+  <data>
+
+
+      <!-- Gate Setting Tree view -->
+      <record id="gate_settingup_gate_management_view" model="ir.ui.view">
+          <field name="name">settingup.gate.management.list</field>
+          <field name="model">settingup.gate.management</field>
+          <field name="arch" type="xml">
+              <list>
+                  <field name="y_warehouse_id"/>
+                  <field name="y_product_category_ids" widget="many2many_tags"/>
+                  <field name="y_inward_sequence"/>
+                  <field name="y_outward_sequence"/>
+                  <field name="active" widget="boolean_toggle" readonly="1"/>
+              </list>
+          </field>
+      </record>
+
+      <record model="ir.ui.view" id="settingup_gate_management_form_view">
+        <field name="name">settingup.gate.management.form.view</field>
+        <field name="model">settingup.gate.management</field>
+        <field name="arch" type="xml">  
+          <form>
+            <sheet>
+              <group>
+                <group>
+                  <field name="y_warehouse_id" options="{'no_create':True,'no_create_edit':True,'no_open': True}" required="1"/>
+                  <field name="active" widget="boolean_toggle"/>
+                  <field name="y_product_category_ids" widget="many2many_tags" options="{'no_create':True,'no_create_edit':True,'no_open': True}" required="1"/>
+                  
+                </group>
+                <group>
+                  <field name="y_company_id" required="1" options="{'no_create':True,'no_create_edit':True,'no_open': True}"/>
+                  <field name="y_inward_sequence" required="1"/>
+                  <field name="y_outward_sequence" required="1"/>
+                </group>
+              </group>
+            </sheet>
+            <chatter/>
+          </form>
+        </field>
+      </record>
+
+      <!-- Action panel -->
+      <record model="ir.actions.act_window" id="gate_management.settingup_gate_management_action">
+          <field name="name">Setting Gate Management</field>
+          <field name="res_model">settingup.gate.management</field>
+          <field name="view_mode">list,form</field>
+      </record>
+
+
+    <!-- Form view -->
+    <record model="ir.ui.view" id="gate_management_form_view">
+      <field name="name">gate.management.form.view</field>
+      <field name="model">gate.management</field>
+      <field name="arch" type="xml">  
+        <form>
+          <header>
+            <button name="process" type="object" string="Process" invisible="y_state != 'draft'"/>
+            <button name="cancel" type="object" string="Cancel" invisible="y_order_type_inward !=  'p' and  y_state != 'draft'"/>
+            <field name="y_state" widget="statusbar" statusbar_visible="draft,processed"/> 
+          </header>
+          <sheet>
+            <div class="oe_title">
+              <h1>
+                <field name="y_name" readonly="1"/>
+              </h1>
+            </div>
+            <group>
+              <group>
+                <field name="y_entry_type" readonly="1"/>
+                <field name="y_user_id" invisible='1'/>  
+                <field name="y_warehouse_id" force_save='1' readonly="y_user_id != 2 or y_state == 'processed'"  options="{'no_create':True,'no_create_edit':True,'no_open': True}"/>
+                <field name="y_gate_station_from_id"   readonly="y_state == 'processed'" invisible="y_entry_type == 'out'"/>
+                <field name='y_gate_station_to_id' readonly="y_state == 'processed'" invisible="y_entry_type == 'in'"/>
+                <field name="y_description" readonly="y_state == 'processed'"/>
+                <field name="y_vehicle_no_id" placeholder="KA-12-AA-09" readonly="y_state == 'processed'"  options="{ 'no_create':True, 'no_create_edit':True }"/>
+                <field name="y_odometer"  readonly="y_state == 'processed'" invisible="not y_vehicle_no_id"/>
+                <field name="y_driver_name" readonly="1" force_save="1" options="{ 'no_create':True, 'no_create_edit':True }" invisible="not y_vehicle_no_id"/>
+                <field name="y_external_vehicle_no" placeholder="KA-12-AA-09"  readonly="y_state == 'processed'" invisible="y_vehicle_no_id"/>
+                <field name="y_external_ref"  readonly="y_state == 'processed'" invisible="y_vehicle_no_id"/>
+              </group>
+              <group>
+                <field name="y_post_datetime" readonly='1'/>
+                <field name="y_username" readonly="1" options="{'no_open': True}"/> 
+                <field name="y_doc_datetime" readonly="y_state == 'processed'"  options="{'datepicker': {'warn_future': true}}"/>
+                <field name="y_lr_rr_no" readonly="y_state == 'processed'"/>
+                <field name="y_lr_rr_date" readonly="y_state == 'processed'"/>
+                <field name="y_order_type_inward" string="Posting Type" invisible="y_entry_type != 'in'" required="y_entry_type == 'in'" readonly="y_state == 'processed'"/>
+                <field name="y_order_type_outward" string="Posting Type" invisible="y_entry_type != 'out'" required="y_entry_type == 'out'" readonly="y_state == 'processed'"/>
+                <field name="y_is_returnable" readonly="y_state == 'processed'"/>
+              </group>
+            </group>
+            <notebook>
+              <page string="General Information" name="General Info">
+                <field name="y_gate_line" widget="one2many" mode="list" readonly="y_state == 'processed'">
+                  <list string="Gate Management details" editable="bottom" >
+                    <control>
+                        <create name="add_entry" string="Add Entry"/>
+                    </control>
+                    <field name="y_sequence" widget="handle"/>
+                    <field name="y_challan_no"  readonly="parent.y_state == 'processed'" required="1"/>
+                    <field name="y_challan_date" readonly="parent.y_state == 'processed'" required="1"/>
+                    <field name="y_description"  readonly="parent.y_state == 'processed'"/>
+                
+                    <field name="y_purchase_order_inward_id" options="{ 'no_create':True, 'no_create_edit':True }" column_invisible="parent.y_entry_type == 'out' or parent.y_order_type_inward != 'p'" required="parent.y_order_type_inward == 'p'" readonly="parent.y_state == 'processed'" domain="[('picking_ids.state','=','assigned'),('state','in',('purchase','done')),('picking_type_id.warehouse_id','=',parent.y_warehouse_id)]" string="Purchase Order"/>
+                    <field name="y_sale_return_receipt_id" options="{ 'no_create':True, 'no_create_edit':True }" column_invisible="parent.y_entry_type == 'out' or parent.y_order_type_inward != 'sr'" required="parent.y_order_type_inward == 'sr'" readonly="parent.y_state == 'processed'" domain="[('state','not in',['cancel','done']),('picking_type_code','=','incoming'),('move_ids.sale_line_id','!=',False),('picking_type_id.warehouse_id','=',parent.y_warehouse_id)]" string="Transfer"/>
+
+                    <field name="y_stock_inward_id" options="{ 'no_create':True, 'no_create_edit':True }" column_invisible="parent.y_entry_type == 'out' or parent.y_order_type_inward != 'sto'" required="parent.y_entry_type == 'in' and parent.y_order_type_inward == 'sto'" readonly="parent.y_state == 'processed'" domain="[('state','not in',['cancel','done']),('location_dest_id.usage','=','supplier'),('move_ids.sale_line_id','=',False),('move_ids.purchase_line_id','=',False),('picking_type_id.warehouse_id','=',parent.y_warehouse_id)]" string="Transfer"/>
+                    
+
+                    <field name="y_other_inward"  options="{ 'no_create':True, 'no_create_edit':True }" column_invisible="parent.y_entry_type == 'out' or parent.y_order_type_inward != 'dc'" required="parent.y_order_type_inward == 'dc' or parent.y_entry_type == 'in' and parent.y_order_type_inward == 'sto'" readonly="parent.y_state == 'processed'" domain="[('move_ids.purchase_line_id.order_id', '=',False),('picking_type_code','=','incoming'),('picking_type_id.warehouse_id','=',parent.y_warehouse_id)]" string="Transfer"/>
+                    
+
+
+
+                    <field name="y_sale_order_outward_id" options="{ 'no_create':True, 'no_create_edit':True }" column_invisible="parent.y_entry_type == 'in' or parent.y_order_type_outward != 's'" required="parent.y_order_type_outward == 's'" readonly="parent.y_state == 'processed'" domain="[('state','=','done'),('picking_type_code','=','outgoing'),('move_ids.sale_line_id','!=',False),('picking_type_id.warehouse_id','=',parent.y_warehouse_id)]" string="Transfer"/>
+
+                    <field name="y_purchase_return_receipt_id" options="{'no_create':True, 'no_create_edit':True }"
+                    column_invisible="parent.y_entry_type == 'in' or parent.y_order_type_outward != 'pr'" required="parent.y_order_type_inward == 'pr'" readonly="parent.y_state == 'processed'" domain="[('state','=','done'),('picking_type_code','=','outgoing'),('move_ids.purchase_line_id','!=',False),('picking_type_id.warehouse_id','=',parent.y_warehouse_id)]" string="Transfer"/>
+
+                    <field name="y_stock_outward_id" options="{ 'no_create':True, 'no_create_edit':True }" column_invisible="parent.y_entry_type == 'in' or parent.y_order_type_outward != 'sto'" required="parent.y_entry_type == 'out' and parent.y_order_type_outward == 'sto'" readonly="parent.y_state == 'processed'" domain="[('state','=','done'),('location_dest_id.usage','=','customer'),('move_ids.sale_line_id','=',False),('move_ids.purchase_line_id','=',False),('picking_type_id.warehouse_id','=',parent.y_warehouse_id)]" string="Transfer"/>
+
+                    <field name="y_other_outward"  options="{ 'no_create':True, 'no_create_edit':True }" column_invisible="parent.y_entry_type == 'in' or parent.y_order_type_outward != 'dc'" required="parent.y_order_type_outward == 'dc' and parent.y_entry_type == 'out'" readonly="parent.y_state == 'processed'" domain="[('sale_id', '=',False),('state','=','done'),('picking_type_code','=','outgoing'),('picking_type_id.warehouse_id','=',parent.y_warehouse_id)]" string="Transfer"/>
+                    
+                    <field name="y_remarks"/>
+                  </list>
+                </field>
+              </page>
+            </notebook>
+          </sheet>
+          <chatter/>
+        </form>
+      </field>
+    </record>
+
+    <!-- Creating a search panel on which view can be catogorized -->
+    <!-- <record id="gate_management_search" model="ir.ui.view"> 
+      <field name="name">gate.management.search</field> 
+      <field name="model">gate.management.line</field> 
+      <field name="arch" type = "xml"> 
+        <search string="All"> 
+          <searchpanel> 
+            <field name="y_entry_type" icon="fa-truck" enable_counters="1" />
+          </searchpanel> 
+        </search> 
+      </field> 
+    </record> -->
+
+    <record id="view_entry_type_filter" model="ir.ui.view">
+      <field name="name">gate.management.type.filter</field>
+      <field name="model">gate.management</field>
+      <field name="arch" type="xml">
+        <search string="State">
+          <field name="y_name"/>
+          <group expand="0" string="Group By">
+              <filter name="draft" string="Draft" domain="[('y_state', '=', 'draft')]" help="Draft Moves"/>
+              <filter name="processed" string="Processed" domain="[('y_state', '=', 'processed')]" help="Processed Moves"/>
+              <filter name="returnable" string="Returnable" domain="[('y_is_returnable', '=', True)]" help="Returnable Moves"/>
+          </group>
+        </search>
+      </field>
+    </record>
+
+    <!-- Different type of views correspodingly -->
+    <record model="ir.ui.view" id="gate_management_tree_view">
+      <field name="name">gate.management.tree</field>
+      <field name="model">gate.management</field>
+      <field name="arch" type="xml">
+        <list string="View">
+          <field name="y_name"/>
+          <field name="y_warehouse_id"/>
+          <field name="y_is_returnable"/>
+          <field name="y_post_datetime"/>
+          <field name="y_picking_ids" widget="many2many_tags" string="Transfer Ref"/>
+          <field name="activity_ids"  widget="list_activity"/>
+         </list>
+      </field>
+    </record>
+
+    <record model="ir.rule" id="gate_management_record_restricted_company_rule">
+        <field name="name">Gate Management Restricted Record: multi-company</field>
+        <field name="model_id" ref="model_gate_management"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">
+            ['|', ('y_warehouse_id.company_id', '=', False), ('y_warehouse_id.company_id', 'parent_of', company_ids)]
+        </field>
+    </record>
+
+<!-- mail activity inherit view -->
+    <record id="mail_activity_inherit_view" model="ir.ui.view">
+      <field name="name">mail.activity</field>
+      <field name="model">mail.activity</field>
+      <field name="inherit_id" ref="mail.mail_activity_view_form_popup"/>
+      <field name="arch" type="xml">
+        <xpath expr="//field[@name='activity_type_id']" position="after">
+          <field name="y_gate_management_id"  invisible='1' />
+        </xpath>
+      </field>
+    </record>
+
+ 
+  <!-- kanban view of entry type -->
+  <record id="gate_management_type_kanban_view" model="ir.ui.view">
+    <field name="name">gate.management.kanban</field>
+    <field name="model">gate.management.type</field>
+    <field name="arch" type="xml">
+      <kanban class="oe_background_grey o_kanban_dashboard o_gate_management_kanban" create="0" sample="1">
+        <field name="y_name"/>
+        <field name="y_color"/>
+        <field name="y_count_processed"/>
+        <field name="y_count_draft"/>
+        <field name="y_count_returnable"/>
+          <templates>
+            <t t-name="kanban-box">
+              <div t-attf-class="#{!selection_mode ? kanban_color(record.y_color.raw_value) : ''}">
+                <div t-attf-class="o_kanban_card_header">
+                  <div class="o_kanban_card_header_title">
+                    <div class="row">
+                      <div class="col-12">
+                        <div class="o_primary">
+                          <t t-if="record.y_name.raw_value == 'Inward'">
+                            <a type="object" name="get_action_inward_entry">
+                              <field name="y_name"/>
+                            </a>
+                          </t>
+                          <t t-if="record.y_name.raw_value =='Outward'">
+                            <a type="object" name="get_action_outward_entry">
+                              <field name="y_name"/>
+                            </a>
+                          </t>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="o_kanban_manage_button_section" t-if="!selection_mode" groups="gate_management.group_gate_management_access_for_admin">
+                    <a class="o_kanban_manage_toggle_button" href="#"><i class="fa fa-ellipsis-v" role="img" aria-label="Manage" title="Manage"/></a>
+                  </div>
+                </div>
+                <div class="container o_kanban_card_content" t-if="!selection_mode">
+                  <div class="row">
+                    <div class="col-6 o_kanban_primary_left">
+                    <!--    <t t-if="record.name.raw_value == 'Outward'"> -->
+                      <button type="object" class="btn btn-primary" name="action_create_new">
+                        Create
+                      </button>
+                    </div>
+                    <div class="col-6  o_kanban_primary_right">
+                      <div t-if="record.y_count_draft.raw_value &gt; 0">
+                    </div>
+                    <div t-if="record.y_count_draft.raw_value &gt; 0">
+                      <div class="row">
+                        <div class="col-6 text-right">
+                          <t t-if="record.y_name.raw_value == 'Inward'">
+                            <a type="object" name="get_inward_entry_draft">
+                              Draft
+                            </a>
+                          </t>
+                          <t t-if="record.y_name.raw_value == 'Outward'">
+                            <a type="object" name="get_outward_entry_draft">
+                              Draft
+                            </a>
+                          </t>
+                        </div>
+                        <div class="col-6 text-right">
+                          <field name="y_count_draft"/>
+                        </div>
+                      </div>
+                    </div>
+                    <div t-if="record.y_count_processed.raw_value &gt; 0">
+                      <div class="row">
+                        <div class="col-6 text-right" >
+                          <t t-if="record.y_name.raw_value == 'Inward'">
+                            <a type="object" name="get_inward_entry_processed">
+                              Processed
+                            </a>
+                          </t>
+                          <t t-if="record.y_name.raw_value == 'Outward'">
+                            <a type="object" name="get_outward_entry_processed">
+                              Processed
+                            </a>
+                          </t>
+                        </div>
+                        <div class="col-6 text-right" >
+                          <field name="y_count_processed"/>
+                        </div>
+                      </div>
+                    </div>
+                    <div t-if="record.y_count_returnable.raw_value &gt; 0">
+                      <t t-if="record.y_name.raw_value == 'Outward'">
+                        <div class="row">
+                          <div class="col-6 text-right" >
+                            <a type="object" name="get_outward_entry_returnable">
+                              Returnable
+                            </a>
+                          </div>
+                          <div class="col-6 text-right" >
+                            <field name="y_count_returnable"/>       
+                          </div>
+                        </div>
+                      </t>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="container o_kanban_card_manage_pane dropdown-menu" role="menu">
+                <div class="row">
+                  <div class="col-6 o_kanban_card_manage_section o_kanban_manage_view">
+                    <div role="menuitem" class="o_kanban_card_manage_title">
+                      <span t-if="record.y_name.raw_value == 'Inward'">Inward</span>
+                      <span t-else="">View</span>
+                    </div>
+                    <div role="menuitem">
+                      <t t-if="record.y_name.raw_value == 'Outward'">
+                        <a name="get_outward_entry_draft" type="object">Draft</a>
+                      </t>
+                      <t t-else="">
+                        <a name="get_inward_entry_draft" type="object">Draft</a>
+                      </t>
+                    </div>
+                    <div role="menuitem">
+                        <t t-if="record.y_name.raw_value == 'Outward'">
+                          <a name="get_outward_entry_processed" type="object">Processed</a>
+                        </t>
+                        <t t-else="">
+                          <a name="get_inward_entry_processed" type="object">Processed</a>
+                        </t>
+                    </div>
+                    <div role="menuitem">
+                      <t t-if="record.y_name.raw_value == 'Outward'">
+                        <a name="get_outward_entry_returnable" type="object">Returnable</a>
+                      </t>
+                      <t t-else="">                        
+                      </t>
+                    </div>
+                  </div>
+                  <div class="col-6 o_kanban_card_manage_section o_kanban_manage_new" 
+                    >
+                    <div role="menuitem" class="o_kanban_card_manage_title">
+                      <span>New</span>
+                    </div>
+                    <div role="menuitem">
+                      <a name="create_registration" type="object" object="action_create_new">     Registration</a>
+                    </div>
+                  </div>
+                </div>
+                <div t-if="widget.editable" class="o_kanban_card_manage_settings row">
+                  <div class="col-8" role="menuitem" aria-haspopup="true">
+                      <ul class="oe_kanban_colorpicker" data-field="y_color" role="menu"/>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </t>
+        </templates>
+      </kanban>
+    </field>
+  </record>
+     
+  <!-- Different type of views correspodingly -->
+  <record model="ir.ui.view" id="gate_management_type_tree_view">
+    <field name="name">gate.management.type.tree</field>
+    <field name="model">gate.management.type</field>
+    <field name="arch" type="xml">
+      <list string="view" create="1" edit="1" delete="0">
+        <field name="y_name"/>
+        <field name="y_entry_type" invisible='1'/>
+          <button name="action_create_new" type="object" string="Create" groups='gate_management.group_gate_management_access_for_admin' invisible="y_entry_type not in ['reg']" icon="fa-plus" />
+       </list>
+    </field>
+  </record>
+
+  <!-- Actions panel -->
+  <record model="ir.actions.act_window" id="gate_management.gate_management_type_kanban">
+    <field name="name">Overview</field>
+    <field name="res_model">gate.management.type</field>
+    <field name="view_mode">kanban</field>
+   
+  </record>
+
+  <record model="ir.actions.act_window" id="gate_management.action_window_inwards_create_new">
+    <field name="name">Inward</field>
+    <field name="type">ir.actions.act_window</field>
+    <field name="res_model">gate.management</field>
+    <field name="view_mode">form</field>
+    <field name="domain">[('y_entry_type','=','in')]</field>
+    <field name="context">{'default_y_entry_type': 'in'}</field>
+  </record>
+
+  <record model="ir.actions.act_window" id="gate_management.action_window_outwards_create_new">
+    <field name="name">Outward</field>
+    <field name="type">ir.actions.act_window</field>
+    <field name="res_model">gate.management</field>
+    <field name="view_mode">form</field>
+    <field name="domain">[('y_entry_type','=','out')]</field>
+    <field name="context">{'default_y_entry_type': 'out'}</field>
+  </record>
+
+
+  <record model="ir.actions.act_window" id="gate_management.action_window_inwards">
+    <field name="name">Inward</field>
+    <field name="type">ir.actions.act_window</field>
+    <field name="res_model">gate.management</field>
+    <field name="view_mode">list,form</field>
+    <field name="domain">[('y_entry_type','=','in')]</field>
+    <field name="context">{'default_y_entry_type': 'in','create':False,'edit':False}</field>
+  </record>
+
+  <record model="ir.actions.act_window" id="gate_management.action_gate_management_type_kanban">
+    <field name="name">Gate Management Type</field>
+    <field name="type">ir.actions.act_window</field>
+    <field name="res_model">gate.management.type</field>
+    <field name="view_mode">kanban</field>
+    
+  </record>
+
+  <record model="ir.actions.act_window" id="gate_management.action_window_outwards">
+    <field name="name">Outward</field>
+    <field name="type">ir.actions.act_window</field>
+    <field name="res_model">gate.management</field>
+    <field name="view_mode">list,form</field>
+    <field name="domain">[('y_entry_type','=','out')]</field>
+    <field name="context">{'default_y_entry_type': 'out','create':False,'edit':False}</field>
+  </record>
+
+  <record model="ir.actions.act_window" id="action_window_draft">
+    <field name="name">Draft</field>      
+    <field name="type">ir.actions.act_window</field>
+    <field name="res_model">gate.management</field>
+    <field name="view_mode">list</field>
+  </record>
+
+  <record model="ir.actions.act_window" id="action_window_returnable">
+    <field name="name">Returnable</field>      
+    <field name="type">ir.actions.act_window</field>
+    <field name="res_model">gate.management</field>
+    <field name="view_mode">list</field>
+  </record>
+
+  <record model="ir.actions.act_window" id="gate_management.action_window_warehouse">
+    <field name="name">Warehouse</field>
+    <field name="res_model">stock.warehouse</field>
+    <field name="view_mode">list,form</field>
+  </record>
+
+  <record id="gate_management_main" model="ir.actions.server">
+    <field name="name">Gate Management Main </field>
+    <field name="model_id" ref="model_gate_management"/>
+    <field name="state">code</field>
+    <field name="code">
+      action = model.check_gate_access()
+    </field>
+  </record>
+
+  <!-- Menu Items -->
+  <menuitem name="Gate Management" id="gate_management.menu_root"  action="gate_management_main" sequence="1" web_icon="gate_management,static/description/gatemanagement.png" groups='group_gate_management_access'/>
+  
+
+  <menuitem name="Configuration"  id="gate_management.menu_3" parent="gate_management.menu_root" sequence="3"
+     groups='gate_management.group_gate_management_access_for_admin'/>
+
+  <menuitem name="Setting Gate Management" id="settingup_gate_management_main" parent="gate_management.menu_3" action="gate_management.settingup_gate_management_action" groups='gate_management.group_gate_management_access_for_admin' sequence="100"/>
+
+  <menuitem name="Inward" id="gate_management.menu_1" parent="gate_management.menu_root" action="gate_management.action_window_inwards" sequence="1" groups='gate_management.group_gate_management_access_for_admin'/>
+  <menuitem name="Outward" id="gate_management.menu_2" parent="gate_management.menu_root" action="gate_management.action_window_outwards" sequence="2" groups='gate_management.group_gate_management_access_for_admin'/>   
+
+  </data>
+</odoo>

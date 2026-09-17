@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="purchase_request_approval_remarks_form" model="ir.ui.view">
+        <field name="name">purchase.request.approval.remarks</field>
+        <field name="model">purchase.request.approval.remarks</field>
+        <field name="arch" type="xml">
+            <form string="Remaks wizard">               
+                <group>
+                    <field name="remarks" /> 
+                </group>
+                <footer>
+                    <button name="reject_order"
+                        string="Reject"
+                        type="object"
+                        class="btn-primary"/>
+                    <button string="Discard"
+                        class="btn-secondary"
+                        special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_purchase_request_approval_remarks" model="ir.actions.act_window">
+        <field name="name">Remarks</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">purchase.request.approval.remarks</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="purchase_request_approval_remarks_form"/>
+        <field name="target">new</field>
+    </record>
+</odoo>

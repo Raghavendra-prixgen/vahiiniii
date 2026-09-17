@@ -1,0 +1,113 @@
+<odoo>
+
+  <record id="inventory_inventory_aging_value_report_view_tree_view" model="ir.ui.view">
+    <field name="name">inventory.aging.qty.value.report.view.list.view</field>
+    <field name="model">inventory.aging.qty.value.report.view</field>
+    <field name="arch" type="xml">
+      <list create="0" edit="0">
+        <field name="product_code"/>
+        <field name="product_name"/>
+        <field name="product_id" string="Product" column_invisible="True"/>
+        <field name="product_category_id" optional="hide"/>
+        <field name="product_uom_id" optional="hide"/>
+        <field name="lot_id"/>
+        <field name="lot_create_date" optional="hide" options="{'show_time':False}"/>
+        <field name="avg_cost" optional="hide"/>
+        <field name="quantity" sum="quantity"/>
+        <field name="cost" column_invisible="True"/>
+        
+        <field name="value" sum="value" groups="inventory_aging_report_flexible_dates.aging_value_access_group"/>
+        <field name="period_1_qty" optional="show"/>
+        <field name="period_1_value" optional="show" groups="inventory_aging_report_flexible_dates.aging_value_access_group"/>
+        <field name="period_2_qty" optional="show"/>
+        <field name="period_2_value" optional="show" groups="inventory_aging_report_flexible_dates.aging_value_access_group"/>
+        <field name="period_3_qty" optional="show"/>
+        <field name="period_3_value" optional="show" groups="inventory_aging_report_flexible_dates.aging_value_access_group"/>
+        <field name="period_4_qty" optional="show"/>
+        <field name="period_4_value" optional="show" groups="inventory_aging_report_flexible_dates.aging_value_access_group"/>
+        <field name="period_5_qty" optional="show"/>
+        <field name="period_5_value" optional="show" groups="inventory_aging_report_flexible_dates.aging_value_access_group"/>
+        <field name="period_6_qty" optional="show"/>
+        <field name="period_6_value" optional="show" groups="inventory_aging_report_flexible_dates.aging_value_access_group"/>
+        <field name="period_7_qty" optional="show"/>
+        <field name="period_7_value" optional="show" groups="inventory_aging_report_flexible_dates.aging_value_access_group"/>
+        <field name="older_qty" optional="show"/>
+        <field name="older_value" optional="show" groups="inventory_aging_report_flexible_dates.aging_value_access_group"/>     
+        <field name="company_id" optional="hide"/>   
+      </list>
+    </field>
+  </record>
+
+  <record id="view_inventory_aging_value_report_view_filter" model="ir.ui.view">
+    <field name="name">inventory.aging.qty.value.report.view.search.view</field>
+    <field name="model">inventory.aging.qty.value.report.view</field>
+    <field name="arch" type="xml">
+        <search string="Search">
+            <field name="product_id" string="Product"/>
+            <field name="product_category_id"/>
+            <field name="lot_id"/>
+            <group expand="0" string="Group By">
+              <filter name="positive_values" string="Negative value filter" domain="[('value','>=',0)]"/>
+              <filter name="product_id" string="Product" domain="[]" context="{'group_by':'product_id'}"/>
+              <filter name="product_category_id" string="Product Category" domain="[]" context="{'group_by':'product_category_id'}"/>
+              <filter name="lot_id" string="Lot/Serial Number" domain="[]" context="{'group_by':'lot_id'}"/>
+            </group>
+       </search>
+    </field>
+  </record>
+
+    
+  <record id="inventory_inventory_aging_value_report_tree_view" model="ir.ui.view">
+    <field name="name">inventory.aging.qty.value.report.list.view</field>
+    <field name="model">inventory.aging.qty.value.report</field>
+    <field name="arch" type="xml">
+      <list create="0" edit="0">
+        <field name="product_code"/>
+        <field name="product_name"/>
+        <field name="product_id" string="Product" column_invisible="True"/>
+        <field name="product_category_id" optional="hide"/>
+        <field name="product_uom_id" optional="hide"/>
+        <field name="lot_id"/>
+        <field name="lot_create_date" optional="hide" options="{'show_time':False}"/>
+        <field name="avg_cost" optional="hide"/>
+        <field name="quantity" sum="quantity"/>
+        <field name="cost" column_invisible="True"/>
+        <field name="value" sum="value" groups="inventory_aging_report_flexible_dates.aging_value_access_group"/>
+        <field name="period_1_qty" optional="show"/>
+        <field name="period_1_value" optional="show" groups="inventory_aging_report_flexible_dates.aging_value_access_group"/>
+        <field name="period_2_qty" optional="show"/>
+        <field name="period_2_value" optional="show" groups="inventory_aging_report_flexible_dates.aging_value_access_group"/>
+        <field name="period_3_qty" optional="show"/>
+        <field name="period_3_value" optional="show" groups="inventory_aging_report_flexible_dates.aging_value_access_group"/>
+        <field name="period_4_qty" optional="show"/>
+        <field name="period_4_value" optional="show" groups="inventory_aging_report_flexible_dates.aging_value_access_group"/>
+        <field name="period_5_qty" optional="show"/>
+        <field name="period_5_value" optional="show" groups="inventory_aging_report_flexible_dates.aging_value_access_group"/>
+        <field name="period_6_qty" optional="show"/>
+        <field name="period_6_value" optional="show" groups="inventory_aging_report_flexible_dates.aging_value_access_group"/>
+        <field name="period_7_qty" optional="show"/>
+        <field name="period_7_value" optional="show" groups="inventory_aging_report_flexible_dates.aging_value_access_group"/>
+        <field name="older_qty" optional="show"/>
+        <field name="older_value" optional="show" groups="inventory_aging_report_flexible_dates.aging_value_access_group"/>     
+        <field name="company_id" optional="hide"/>   
+      </list>
+    </field>
+  </record>
+
+  <record id="view_inventory_aging_value_report_filter" model="ir.ui.view">
+    <field name="name">inventory.aging.qty.value.report.search.view</field>
+    <field name="model">inventory.aging.qty.value.report</field>
+    <field name="arch" type="xml">
+        <search string="Search">
+            <field name="product_id" string="Product"/>
+            <field name="product_category_id"/>
+            <field name="lot_id"/>
+            <group expand="0" string="Group By">
+              <filter name="positive_values" string="Negative value filter" domain="[('value','>=',0)]"/>
+              <filter name="product_id" string="Product" domain="[]" context="{'group_by':'product_id'}"/>
+              <filter name="product_category_id" string="Product Category" domain="[]" context="{'group_by':'product_category_id'}"/>
+            </group>
+       </search>
+    </field>
+  </record>
+</odoo>

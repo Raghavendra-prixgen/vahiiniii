@@ -1,0 +1,26 @@
+<odoo>
+    <record model="ir.module.category" id="security_access_groups">
+        <field name="name">Access Rights</field>
+    </record>
+
+    <record model="res.groups" id="group_access_user">
+        <field name="name">Access User</field>
+        <field name="category_id" ref="centralized_access_management.security_access_groups" />
+    </record>
+
+    <record model="res.groups" id="group_access_user_cam">
+        <field name="name">Centralized Access Management</field>
+        <field name="category_id" ref="centralized_access_management.security_access_groups" />
+    </record>
+
+    <record model="res.groups" id="group_access_manager">
+        <field name="name">Access Manager</field>
+        <field name="category_id" ref="centralized_access_management.security_access_groups" />
+        <field name="implied_ids" eval="[(4, ref('centralized_access_management.group_access_user'))]" />
+    </record>
+
+    <record id="base.group_system" model="res.groups">
+        <field name="implied_ids" eval="[(4, ref('centralized_access_management.group_access_manager'))]" />
+    </record>
+
+</odoo>

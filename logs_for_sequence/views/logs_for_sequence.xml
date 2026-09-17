@@ -1,0 +1,14 @@
+<odoo>
+    
+    <record model="ir.ui.view" id="ir_sequence_form_inherit_log">
+        <field name="name">ir.sequence.form.inherit.log</field>
+        <field name="model">ir.sequence</field>
+        <field name="inherit_id" ref="base.sequence_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form//sheet" position="after">        
+                <chatter/>
+            </xpath>
+        </field>
+    </record>
+   
+</odoo>

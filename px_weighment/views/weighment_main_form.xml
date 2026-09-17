@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<record id="weighment_main_form_view" model="ir.ui.view">
+			<field name="name">Weighment form view</field>
+			<field name="model">weighment.picking</field>
+			<field name="arch" type="xml">
+                <form string="Weighment Picking Form">
+                    <header>
+                        <button name="calculate_tolerance_limit" type="object" string="Calculate Tolerance Limit" invisible="y_state not in ('open') or y_order_type not in ('manufacturing') " class="oe_highlight" />
+                        <button name="button_validate" type="object" string="Validate" invisible="y_state not in ('open') or y_order_type in ('manufacturing')" class="oe_highlight" />
+
+
+                        
+                        <button name="button_close" type="object" string="Close" class="oe_highlight" invisible="y_state not in ('release')"/>
+                        <button name="button_cancel" type="object" string="Cancel" class="oe_highlight" invisible="y_state in ('cancel','close')"/>
+                        <button name="button_reset" type="object" string="Reset" class="oe_highlight" invisible="y_state not in ('cancel','release')"/>
+                        <field name="y_state" widget="statusbar" statusbar_visible="open,release,close"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h2><field name="y_name" /></h2>
+                        </div>
+                        <!-- <div class="row">
+                                <div class="col-12">
+                                    <div class="col-6">
+                                    </div>
+                                    <div class="col-6" style="float:right;position: relative;top: -63px;">
+                                        <span  style="padding:10px;float:right;margin-left: 16px;">
+                                            <strong>Gross Weight</strong>
+                                          <h2>  <field name="y_total_truck_weight"/></h2>
+                                        </span>
+                                        <span    style="padding:10px;float:right;margin-right: 16px;">
+                                            <strong>Net Weight</strong>
+                                            <h2><field name="y_net_weight"/></h2>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div> -->
+                        <group>
+                            <group>
+                                <field name="y_weighment_type" force_save="1"/>
+                                <field name="y_order_type" invisible="1" force_save="1"/>
+                                <field name="y_mo_id" invisible="y_order_type not in ('manufacturing')" readonly="y_state in  ('close')" options="{'no_create': True, 'no_create_edit':True}" domain="[('state','in',('progress','to_close')),'|',('y_is_final_display','=',False),('y_is_order_completed','=',True),('id','not in',y_mo_ids)]"/>
+                                <field name="y_sale_id" invisible="y_order_type  not in ('sales')" options="{'no_create': True, 'no_create_edit':True}" readonly="y_state in ('close','release')" domain="[('state', '=','sale'),'|',('y_is_final_display','=',False),('y_is_order_completed','=',True),('id','not in',y_sale_ids)]"/>
+                                                                
+                                <field name="y_purchase_id" invisible="y_order_type  not in ('purchase')" readonly="y_state in ('close','release')" options="{'no_create': True, 'no_create_edit':True}" domain="[('state', 'in', ['done','purchase']),'|',('y_is_final_display','=',False),('y_is_order_completed','=',True),('id','not in',y_purchase_ids)]"/>
+                               
+                                <field name="y_shipment_no" context="{'y_order_display': 'name desc' }"  options="{'no_create': True, 'no_create_edit':True}" readonly="y_state in ('close','release')" />
+                               
+                                <field name="y_gate_in_id" invisible="y_order_type  not in ('purchase')"  readonly="y_state in ('close')" options="{'no_create': True, 'no_create_edit':True}" domain="[('y_entry_type','=','in')]"/>
+                                <!-- <field name="y_gate_out_id" invisible="y_order_type  not in ('sales')" required="y_order_type  in ('sales')" readonly="y_state in ('close','release')" options="{'no_create': True, 'no_create_edit':True}" domain="[('y_entry_type','=','out')]"/> -->
+                                <field name="y_gate_out_id" invisible="y_order_type  not in ('sales')" readonly="y_state in ('close','release')" options="{'no_create': True, 'no_create_edit':True}" domain="[('y_entry_type','=','out')]"/>
+
+                                <field name="y_workcenter_id" invisible="y_order_type  not in ('manufacturing')"/>
+                                <field name="y_vehicle_type" readonly="y_state in ('close','release')"/>
+                                <field name="y_fleet_id" invisible="y_vehicle_type not in ('internal')" readonly="y_state in ('close','release')"/>
+                                <field name="y_vehicle_number" invisible="y_vehicle_type not in ('external')" readonly="y_state in ('close','release')"/>
+                                <field name="y_reason" invisible="y_state not in ('close')" required="y_state in ('close')"/>
+                                <field name="y_user_id" readonly="y_state in ('close','release')"/>
+                                <field name="y_date" readonly="y_state in ('close','release')"/>
+                                <field name="y_reference" readonly="y_state in ('close','release')"/>
+
+                                <field name="y_purchase_ids" widget="many2many_tags" invisible="1"/>
+                                <field name="y_sale_ids" widget="many2many_tags" invisible="1"/>
+                                <field name="y_mo_ids" widget="many2many_tags" invisible="1"/>
+                            </group>
+                            <group>
+                                
+                                <field name="y_total_products" />
+                                <field name="y_total_truck_weight" readonly="y_state in ('close','release')"/>
+                                <field name="y_empty_truck_weight" readonly="y_state in ('close','release')"/>
+                                <field name="y_tolerance" />
+                                <field name="y_gross_weight" />
+                                <field name="y_net_weight" />
+                                <field name="y_difference" />
+                                <separator string="Total Weight"/>
+                                <field name="y_total_weight" string="Total Weight"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="Products">
+                                <field name="y_weighment_product_lines" readonly="y_state in ('close','release')">
+                                    <list string="Weighment Product Lines" editable="bottom">
+                                        <field name="y_product_id" options="{'no_create': True, 'no_create_edit':True}" force_save="1" readonly="1"/>
+                                        <field name="y_description" force_save="1" readonly="1"/>
+                                        <field name="y_product_uom" force_save="1" readonly="1"/>
+                                        <field name="y_po_qty" column_invisible="parent.y_order_type  not in ('purchase')" force_save="1" readonly="1"/>
+                                        <field name="y_so_qty" column_invisible="parent.y_order_type  not in ('sales')" force_save="1" readonly="1"/>
+                                        <field name="y_mo_qty" column_invisible="parent.y_order_type  not in ('manufacturing')" force_save="1" readonly="1"/>
+                                        <field name="y_product_quantity"/>
+                                    
+                                        <field name="y_purchase_id" column_invisible="parent.y_order_type  not in ('purchase')" force_save="1" readonly="1"/>
+                                        <field name="y_purchase_line_id" column_invisible="1"/>
+                                        <field name="y_sale_id" column_invisible="parent.y_order_type  not in ('sales')" force_save="1" readonly="1"/>
+                                        
+                                        <field name="y_shipment_no" column_invisible="0" optional="hide"/>
+
+                                        <field name="y_line_id" column_invisible="1" optional="hide"/>
+                                        
+                                        <field name="y_mo_id" column_invisible="parent.y_order_type  not in ('manufacturing')" options="{'no_create': True, 'no_create_edit':True}" force_save="1" readonly="1"/>
+                                        <field name="y_product_batch" force_save="1" readonly="1"/>
+                                        <field name="y_std_weight" force_save="1" readonly="1"/>
+                                        <field name="y_gross_weight" sum="Gross Weight" force_save="1" readonly="1"/>
+                                        <field name="y_tolerance" column_invisible="1"/>
+                                        <field name="y_weighment_type" column_invisible="1"/>
+                                        <field name="y_deliver_line_id" column_invisible="1"/>
+                                    </list>
+                                </field>
+                            </page>
+                           <!--  <page string="Internal Transport" invisible="1">
+                                <field name="y_weighment_truck_lines" readonly="y_state in ('close','release')">
+                                    <list string="Weighment Product Lines" editable="bottom">
+                                        <field name="y_truck_id" options="{'no_create': True, 'no_create_edit':True}"/>
+                                        <field name="y_empty_truck_weight"/>
+                                        <field name="y_loaded_truck_weight"/>
+                                        <field name="y_total_truck_weight"/>
+                                        <field name="y_weighment_type" column_invisible="True"/>
+                                    </list>
+                                </field>
+                            </page> -->
+                            <page string="Trolley Details" invisible="y_order_type  not in ('manufacturing')">
+                                <field name="y_weighment_trolly_lines" readonly="y_state in ('close','release')">
+                                    <list string="Weighment Trolly Lines" editable="bottom" >
+                                        <field name="y_trolly_id" options="{'no_create': True, 'no_create_edit':True}" domain="[('y_trolley','=',True)]" />
+                                        <field name="y_empty_trolly_weight"/>
+                                        <field name="y_loaded_trolly_weight" />
+                                        <field name="y_total_trolly_weight"/>
+                                        <field name="y_weighment_type" column_invisible="True"/>
+                                    </list>
+                                </field>
+                            </page>
+                             <!-- <page string="External Transport" invisible="1">
+                                <field name="y_weighment_vehicle_lines" readonly="y_state in ('close','release')">
+                                    <list string="Weighment Vehicles Lines" editable="bottom">
+                                        <field name="y_vehicle_no" options="{'no_create': True, 'no_create_edit':True}" class="col-md-2"/>
+                                        <field name="y_empty_vehicle_weight" class="col-md-2"/>
+                                        <field name="y_loaded_vehicle_weight" class="col-md-2"/>
+                                        <field name="y_total_vehicle_weight" class="col-md-2"/>
+                                        <field name="y_weighment_type" column_invisible="True"/>
+                                    </list>
+                                </field>
+                            </page> -->
+                        </notebook>
+                    </sheet>
+                    <chatter/>
+                </form>
+              </field>
+		</record>
+
+		<record model="ir.ui.view" id="weighment_main_list_view">
+            <field name="name">Weighment list view</field>
+            <field name="model">weighment.picking</field>
+            <field name="arch" type="xml">
+                <list string="Weighment Picking Tree">
+                	<field name="y_name"/>
+                    <field name="y_weighment_type"/>
+                    <field name="y_state" widget="badge" decoration-success="y_state in ('close','release')"
+                            decoration-primary="y_state in ('open')"
+                            decoration-warning="y_state == 'cancel'"/>
+                </list>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="weighment_main_action">
+            <field name="name">Weighment Operations</field>
+            <field name="res_model">weighment.picking</field>
+
+            <field name="view_mode">list,form</field>
+            <field name="context">{'create':False,'edit':False}</field>
+        </record>
+
+        <record  model="ir.actions.act_window" id="weighment_main_action_active">
+            <field name="name">Weighment Operations</field>
+            <field name="res_model">weighment.picking</field>
+            <field name="view_mode">list,form</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+                          (0, 0, {'view_mode': 'list', 'view_id': ref('weighment_main_list_view')}),
+                          (0, 0, {'view_mode': 'form', 'view_id': ref('weighment_main_form_view')})]"/>
+            <field name="domain">[('y_shipment_no', '=', active_id)]</field>
+        </record>
+
+        <record id="view_weighment_picking_internal_search" model="ir.ui.view">
+            <field name="name">weighment.picking.internal.search</field>
+            <field name="model">weighment.picking</field>
+
+            <field name="arch" type="xml">
+                <search string="Weighment Types">
+                    <field name="y_weighment_type"/>
+                    <field name="y_name"/>
+                </search>
+            </field>
+        </record>
+
+        <menuitem name="Weighment" id="menu_root" web_icon="px_weighment,static/description/icon.png"/>
+        <menuitem name="Weighment" id="menu_weighment_picking" parent="menu_root"/>
+        <menuitem name="Weighment Entries" id="menu_weighment_picking_action" parent="menu_weighment_picking" action="weighment_main_action"/>
+
+
+
+         <record id="weighment_picking_action_picking_type" model="ir.actions.act_window">
+            <field name="name">All Transfers</field>
+            <field name="res_model">weighment.picking</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="domain">[('y_state', '=', 'open')]</field>
+            <!-- <field name="view_type">form</field> -->
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="view_weighment_picking_internal_search"/>
+
+            <field name="context">{
+                    'search_default_y_weighment_type': [active_id],
+                    'default_y_weighment_type': active_id,
+
+            }
+            </field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click here to create a new transfer.
+              </p><p>
+                You can either do it immediately or mark it as Todo for future processing. Use your scanner to validate the transferred quantity quicker.
+              </p>
+            </field>
+        </record>
+        <record id="action_weighment_picking_list_ready" model="ir.actions.act_window">
+            <field name="name">To Weigh</field>
+            <field name="res_model">weighment.picking</field>
+            <field name="type">ir.actions.act_window</field>
+            <!-- <field name="view_type">form</field> -->
+            <field name="view_mode">list,form</field>
+            <field name="domain">[('y_state', '=', 'open')]</field>
+            <field name="context">{
+                'search_default_y_weighment_type': [active_id],
+                'default_y_weighment_type': active_id, }
+            </field>
+            <field name="search_view_id" ref="view_weighment_picking_internal_search"/>
+             <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click here to create a new transfer.
+              </p><p>
+                You can either do it immediately or mark it as Todo for future processing. Use your scanner to validate the transferred quantity quicker.
+              </p>
+            </field>
+       </record>
+        <record id="action_weighment_picking_list_closed" model="ir.actions.act_window">
+            <field name="name">Closed</field>
+            <field name="res_model">weighment.picking</field>
+            <field name="type">ir.actions.act_window</field>
+            <!-- <field name="view_type">form</field> -->
+            <field name="view_mode">list,form</field>
+            <field name="domain">[('y_state', '=', 'close')]</field>
+            <field name="context">{
+                'search_default_y_weighment_type': [active_id],
+                'default_y_weighment_type': active_id, }
+            </field>
+            <field name="search_view_id" ref="view_weighment_picking_internal_search"/>
+             <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click here to create a new transfer.
+              </p><p>
+                You can either do it immediately or mark it as Todo for future processing. Use your scanner to validate the transferred quantity quicker.
+              </p>
+            </field>
+       </record>
+
+	</data>
+</odoo>

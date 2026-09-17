@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="purchase_order_tree_view_new_pr" model="ir.ui.view">
+        <field name="name">purchase.order.list.view.pr</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_kpis_tree"/>
+        <field name="arch" type="xml">
+            <field name="origin" position="after">
+                <field name="y_purchase_request_number" optional="hide"/>
+            </field>
+        </field>
+    </record>
+    
+    <record id="view_purchase_order_inherit_search_new" model="ir.ui.view">
+        <field name="name">view_purchase_order_inherit_search_new</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.view_purchase_order_filter"/>
+        <field name="arch" type="xml">
+            <search>
+                <field name="y_quotation_number"/>
+                <field name="y_purchase_request_number"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_purchase_order_view_search_quotation_number" model="ir.ui.view">
+        <field name="name">view_purchase_order_view_search_quotation_number</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_view_search"/>
+        <field name="arch" type="xml">
+            <search>
+                <field name="y_quotation_number"/>
+                <field name="y_purchase_request_number"/>
+            </search>
+        </field>
+    </record>
+
+</odoo>

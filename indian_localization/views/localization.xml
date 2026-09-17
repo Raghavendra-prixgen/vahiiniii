@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="custom_contact_local" model="ir.ui.view">
+            <field name="name">Custom Contact</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form//sheet//group//group[1]//field[@name='vat']" position="after">
+                    <field name="y_is_indian_company" invisible="1"/>
+                </xpath>
+                <xpath expr="//field[@name='phone']" position="attributes"> 
+                    <attribute name="invisible">not y_is_indian_company</attribute>
+                </xpath>   
+                <xpath expr="//form//sheet//group//group[1]//field[@name='vat']" position="attributes"> 
+                     <attribute name="string">GSTIN</attribute>
+                     <attribute name="invisible">not y_is_indian_company</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="custom_company" model="ir.ui.view">
+            <field name="name">Custom Company</field>
+            <field name="model">res.company</field>
+            <field name="inherit_id" ref="base.view_company_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='l10n_in_upi_id']" position="after">
+                    <field name="y_is_indian_company" invisible="0"/>    
+                    <!-- <field name='y_tan_no' invisible ="not y_is_indian_company"/> -->
+                    <field name='y_factory_number' invisible="not y_is_indian_company"/>
+                    <field name='y_company_status' invisible="not y_is_indian_company"/>
+                    <field name='y_msme_code' invisible = "not y_is_indian_company"/>
+                </xpath>
+
+                <xpath expr="//field[@name='company_registry']" position="replace"> 
+                    <field name='company_registry' string='CIN'/>
+                </xpath>
+
+                 <xpath expr="//div[@class='o_address_format']" position="after">            
+                    <xpath expr="//field[@name='phone']" position="move"/>
+                    <xpath expr="//field[@name='mobile']" position="move"/>
+                    <xpath expr="//field[@name='email']" position="move"/>
+                    <xpath expr="//field[@name='website']" position="move"/>
+                    <xpath expr="//field[@name='parent_id']" position="move"/>
+                </xpath>
+
+                 <!-- <xpath expr="//field[@name='favicon']" position="after"> -->
+                <xpath expr="//field[@name='l10n_in_upi_id']" position="after">
+                    <xpath expr="//field[@name='vat']" position="move"/>
+                    <xpath expr="//field[@name='company_registry']" position="move"/>
+                    <xpath expr="//field[@name='currency_id']" position="move"/>
+                </xpath>
+                <xpath expr="//field[@name='vat']" position="attributes">
+                    <attribute name="invisible">not y_is_indian_company</attribute>
+                </xpath>
+
+                <notebook position="inside">
+                  <page string="Tax Information" invisible = "not y_is_indian_company">
+                    <group>
+                      <group string="Income Tax">
+                        <field name="y_tan_no"/>
+                        <field name="y_tcan_no"/>
+                        <field name="y_ce_range"/>
+                        <field name="y_ecc_number"/>
+                      </group>              
+                      <group string="Excise">
+                          <field name="y_ccc_no"/>
+                          <field name="y_ce_range"/>
+                          <field name="y_ecc_number"/>
+                          <field name="y_ce_division"/>
+                          <field name="y_circle_no"/>
+                          <field name="y_assignes_officer"/>
+                          <field name="y_ward_number"/>
+                      </group>
+                    </group>
+                  </page>
+                </notebook>
+            </field>
+        </record>
+
+
+        <record id="custom_contact_local_tree_view" model="ir.ui.view">
+            <field name="name">Custom Contact Tree</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_tree"/>
+            <field name="arch" type="xml">
+                <field name="phone" position="after">
+                    <field name="y_is_indian_company" invisible="1"/>
+                </field>
+                <field name="vat" position="attributes">
+                    <attribute name="string">GSTIN</attribute>
+                    <attribute name="invisible">not y_is_indian_company</attribute>
+                </field>
+            </field>
+        </record>
+
+    </data>
+</odoo>

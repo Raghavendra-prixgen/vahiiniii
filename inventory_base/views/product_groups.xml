@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!-- Product Template -->
+        <record id="product_template_only_form_view_inherit_product_groups" model="ir.ui.view">
+            <field name="name">product_template_only_form_view_inherit_product_groups</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_only_form_view"/>
+            <field name="arch" type="xml">
+                <field name="lot_valuated" position="after">
+                    <field name="y_internal_reference_sequence" invisible='1'/>
+                    <field name="y_item_group" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                    <field name="y_product_group_1" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                    <field name="y_product_group_2" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                    <field name="y_product_group_3" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                    <field name="y_product_classification_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                </field>
+            </field>
+        </record>
+
+<!--         < product variant/>
+ -->
+        <record id="product_product_only_form_view_inherit_product_groups" model="ir.ui.view">
+            <field name="name">product_variant_only_form_view_inherit_product_groups</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name="arch" type="xml">
+                <field name="categ_id" position="after">
+                    <field name="y_item_group" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                    <field name="y_product_group_1" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                    <field name="y_product_group_2" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                    <field name="y_product_group_3" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                    <field name="y_product_classification_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="search_view_item_group_delete_button" model="ir.ui.view">
+            <field name="name">item.group.search.delete.button</field>
+            <field name="model">item.group</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="y_name"/>
+                    <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+                </search>                
+            </field>
+        </record>
+
+        <record id="search_view_product_group_1_delete_button" model="ir.ui.view">
+            <field name="name">product.group.1.search.delete.button</field>
+            <field name="model">product.group.1</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="y_name"/>
+                    <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+                </search>                
+            </field>
+        </record>
+        
+        <record id="search_view_product_group_2_delete_button" model="ir.ui.view">
+            <field name="name">product.group.2.search.delete.button</field>
+            <field name="model">product.group.2</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="y_name"/>
+                    <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+                </search>                
+            </field>
+        </record>
+        
+        <record id="search_view_product_group_3_delete_button" model="ir.ui.view">
+            <field name="name">product.group.3.search.delete.button</field>
+            <field name="model">product.group.3</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="y_name"/>
+                    <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+                </search>                
+            </field>
+        </record>
+        
+        
+        <!-- Group Master Trees -->
+        <record id="item_group_tree_view" model="ir.ui.view">
+            <field name="name">item_group_tree_view</field>
+            <field name="model">item.group</field>
+            <field name="arch" type="xml">
+                <list editable="bottom">
+                    <field name="y_code" required="1"/>
+                    <field name="y_name" string="Description" required="1"/>
+                    <field name="y_product_category_id" required="0" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                    <field name="y_company_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}" groups="base.group_multi_company"/>
+                </list>
+            </field>
+        </record>
+        <record id="product_group_1_tree_view" model="ir.ui.view">
+            <field name="name">product_group_1_tree_view</field>
+            <field name="model">product.group.1</field>
+            <field name="arch" type="xml">
+                <list editable="bottom">
+                    <field name="y_code" required="1"/>
+                    <field name="y_name" string="Description" required="1"/>
+                    <field name="y_item_group" required="0" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                    <field name="y_product_category_id" required="0" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                    <field name="y_company_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}" groups="base.group_multi_company"/>
+                </list>
+            </field>
+        </record>
+        <record id="product_group_2_tree_view" model="ir.ui.view">
+            <field name="name">product_group_2_tree_view</field>
+            <field name="model">product.group.2</field>
+            <field name="arch" type="xml">
+                <list editable="bottom">
+                    <field name="y_code" required="1"/>
+                    <field name="y_name" string="Description" required="1"/>
+                    <field name="y_product_group_1" required="1" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                    <field name="y_product_category_id" required="0" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                    <field name="y_company_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}" groups="base.group_multi_company"/>
+                </list>
+            </field>
+        </record>
+        <record id="product_group_3_tree_view" model="ir.ui.view">
+            <field name="name">product_group_3_tree_view</field>
+            <field name="model">product.group.3</field>
+            <field name="arch" type="xml">
+                <list editable="bottom">
+                    <field name="y_code" required="1"/>
+                    <field name="y_name" string="Description" required="1"/>
+                    <field name="y_product_group_2" required="1" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                    <field name="y_product_category_id" required="0" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                    <field name="y_company_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}" groups="base.group_multi_company"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Groups Multi Company -->
+        <record model="ir.rule" id="item_group_record_restricted_company_rule">
+            <field name="name">Item Group Restricted Record: multi-company</field>
+            <field name="model_id" ref="model_item_group"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">
+                ['|', ('y_company_id', '=', False), ('y_company_id', 'parent_of', company_ids)]
+            </field>
+        </record>
+
+        <record model="ir.rule" id="product_group_1_record_restricted_company_rule">
+            <field name="name">Product Group 1 Restricted Record: multi-company</field>
+            <field name="model_id" ref="model_product_group_1"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">
+                ['|', ('y_company_id', '=', False), ('y_company_id', 'parent_of', company_ids)]
+            </field>
+        </record>
+
+        <record model="ir.rule" id="product_group_2_record_restricted_company_rule">
+            <field name="name">Product Group 2 Restricted Record: multi-company</field>
+            <field name="model_id" ref="model_product_group_2"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">
+                ['|', ('y_company_id', '=', False), ('y_company_id', 'parent_of', company_ids)]
+            </field>
+        </record>
+
+        <record model="ir.rule" id="product_group_3_record_restricted_company_rule">
+            <field name="name">Product Group 3 Restricted Record: multi-company</field>
+            <field name="model_id" ref="model_product_group_3"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">
+                ['|', ('y_company_id', '=', False), ('y_company_id', 'parent_of', company_ids)]
+            </field>
+        </record>
+
+
+        <!-- Group Master Actions -->
+        <record id="item_group_action" model="ir.actions.act_window">
+            <field name="name">Item Group</field>
+            <field name="res_model">item.group</field>
+            <field name="view_mode">list</field>
+        </record>
+        <record id="product_group_1_action" model="ir.actions.act_window">
+            <field name="name">Product Group 1</field>
+            <field name="res_model">product.group.1</field>
+            <field name="view_mode">list</field>
+        </record>
+        <record id="product_group_2_action" model="ir.actions.act_window">
+            <field name="name">Product Group 2</field>
+            <field name="res_model">product.group.2</field>
+            <field name="view_mode">list</field>
+        </record>
+        <record id="product_group_3_action" model="ir.actions.act_window">
+            <field name="name">Product Group 3</field>
+            <field name="res_model">product.group.3</field>
+            <field name="view_mode">list</field>
+        </record>
+
+
+
+        <!-- Group Master Menus -->
+        <menuitem id="menu_product_group_root"
+                    name="Others"
+                    parent="stock.menu_stock_config_settings"
+                    sequence="100"/>
+                
+
+        <menuitem id="menu_item_group"
+                    name="Item Group"
+                    action="item_group_action"
+                    parent="menu_product_group_root"
+                    sequence="5"
+                    groups="inventory_base.item_group_make_invisible"/>
+
+        <menuitem id="menu_product_group_1"
+                    name="Product Group 1"
+                    action="product_group_1_action"
+                    parent="menu_product_group_root"
+                    sequence="10"
+                    groups="inventory_base.product_group_1_make_invisible"/>
+        
+        <menuitem id="menu_product_group_2"
+                    name="Product Group 2"
+                    action="product_group_2_action"
+                    parent="menu_product_group_root"
+                    sequence="15"
+                    groups="inventory_base.product_group_2_make_invisible"/>
+        
+        <menuitem id="menu_product_group_3"
+                    name="Product Group 3"
+                    action="product_group_3_action"
+                    parent="menu_product_group_root"
+                    sequence="20"
+                    groups="inventory_base.product_group_3_make_invisible"/>
+
+
+        <!-- Inventory Report Product Groups -->
+        <record id="view_stock_quant_tree_editable_inherit_product_groups" model="ir.ui.view">
+            <field name="name">view_stock_quant_tree_editable_inherit_product_groups</field>
+            <field name="model">stock.quant</field>
+            <field name="inherit_id" ref="stock.view_stock_quant_tree_editable"/>
+            <field name="arch" type="xml">
+                <field name="product_id" position="after">
+                    <field name="y_product_category_id" readonly="1" optional="hide"/>
+                    <field name="y_item_group" readonly="1" optional="hide"/>
+                        
+                    <field name="y_product_group_1" readonly="1" optional="hide"/>
+                        
+                    <field name="y_product_group_2" readonly="1" optional="hide"/>
+                        
+                    <field name="y_product_group_3" readonly="1" optional="hide"/>
+                   
+                </field>
+            </field>
+        </record>
+
+
+        <!-- Stock Moves Product Groups -->
+        <record id="view_move_tree_inherit_product_groups" model="ir.ui.view">
+            <field name="name">view_move_tree_inherit_product_groups</field>
+            <field name="model">stock.move</field>
+            <field name="inherit_id" ref="stock.view_move_tree"/>
+            <field name="arch" type="xml">
+                <field name="product_id" position="after">
+                    <field name="y_product_category_id" readonly="1" optional="hide"/>
+                    <field name="y_item_group" readonly="1" optional="hide"/>
+                        
+                    <field name="y_product_group_1" readonly="1" optional="hide"/>
+                        
+                    <field name="y_product_group_2" readonly="1" optional="hide"/>
+                        
+                    <field name="y_product_group_3" readonly="1" optional="hide"/>
+                </field>
+            </field>
+        </record>
+
+
+        <!-- Product Moves Product Groups -->
+        <record id="view_move_line_tree_inherit_product_groups" model="ir.ui.view">
+            <field name="name">view_move_line_tree_inherit_product_groups</field>
+            <field name="model">stock.move.line</field>
+            <field name="inherit_id" ref="stock.view_move_line_tree"/>
+            <field name="arch" type="xml">
+                <field name="product_id" position="after">
+                    <field name="y_product_category_id" readonly="1" optional="hide"/>
+                    <field name="y_item_group" readonly="1" optional="hide"/>
+                        
+                    <field name="y_product_group_1" readonly="1" optional="hide"/>
+                        
+                    <field name="y_product_group_2" readonly="1" optional="hide"/>
+                        
+                    <field name="y_product_group_3" readonly="1" optional="hide"/>
+                </field>
+            </field>
+        </record>
+
+    </data>
+</odoo>

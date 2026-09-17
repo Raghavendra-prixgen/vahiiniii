@@ -1,0 +1,28 @@
+<odoo>
+    
+    <record id="view_boe_report_wizard1" model="ir.ui.view">
+        <field name="name">boe.report.wizard</field>
+        <field name="model">boe.report.wizard</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form create="false" edit="false">
+                <group>
+                   
+                    <group>
+                        <field name="y_start_date" string="Start Date" required='1'/>
+                    </group>
+                    <group>
+                        <field name="y_end_date" string="End Date" required='1'/>
+                    </group>
+                </group>
+                <footer>
+                    <group>
+                        <button class="btn btn-primary" type="object" name="retrieve_register" string="View Report"/>
+                    </group>
+                </footer>
+            </form>
+           
+        </field>
+    </record>
+    
+</odoo>

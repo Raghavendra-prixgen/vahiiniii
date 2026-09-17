@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_move_form_pending_setoff_advace_payment" model="ir.ui.view">
+            <field name="name">account.move.inherit</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//sheet" position="before">
+                    <field name="y_is_pending_setoff_advace_payment" invisible="1"/>
+                    <div class="alert alert-info" role="alert" invisible="not y_is_pending_setoff_advace_payment or move_type != 'in_invoice'">
+                        Vendor Advances Available
+                    </div>
+                    <div class="alert alert-info" role="alert" invisible="not y_is_pending_setoff_advace_payment or move_type != 'out_invoice'">
+                        Customer Advances Available
+                    </div>
+                </xpath>  
+            </field>
+        </record>
+
+        <record id="view_is_tax_required_alternative_gl_form" model="ir.ui.view">
+            <field name="name">is.tax.required.alternative.gl.form</field>
+            <field name="model">alternative.gl</field>
+            <field name="inherit_id" ref="alternate_gl.alternative_gl_form"/>
+            <field name="arch" type="xml">
+                <field name="y_company_id" position="after">
+                    <field name="y_is_tax_required" widget="boolean_toggle"/>
+                </field>
+            </field>
+        </record>
+
+
+        <record id="view_account_payment_form_inherited" model="ir.ui.view">
+            <field name="name">account.payment.form</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_form" />
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="y_setoff_advance_entry_id" invisible="1"/>
+                </field>
+
+                <xpath expr="//div[@name='button_box']" position="inside">
+                    <button icon="fa-bars" name="view_set_off_payment_entry" invisible="not y_setoff_advance_entry_id " string="Set-Off Entry" type="object" class="oe_highlight" />
+                </xpath>
+
+                <field name="partner_bank_id" position="after">
+                    <field name="y_is_tax_required" invisible="1"/>
+                    <field name="y_tax_ids"  readonly="state != 'draft'" string="Taxes" widget="many2many_tags" options="{'no_create': True}" required="y_is_tax_required"/>
+                    <field name="y_adv_payment_done" invisible="1" />
+                </field>
+            </field>
+        </record>
+
+        <record id="y_view_account_journal_form_inherited" model="ir.ui.view">
+            <field name="name">account.journal.form</field>
+            <field name="model">account.journal</field>
+            <field name="inherit_id" ref="account.view_account_journal_form" />
+            <field name="arch" type="xml">
+                <field name="code" position="after">
+                    <field name="y_is_setoff_journal" widget="boolean_toggle" invisible="type not in 'general'"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="set_off_advance_payment_view_form" model="ir.ui.view">
+            <field name="name">set_off_advance_payment.entry.wizard.view.form</field>
+            <field name="model">advance.payment.entry.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Set off Advance Payment">
+                    <sheet>
+                    <group>
+                        <group>
+                            <field name="y_partner_id" readonly="1"/>
+                            <field name="y_journal_id" string="Journal" domain="[('y_is_setoff_journal','=',True),('type','=','general')]" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <field name="y_payments_id"  string="Payment ID" domain="[('payment_type','=',y_payment_type),('state','in',['in_process','paid']),('partner_id','=',y_partner_id),('y_alternative_gl','!=',False),('y_adv_payment_done','!=',True)]" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                        </group>
+                        <group>
+                            <field name="y_date"/>
+                            <field name="y_payment_type"  string="Payment Type" force_save ="1" readonly="1"/>
+                            <field name="y_account_move_id" invisible="1"/>
+                        </group>
+                    </group>
+                    </sheet>
+                    <footer>
+                        <button string="Save" name="genarate_advance_payment" type="object" class="oe_highlight"/>
+                        <button string="Discard" class="btn-secondary" special="cancel"/>
+
+                    </footer>
+                </form>
+            </field>
+        </record>
+      
+        <record id="action_your_model_do_something" model="ir.actions.server">
+            <field name="name">Set-Off Advance Payment</field>
+            <field name="model_id" ref="model_account_move"/>
+            <field name="binding_model_id" ref="model_account_move"/>
+            <field name="binding_view_types">form</field>
+            <field name="state">code</field>
+            <field name="code">
+                if records:
+                    action = records.set_off_payment_wizard()
+            </field>
+        </record>
+
+    </data>
+</odoo>

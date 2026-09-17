@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        
+        <record model="ir.ui.view" id="purchase_tolerance_inventry_inherited">
+            <field name="name">purchase tolerance inventry.inheriter</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_form_view"/>    
+            <field name="arch" type="xml">
+                <xpath expr="//group[group/field[@name='description_purchase']]" position="before">
+                    <group name="other_info" string="Other Information">
+                        <field name="purchase_request" widget="boolean" />
+                        <field name="y_purchase_tol_reqd"/>
+                        <label for="y_purchase_tolerance" invisible="not y_purchase_tol_reqd"/> 
+                        <div class="o_row">               
+                            <field name="y_purchase_tolerance" class="oe_inline" style="vertical-align:baseline" invisible="not y_purchase_tol_reqd" required='1'/>
+                        </div>
+                    </group>
+                </xpath>
+            </field>                   
+        </record>
+
+        <record id="view_purchase_order_inherit_vender_uom" model="ir.ui.view">
+            <field name="name">purchaseorder.form.inherit.uom.product.supplierinfo</field>
+            <field name="model">product.supplierinfo</field>
+            <field name="inherit_id" ref="product.product_supplierinfo_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form/sheet/group/group/div[2][hasclass('o_row')]" position="after">
+                    <field name="y_purchase_tol_reqd"/>
+                    <field  name="y_ven_pricelist_tolerance" invisible="not y_purchase_tol_reqd"/>         
+                </xpath>
+                <xpath expr="//div[hasclass('o_row')]" position="after">
+                    <field name="y_uom_product" domain="[('category_id', '=', y_product_uom_category_id)]" options="{'no_create': True, 'no_create_edit':True}" invisible="0"/>
+                    <field name="y_product_uom_category_id" invisible="1"/>
+                </xpath>
+                <xpath expr="//form/sheet" position="after">
+                    <chatter/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_partner_form_reference_move" model="ir.ui.view">
+            <field name="name">res.partner.form.reference.move</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form/sheet/group/group[2]" position="inside">
+                    <xpath expr="//field[@name='ref']" position="move"/>
+                </xpath>
+                <xpath expr="//field[@name='vat']" position="attributes">
+                    <attribute name="string">VAT/GST</attribute>
+                </xpath>
+            </field>
+        </record>
+        
+        <record id="view_product_supplierinfo_tree_view_inherit" model="ir.ui.view">
+            <field name="name">purchaseorder.list.product.supplierinfo.inherit</field>
+            <field name="model">product.supplierinfo</field>
+            <field name="inherit_id" ref="product.product_supplierinfo_tree_view"/>
+            <field name="arch" type="xml">
+                <field name="product_uom" position="attributes">
+                    <attribute name="optional">hide</attribute>
+                </field>
+                <field name="product_uom" position="after">
+                    <field name="y_uom_product" optional="show"/>
+                </field>
+                
+            </field>
+        </record>
+        
+    </data>
+</odoo>     

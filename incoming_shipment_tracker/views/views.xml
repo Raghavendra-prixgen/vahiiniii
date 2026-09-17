@@ -1,0 +1,376 @@
+<odoo>
+    <data>
+
+        
+
+
+
+
+        
+        <record id="add_activities_view_form" model="ir.ui.view">
+            <field name="name">shipment.tracking.operations.form</field>
+            <field name="model">shipment.tracking</field>
+            <field name="priority">1000</field>
+            <field name="arch" type="xml">
+                <form string="Add Activities">
+                    <group>
+                        <field name="y_name"/>
+                    </group>
+
+
+                    
+                    <field name="y_sub_activities"  widget="one2many">
+                        <list editable="bottom">
+                            <field name="y_sl_no"/>
+                            <field name="y_name" />
+                            <field name="y_lead_time"/>
+                           
+                        </list>
+                    </field>
+                          
+                           
+                </form>
+            </field>
+        </record>
+
+        
+
+        <record id="purchase_shipmentadd_activities_view_form" model="ir.ui.view">
+            <field name="name">purchase.shipment.form</field>
+            <field name="model">purchase.shipment</field>
+            <field name="priority">1000</field>
+            <field name="arch" type="xml">
+                <form string="Add Activities">
+                <sheet>
+                    <group>
+                        <field name="y_name"/>
+                        <field name="y_lead_time"/>
+                    </group>
+                    <field name="y_sub_activities"  widget="one2many">
+                        <list editable="bottom">
+                            <field name="y_sl_no"/>
+                            <field name="y_name" />
+                            <field name="y_lead_time"/>
+                           
+                        </list>
+                    </field>
+                    <footer>
+                        <button string="Merge Sub Activities" type="object" name="merge_activity" class="btn-primary"/>
+                        <button string="Close" special="cancel" class="btn-secondary"/>
+                    </footer>
+                </sheet>
+            </form>
+
+
+
+
+               
+            </field>
+        </record>
+
+       
+
+        <record id="view_master_shipment_from" model="ir.ui.view">
+            <field name="name">Master Shipment</field>
+            <field name="model">master.shipment</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="y_sequence" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="y_name"/>
+                                <field name="y_incoterm_id"/>
+                            </group>
+                            <group>
+                                <field name="create_date" widget="date" string="Created Date"/>
+                                <field name="y_partner_category_id"/>
+                                <field name="y_procurement_group_id"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Shipment Tracking"> 
+                                <field name="y_shipment_ids"  widget="one2many">
+                                    <list editable="bottom">
+                                        <field name="y_drag_and_drop_seq" widget="handle"/>
+                                        <field name="y_sl_no" />
+                                        <field name="y_name" />
+                                        <button name="add_sub_activities" string="ADD" type="object" invisible="1"/>
+                                        <field name="y_activity_type_id" />
+                                        <field name="y_is_notifiable" />
+                                        <field name="y_lead_time" />
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <chatter/>
+
+                   
+                </form>
+            </field>
+        </record>
+
+        <!-- shipment master list view -->
+        <record id="view_master_shipment_list_view" model="ir.ui.view">
+            <field name="name">Master Shipment list</field>
+            <field name="model">master.shipment</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="y_sequence" readonly="1"/>
+                    <field name="y_name"/>
+                    <field name="y_company_id"/>
+                </list>
+            </field>
+        </record>
+
+        
+
+         <!-- action shipment master list view -->
+        <record id="action_shipment_tracking" model="ir.actions.act_window">
+            <field name="name">Shipment Master</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">master.shipment</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+        
+
+        <record id="view_cha_charges_from" model="ir.ui.view">
+            <field name="name">cha.charges.form</field>
+            <field name="model">cha.charges</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>                        
+                        <group>
+                            <group>
+                                <field name="y_name" required="1"/>
+                            </group>
+                            <group>
+                                
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_cha_charges_list_view" model="ir.ui.view">
+            <field name="name">cha.charges.list</field>
+            <field name="model">cha.charges</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="y_name"/>
+                </list>
+            </field>
+        </record>
+
+
+         <record id="action_cha_charges" model="ir.actions.act_window">
+            <field name="name">CHA Charges</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cha.charges</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+        <!-- <menuitem 
+            id="menu_cha_charges"
+            action="action_cha_charges"
+            name="CHA Charges"  
+            sequence="100" 
+            parent="purchase.menu_purchase_config"/> -->
+
+         <!-- menu shipment master list view -->
+        <menuitem 
+            id="menu_shipment_tracking"
+            action="action_shipment_tracking"
+            name="Shipment Master"  
+            sequence="100" 
+            parent="purchase.menu_purchase_config"/>
+
+        
+
+        <!-- adding m2o field in vendor or res.parter -->
+        <record id="shipment_tracking_code_in_vendors" model="ir.ui.view">
+            <field name="name">Shipment Tracking Code in Res Partner</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <field name="property_product_pricelist" position="after">
+                    <field name="y_is_shipment_tracking" />
+                    <field name="y_shipment_tracking_id" invisible="1"/>
+                </field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="purchase_colelctive_shipment_tracking_calendar">
+            <field name="name">purchase.shipment.tracking.calendar</field>
+            <field name="model">purchase.shipment</field>
+            <field name="priority" eval="2"/>
+            <field name="arch" type="xml">
+                <calendar string="Calendar View"  date_start="y_etd_date" color="y_name" hide_time="true" event_limit="5" create="false">
+                    <field name="y_name" filters="1"/>
+                    <field name="y_image_icon" nolabel="1" widget="image" options="{'size': [68, 68]}"/>
+                    <field name="y_partner_id"/>
+                    <field name="y_procurement_group_id"/>
+                    <field name="y_master_id"/>
+                    <field name="y_etd_date"/>
+                    <field name="y_eta_date"/>
+                    <field name="y_atd_date"/>
+                    <field name="y_ata_date"/>
+                    <field name="y_purchase_id"/>
+                </calendar>
+            </field>
+        </record>
+        
+
+        <!-- list view of purchase shipment -->
+        <record id="purchase_shipment_view_list" model="ir.ui.view">
+            <field name="name">purchase.shipment.view.list</field>
+            <field name="model">purchase.shipment</field>
+            <field name="arch" type="xml"> 
+                <list string="Collective Shipment Tracking" editable="bottom" create="0">
+                    <header>
+                        <button name="button_calculate_eta" string="Calculate ETA and ETD" type="object"/>
+                        
+                    </header>
+                    <field name="y_sl_no" />
+                    <field name="y_flot_sl_no" column_invisible="1"/>
+                    <field name="y_serial" column_invisible="1"/>
+                    <field name="y_master_id" options="{'no_create': True, 'no_create_edit':True}" readonly="1" column_invisible="1"/>
+                    <field name="y_name" />
+                    <field name="y_type" optional="hide"/>
+                    <button name="add_sub_activities" string="ADD" type="object" invisible="1"/>
+                    <field name="y_shipment_line_id" readonly="1" column_invisible="1"/>
+                    <field name="y_etd_date"/>
+                    <field name="y_eta_date"/>
+                    <field name="y_atd_date"/>
+                    <field name="y_ata_date"/>
+                    <field name="y_lead_time" readonly="0"/>
+                    <field name="y_status_id" options="{'no_create': False, 'no_create_edit':False}"/>
+                    <field name="y_remarks"/>   
+                    <field name="y_company_id"/>  
+                    <field name="y_is_notifiable"/>
+
+                    <field name="y_activity_type_id" optional="show" string="Activity Type"  options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="view_purchase_transaction_wizard_form" model="ir.ui.view">
+            <field name="name">purchase.transaction.wizard.form</field>
+            <field name="model">purchase.transaction.wizard</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form create="0" edit="0">
+                    <group>
+                        <group>
+                            <field name="y_incoterm_id" readonly="1"/>
+                            <field name="y_partner_category_id" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="y_procurement_group_id" readonly="1"/>
+                            <field name="y_type" readonly="1"/>
+                        </group>
+                    </group>
+                    <field name="y_shipment_master_ids" string="Activities">
+                        <list editable="bottom" create="0">
+                            <field name="y_sequence" readonly="1"/>
+                            <field name="y_name" readonly="1"/>
+                            <field name="y_incoterm_id"/>
+                            <field name="y_partner_category_id"/>
+                            <field name="y_procurement_group_id"/>               
+                        </list>
+                    </field>           
+                    <footer>
+                        <group>
+                            <button class="btn btn-primary" type="object" name="button_create_shipment_activites" string="Generate"/>
+                        </group>
+                    </footer>
+                </form>
+
+            </field>
+        </record>
+
+        <record model="ir.actions.server" id="action_generate_shipment_activities">
+            <field name="name">Generate Shipment Activities</field>
+            <field name="model_id" ref="purchase.model_purchase_order"/>
+            <field name="binding_model_id" ref="purchase.model_purchase_order"/>
+            <field name="binding_view_types">form</field>
+            <field name="state">code</field>
+            <field name="code">
+                if records:
+                    action = records.action_incoming_schedule()
+            </field>
+        </record>
+
+        <record model="ir.actions.server" id="action_sale_generate_shipment_activities">
+            <field name="name">Generate Shipment Activities</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="binding_model_id" ref="sale.model_sale_order"/>
+            <field name="binding_view_types">form</field>
+            <field name="state">code</field>
+            <field name="code">
+                if records:
+                    action = records.action_incoming_schedule()
+            </field>
+        </record>
+
+
+        <!-- smart button in sale order -->
+        <record id="sale_order_shipment_view_form_view_inherited" model="ir.ui.view">
+            <field name="name">sale.oder.view.inherited.for.shipment</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <field name="company_id" position="after">
+                    <field name="y_is_shipment_check" invisible="1"/>
+
+                </field>
+
+                <xpath expr="//sheet//div[@name='button_box']" position="inside">
+                    <button  type="object" name="action_sale_shipment_tracking" string="Shipment Activities" invisible="y_is_shipment_check != True"/>
+                </xpath>
+            </field>
+        </record>
+
+     
+        <!-- smart button in purchase order -->
+        <record id="purchase_order_shipment_view_form_view_inherited" model="ir.ui.view">
+            <field name="name">purchase.oder.view.inherited.for.shipment</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml">
+                <field name="company_id" position="after">
+                    <field name="y_is_shipment_check" invisible="1"/>
+                </field>
+
+                <xpath expr="//sheet//div[@name='button_box']" position="inside">
+                    <button  type="object" name="action_purchase_shipment_tracking" string="Shipment Activities" invisible="y_is_shipment_check != True"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- action to view list view of purchase.shipment -->
+        <record id="action_shipment_list_views" model="ir.actions.act_window">
+            <field name="name">Collective Shipment Tracking</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">purchase.shipment</field>
+            <field name="view_mode">calendar</field>
+            <field name="view_id" ref="purchase_colelctive_shipment_tracking_calendar"/>
+            <field name="domain">[('y_is_notifiable','!=',False)]</field>
+        </record>
+
+        <menuitem
+            id="menu_shipment_tracking_view" 
+            action="action_shipment_list_views" 
+            name="Collective Shipment Tracking" 
+            parent="purchase.purchase_report_main" 
+            sequence="144"/>
+
+    </data>
+</odoo>

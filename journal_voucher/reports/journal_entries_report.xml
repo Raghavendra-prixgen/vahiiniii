@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="base_page_format" model="report.paperformat">
+            <field name="name">journal entry page format</field>
+            <field name="default" eval="True"/>
+            <field name="format">A4</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">63</field>
+            <field name="margin_bottom">10</field>
+            <field name="margin_left">5</field>
+            <field name="margin_right">5</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">55</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <record id="journal_entries" model="ir.actions.report">
+            <field name="name">Journal Voucher</field>
+            <field name="model">account.move</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">journal_voucher.journal_voucher_report_template</field>
+            <field name="report_file">journal_voucher.journal_voucher_report_template</field>
+            <field name="print_report_name">(object.name or 'INV')</field>
+            <field name="attachment">(object.state == 'done') and ((object.name or 'INV').replace('/','_')+'.pdf')</field>
+            <field name="binding_model_id" ref="account.model_account_move"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="journal_voucher.base_page_format"/>
+        </record>
+
+        <!-- <template id="journal_entries_report">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="journal_voucher.external_layout_standard_mass">
+                    <t t-call="web.html_container">
+                        <style>
+            html{
+                font-size:13px !important;
+                }
+                        </style>
+                        <div class="page">
+                            <div class="text-center" style="margin-top:-5px;">
+                                <div class="text-center" style="text-align;">
+                                    <t t-if="doc.y_payment_type == 'outbound'">
+                                        <t t-if="doc.journal_id.type == 'bank'">
+                                            <b>
+                                                <h5 style="font-size:20px;font-family:Lato-Bol;color:maroon;">
+                                                    <strong>Bank Payment Voucher</strong>
+                                                </h5>
+                                            </b>
+                                        </t>
+                                        <t t-if="doc.journal_id.type == 'cash'">
+                                            <b>
+                                                <h5 style="font-size:20px;font-family:Lato-Bol;color:maroon;">
+                                                    <strong>Cash Payment Voucher</strong>
+                                                </h5>
+                                            </b>
+                                        </t>
+                                    </t>
+                                    <t t-if="doc.y_payment_type == 'inbound'">
+                                        <t t-if="doc.journal_id.type == 'bank'">
+                                            <b>
+                                                <h5 style="font-size:20px;font-family:Lato-Bol;color:maroon;">
+                                                    <strong>Bank Receipt Voucher</strong>
+                                                </h5>
+                                            </b>
+                                        </t>
+                                        <t t-if="doc.journal_id.type == 'cash'">
+                                            <b>
+                                                <h5 style="font-size:20px;font-family:Lato-Bol;color:maroon;">
+                                                    <strong>Cash Receipt Voucher</strong>
+                                                </h5>
+                                            </b>
+                                        </t>
+                                    </t>
+                                </div>
+                            </div>
+                            <table class="table table-bordered" style="line-height:1;margin-top:5px;border-color:black;font-size:15px;">
+                                    <thead>
+                                        <tr>
+                                            <th style="width:40%;">Praticulars</th>
+                                            <th style="width:10%;">label</th>
+                                            <th style="width:12%;">Amount in currency</th>
+                                            <th style="width:8%;">Currency</th>
+
+                                            <th style="text-align:right;">Debit Amount</th>
+                                            <th style="text-align:right;">Credit Amount</th>
+                                        </tr>
+                                    </thead>
+                                <tbody>
+                                    <t t-set="record_currency_symbol" t-value="0"/>
+                                    <t t-set="total_credit" t-value="0"/>
+                                    <t t-set="total_debit" t-value="0"/>
+                                    <tr t-foreach="doc.line_ids.sorted(key=lambda record: record.debit, reverse=True)" t-as="doc">
+                                        <t >
+                                            <td t-if="doc.credit" style="width:40%;">
+
+                                                <span t-field="doc.account_id"/>
+                                            </td>
+                                        </t>
+                                        <t >
+                                            <td t-if="not doc.credit" style="width:40%;">
+
+                                                <span t-field="doc.account_id"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="doc.name"/>
+
+                                            </td>
+                                            <td>
+                                                <span t-esc="doc.amount_currency"/>
+
+                                            </td>
+                                            <td>
+                                                <span t-esc="doc.currency_id.name"/>
+
+                                            </td>
+
+
+                                        </t>
+                                        <td style="text-align:right;">
+                                            <span t-esc="round(doc.debit,2)"/>
+                                            <span t-field="doc.company_currency_id.symbol"/>
+                                            <t t-set="total_debit" t-value="total_debit + round(doc.debit,2)"/>
+                                        </td>
+                                        <td style="text-align:right;">
+                                            <span t-esc="round(doc.credit,2)"/>
+                                            <span t-field="doc.company_currency_id.symbol"/>
+                                            <t t-set="total_credit" t-value="total_credit + round(doc.credit,2)"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:right;">
+                                            <strong>Total</strong>
+                                        </td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+
+                                        <td style="text-align:right;">
+                                            <b>
+                                                <t t-esc="round(total_debit,2)"/>
+                                            </b>
+                                        </td>
+                                        <td style="text-align:right;">
+                                            <b>
+                                                <t t-esc="round(total_credit,2)"/>
+                                            </b>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="6">
+                                            <strong>Amount (in words) : </strong>
+                                            <span t-esc="doc.amt_in_words(total_credit)"/>
+                                        </td>
+
+                                    </tr>
+                                    <tr>
+                                        <td colspan="6">
+                                            <strong>Narration : </strong>
+                                            <span t-esc="doc.ref"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table class="table" style="border:none !important;width:100%;margin-bottom:0;font-size:15px;">
+                                <tr>
+                                    <td style="border:none !important;width:100%;">
+                                        <div class="row">
+                                            <div class="text-left col-5">
+                                                <br/>
+                                                <br/>
+                                                <strong>Prepared by:</strong>
+                                                <b>
+                                                    <span t-esc="doc.move_id.create_uid.name"></span>
+                                                </b>
+                                            </div>
+                                            <div class="text-left col-4">
+                                                <br/>
+                                                <br/>
+                                                <strong>Authorized by:</strong>
+
+                                            </div>
+                                            <div class="text-left col-4">
+                                                <br/>
+                                                <br/>
+                                                <strong>Received by:</strong>
+                                                <t t-set="approved_by" t-value="doc.move_id.get_prepared_by()"/>
+                                                <b>
+                                                    <span t-esc="approved_by"></span>
+                                                </b>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="border:none !important;width:100%;">
+                                        <div class="row">
+                                            <div class="text-left col-5">
+                                                <br/>
+                                                <br/>
+                                                <strong>Date :</strong>
+                                            </div>
+                                            <div class="text-left col-4">
+                                                <br/>
+                                                <br/>
+                                                <strong>Date :</strong>
+
+                                            </div>
+                                            <div class="text-left col-4">
+                                                <br/>
+                                                <br/>
+                                                <strong>Date :</strong>
+
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template> -->
+
+        <template id="journal_voucher_report_template">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <t t-set="journal_address" t-value="doc.fetch_sale_order()" />
+                    <t t-call="journal_voucher.external_layout_standard_ravago">
+                        <div class="page">
+
+                            <div class="content">
+                                <table class="table" style="font-size: 14px; margin: 0; padding: 0;border:1px solid black;">
+                                    <tr>
+                                        <td style="width:50%;">
+                                            <span class="fw-bold">
+                                                <span class="">Partner :</span>
+                                                <span class=""><span t-field="doc.partner_id"></span>
+                                                </span>
+                                            </span><br/>
+                                            <span class="fw-bold">
+                                                <span class="">Voucher No :</span>
+                                                <span class=""><span t-field="doc.name"></span>
+                                                </span>
+                                            </span>
+                                        </td>
+                                        <td style="width:50%; text-align: right;">
+                                            <span class="fw-bold">
+                                                <span class="">Date :</span>
+                                                <span t-field="doc.date"></span>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </table>
+
+                                <br/>
+                                <table class="table table-sm table-borderless border-dark w-100 border-bottom-0" style="font-size: 14px; margin: 0; padding: 0;">
+                                    <thead style="">
+                                        <tr style="border-bottom: none !important;">
+                                            <th style="text-align: center; vertical-align: middle;border:1px solid black;width:30%;"><strong>Account</strong></th>
+                                            <th style="text-align: center; vertical-align: middle;border:1px solid black;width:20%;"><strong>Description</strong></th>
+                                            <th style="text-align: center; vertical-align: middle;border:1px solid black;width:8%;"><strong>Currency</strong></th>
+                                            <th style="text-align: center; vertical-align: middle;border:1px solid black;width:12%;"><strong>Amount in currency</strong></th>
+                                            <th style="text-align: center; vertical-align: middle;border:1px solid black;width:15%;"><strong>Debit Amount</strong></th>
+                                            <th style="text-align: center; vertical-align: middle;border:1px solid black;width:15%;"><strong>Credit Amount</strong></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody >
+                                        <t t-set="record_currency_symbol" t-value="0"/>
+                                        <t t-set="total_credit" t-value="0"/>
+                                        <t t-set="total_debit" t-value="0"/>
+                                        <t t-foreach="doc.line_ids.sorted(key=lambda record: record.debit, reverse=True)" t-as="line">
+                                        <t t-if="line.display_type not in ('line_section','line_note','cogs')">
+                                            <tr style="page-break-inside: avoid;border:1px solid black;page-break-inside:avoid;">
+                                                <t>
+                                                    <td t-if="line.credit">
+                                                        <span t-field="line.account_id"/>
+                                                    </td>
+                                                </t>
+                                                <t>
+                                                    <td style="border:1px solid black" t-if="not line.credit">
+                                                        <span t-field="line.account_id"/>
+                                                    </td>
+                                                    <td style="border:1px solid black">
+                                                        <span t-field="line.name"/>
+                                                    </td>
+                                                    <td style="text-align:center;border:1px solid black">
+                                                        <span t-field="line.currency_id.name"/>
+                                                    </td>
+                                                    <td style="text-align:right;border:1px solid black">
+                                                        <span t-field="line.amount_currency"/>
+                                                    </td>
+                                                </t>
+                                                <td style="text-align:right;border:1px solid black">
+                                                    <span t-field="line.company_currency_id.symbol"/>
+                                                    <span t-esc="'{:,.2f}'.format(line.debit)"/>
+                                                    <t t-set="total_debit" t-value="total_debit + round(line.debit,2)"/>
+                                                </td>
+                                                <td style="text-align:right;border:1px solid black">
+                                                    <span t-field="line.company_currency_id.symbol"/>
+                                                    <span t-esc="'{:,.2f}'.format(line.credit)"/>
+                                                    <t t-set="total_credit" t-value="total_credit + round(line.credit,2)"/>
+                                                </td>
+                                            </tr>
+                                            </t>
+                                        </t>
+                                        <tr>
+                                            <td style = "border:1px solid black;border-right:none">
+                                                <span class="fw-bold" >Total</span>
+                                            </td>
+                                            <td colspan="3" style="border:none;"></td>
+                                            <td style="text-align:right;border:1px solid black">
+                                                <span t-field="line.company_currency_id.symbol"/>
+                                                <span class="fw-bold" t-esc="'{:,.2f}'.format(total_debit)"/>
+                                            </td>
+                                            <td style="text-align:right;border:1px solid black">
+                                                <span t-field="line.company_currency_id.symbol"/>
+                                                <span class="fw-bold" t-esc="'{:,.2f}'.format(total_credit)"/>
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td colspan="6" style="border:1px solid black;">
+                                                <span class="fw-bold">Amount (in words) : &#160;</span>
+                                                <t t-if="doc.currency_id.name == 'INR'">
+                                                    <t t-set="amountwords" t-value="doc.amount_in_words(total_credit)" />
+                                                    <span t-esc="amountwords" />
+                                                </t>
+                                                <t t-else="">
+                                                    <span t-esc="doc.currency_id.amount_to_text(doc.amount_total)"/>
+                                                </t>
+                                            </td>
+                                        </tr>
+                                        <tr style="">
+                                            <td colspan="6" style="border:1px solid black;">
+                                                <strong>Narration : </strong>
+                                                <span t-field="doc.ref"/>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <br class=""/>
+                                <table class="table table-borderless" style="width:100%;margin-bottom:0;font-size:14px;page-break-inside:avoid;">
+                                    <tr>
+                                        <td style="border:1px solid black;width:100%;page-break-inside:avoid;">
+                                            <div class="row">
+                                                <div class="text-left col-5">
+                                                    <br/>
+                                                    <br/>
+                                                    <strong>Prepared by:</strong>
+                                                    <b>
+                                                        <span t-esc="doc.create_uid.name"></span>
+                                                    </b>
+                                                </div>
+                                                <div class="text-left col-4">
+                                                    <br/>
+                                                    <br/>
+                                                    <strong>Authorized by:</strong>
+
+                                                </div>
+                                                <div class="text-left col-4">
+                                                    <br/>
+                                                    <br/>
+                                                    <strong>Received by:</strong>
+                                                    <!-- <t t-set="approved_by" t-value="doc.get_prepared_by()"/>
+                                                    <b>
+                                                        <span t-esc="approved_by"></span>
+                                                    </b> -->
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="border:1px solid black;width:100%;">
+                                            <div class="row">
+                                                <div class="text-left col-5">
+                                                    <br/>
+                                                    <br/>
+                                                    <strong>Date :</strong>
+                                                    <b>
+                                                        <span t-field="doc.create_date" t-options='{"widget": "date"}'/>
+                                                    </b>
+                                                </div>
+                                                <div class="text-left col-4">
+                                                    <br/>
+                                                    <br/>
+                                                    <strong>Date :</strong>
+
+                                                </div>
+                                                <div class="text-left col-4">
+                                                    <br/>
+                                                    <br/>
+                                                    <strong>Date :</strong>
+
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

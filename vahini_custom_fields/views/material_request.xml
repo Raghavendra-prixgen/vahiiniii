@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <data>
+    <record id="inherited_view_material_request_form" model="ir.ui.view">
+      <field name="name">material.request.form</field>
+      <field name="model">material.request</field>
+      <field name="inherit_id" ref="material_request.material_request_form" />
+      <field name="arch" type="xml">
+        <field name="create_date" position="after">
+          <field name="y_issues_by" />
+          <field name="y_requested_by" />
+          <field name="y_issued_to" />
+          <field name="y_source_document" />
+        </field>
+        <xpath
+          expr="//field[@name='y_material_request_line_ids']/list//field[@name='y_picking_type_id']"
+          position="after">
+          <field name="y_department_id" />
+        </xpath>
+        <xpath
+          expr="//field[@name='y_material_request_line_ids']/list//field[@name='y_source_location_id']"
+          position="before">
+          <field name="y_expense_id" string="Expense Type" />
+
+        </xpath>
+        <xpath
+          expr="//field[@name='y_material_request_line_ids']/list//field[@name='y_forcast_qty']"
+          position="after">
+          <field name="y_machine_id" />
+
+        </xpath>
+      </field>
+    </record>
+
+  </data>
+</odoo>        
+           

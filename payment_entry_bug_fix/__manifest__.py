@@ -1,0 +1,18 @@
+{
+    'name': "Payment Entry Bug Fix",
+    'summary': """ Payment Entry Bug Fix """,
+    'description':""" """,
+    'module_type':'official',
+    'author': 'Prixgen Tech Solutions Pvt. Ltd.',
+    'company': 'Prixgen Tech Solutions Pvt. Ltd.',
+    'website': 'https://www.prixgen.com',    
+    'category': 'Accounting',
+    'version': '18.0.0.1',
+    'App origin':'Base',
+    'license': 'LGPL-3',
+    'depends': ['account'],    
+    'data': [],
+    'auto_install': False,
+    'installable' : True,
+    'application': True,
+}

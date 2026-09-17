@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ═══════════════════════════════════════════════════════
+         LIST VIEW
+    ═══════════════════════════════════════════════════════════ -->
+    <record id="view_grir_reconciliation_report_list" model="ir.ui.view">
+        <field name="name">grir.reconciliation.report.list</field>
+        <field name="model">grir.reconciliation.report</field>
+        <field name="arch" type="xml">
+            <list string="GRIR Reconciliation Report"
+                  decoration-success="y_status == 'reconciled'"
+                  decoration-warning="y_status == 'partially'"
+                  decoration-danger="y_status == 'un_reconciled'"
+                  export_xlsx="1"
+                  default_order="y_date_done desc">
+
+                <field name="y_case_scenario"  string="Case / Scenario"     optional="show"/>
+                <field name="y_purchase_id"    string="PO Number"           optional="show"/>
+                <field name="y_picking_id"     string="GRN Number"          optional="show"/>
+                <field name="y_partner_id"     string="Vendor"              optional="show"/>
+                <field name="y_date_done"      string="Date"                optional="show"/>
+                <field name="y_bill_ref"       string="Journal / VB Entry"  optional="show"/>
+                <field name="y_debit"          string="Debit"
+                       sum="Total Debit"       optional="show"/>
+                <field name="y_credit"         string="Credit"
+                       sum="Total Credit"      optional="show"/>
+                <field name="y_balance"        string="Balance"
+                       sum="Net Balance"       optional="show"/>
+                <field name="y_status"         string="Status"
+                       widget="badge"
+                       decoration-success="y_status == 'reconciled'"
+                       decoration-warning="y_status == 'partially'"
+                       decoration-danger="y_status == 'un_reconciled'"
+                       optional="show"/>
+                <field name="y_company_id"     string="Company"             optional="hide"
+                       groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════
+         PIVOT VIEW
+    ═══════════════════════════════════════════════════════════ -->
+    <record id="view_grir_reconciliation_report_pivot" model="ir.ui.view">
+        <field name="name">grir.reconciliation.report.pivot</field>
+        <field name="model">grir.reconciliation.report</field>
+        <field name="arch" type="xml">
+            <pivot string="GRIR Reconciliation" disable_linking="0">
+                <field name="y_case_scenario"  type="row"/>
+                <field name="y_partner_id"     type="row"/>
+                <field name="y_status"         type="col"/>
+                <field name="y_debit"          type="measure"/>
+                <field name="y_credit"         type="measure"/>
+                <field name="y_balance"        type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════
+         SEARCH VIEW
+    ═══════════════════════════════════════════════════════════ -->
+    <record id="view_grir_reconciliation_report_search" model="ir.ui.view">
+        <field name="name">grir.reconciliation.report.search</field>
+        <field name="model">grir.reconciliation.report</field>
+        <field name="arch" type="xml">
+            <search string="Search GRIR Report">
+                <field name="y_purchase_id"   string="PO Number"/>
+                <field name="y_picking_id"    string="GRN Number"/>
+                <field name="y_partner_id"    string="Vendor"/>
+                <field name="y_bill_ref"      string="Journal / VB Ref"/>
+                <field name="y_case_scenario" string="Scenario"/>
+
+                <!-- Status filters -->
+                <filter string="Fully Reconciled"
+                        name="reconciled"
+                        domain="[('y_status','=','reconciled')]"/>
+                <filter string="Partially Reconciled"
+                        name="partially"
+                        domain="[('y_status','=','partially')]"/>
+                <filter string="Unreconciled"
+                        name="unreconciled"
+                        domain="[('y_status','=','un_reconciled')]"/>
+
+                <separator/>
+
+                <!-- Scenario quick filters -->
+                <filter string="Local PO"
+                        name="local_po"
+                        domain="[('y_case_scenario','ilike','Local PO')]"/>
+                <filter string="Price Difference"
+                        name="price_diff"
+                        domain="[('y_case_scenario','ilike','Price Diff')]"/>
+                <filter string="Foreign Currency"
+                        name="fcy"
+                        domain="[('y_case_scenario','ilike','FCY')]"/>
+                <filter string="Service Bills"
+                        name="service"
+                        domain="[('y_case_scenario','ilike','Service')]"/>
+                <filter string="Returns"
+                        name="returns"
+                        domain="[('y_case_scenario','ilike','Return')]"/>
+                <filter string="Debit Notes"
+                        name="debit_notes"
+                        domain="[('y_case_scenario','ilike','Debit Note')]"/>
+                <filter string="Standalone JV"
+                        name="standalone"
+                        domain="[('y_case_scenario','ilike','Standalone')]"/>
+                <filter string="VB Not Booked"
+                        name="not_booked"
+                        domain="[('y_case_scenario','ilike','Not Booked')]"/>
+
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter string="Scenario"
+                            name="group_scenario"
+                            context="{'group_by':'y_case_scenario'}"/>
+                    <filter string="Vendor"
+                            name="group_vendor"
+                            context="{'group_by':'y_partner_id'}"/>
+                    <filter string="Status"
+                            name="group_status"
+                            context="{'group_by':'y_status'}"/>
+                    <filter string="PO Number"
+                            name="group_po"
+                            context="{'group_by':'y_purchase_id'}"/>
+                    <filter string="GRN"
+                            name="group_grn"
+                            context="{'group_by':'y_picking_id'}"/>
+                    <filter string="Date (Month)"
+                            name="group_month"
+                            context="{'group_by':'y_date_done:month'}"/>
+                    <filter string="Company"
+                            name="group_company"
+                            context="{'group_by':'y_company_id'}"
+                            groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════
+         WINDOW ACTION  (domain filters to current user's data)
+    ═══════════════════════════════════════════════════════════ -->
+    <record id="action_grir_reconciliation_report" model="ir.actions.act_window">
+        <field name="name">GRIR Reconciliation Report</field>
+        <field name="res_model">grir.reconciliation.report</field>
+        <field name="view_mode">list,pivot</field>
+        <field name="views">[(False,'list'),(False,'pivot')]</field>
+        <field name="search_view_id" ref="view_grir_reconciliation_report_search"/>
+        <field name="domain">[('y_user_id','=',uid)]</field>
+        <field name="context">{'search_default_group_status': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No GRIR entries found.
+            </p>
+            <p>
+                Use the <strong>Refresh</strong> button or navigate here via
+                <em>Accounting → Reporting → GRIR Reconciliation</em> to
+                generate the report for your companies.
+            </p>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════
+         SERVER ACTION  (rebuilds data then opens window action)
+    ═══════════════════════════════════════════════════════════ -->
+    <record id="action_grir_reconciliation_server" model="ir.actions.server">
+        <field name="name">Open GRIR Reconciliation Report</field>
+        <field name="model_id" ref="model_grir_reconciliation_report"/>
+        <field name="state">code</field>
+        <field name="code">
+action = model.action_open_grir_report()
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="product_category_form_view_internal_ref" model="ir.ui.view">
+            <field name="name">product_category_form_view_internal_ref</field>
+            <field name="model">product.category</field>
+            <field name="inherit_id" ref="product.product_category_form_view"/>
+            <field name="arch" type="xml">
+                <field name="parent_id" position="after">
+                    <field name="y_internal_reference_sequence_id" class="oe_inline" options="{'no_create': True, 'no_edit': True}" string="Internal Reference Sequence"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="product_category_list_view_view_internal_ref" model="ir.ui.view">
+            <field name="name">product.product.category.list.view</field>
+            <field name="model">product.category</field>
+            <field name="inherit_id" ref="product.product_category_list_view"/>
+            <field name="arch" type="xml">
+                <field name="display_name" position="after">
+                    <field name="property_cost_method" optional="hide"/>
+                    <field name="property_valuation" optional="hide"/>
+
+                    <field name="property_account_creditor_price_difference_categ" optional="hide"/>
+                    <field name="property_account_income_categ_id" optional="hide"/>
+                    <field name="property_account_expense_categ_id" optional="hide"/>
+                    <field name="property_stock_valuation_account_id" optional="hide"/>
+                    <field name="property_stock_journal" optional="hide"/>
+                    <field name="property_stock_account_input_categ_id" optional="hide"/>
+                    <field name="property_stock_account_output_categ_id" optional="hide"/>
+                    <field name="property_stock_account_production_cost_id" optional="hide"/>
+                    
+                </field>
+            </field>
+        </record>
+
+
+    </data>
+
+
+</odoo>

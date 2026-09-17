@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="res_partner_form_quotation_customer" model="ir.ui.view">
+            <field name="name">Partner form for Quotation Customer</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <field name="property_payment_term_id" position="after">
+                    <field name="y_is_a_quothation_customer" string="is a Quotation Customer" invisible='1'/>
+                </field>
+
+                <field name="user_id" position="after">
+                    <field name="y_team_id" domain="[('member_ids', '=', user_id)]"  options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                </field>
+            </field>
+        </record>
+
+       
+    </data>
+</odoo>

@@ -1,0 +1,712 @@
+<odoo>
+  <data>
+
+    <record id="action_generate_inspection_plan_ir_action" model="ir.actions.server">
+      <field name="name">Generate Inspection Plan</field>
+      <field name="model_id" ref="quality_control.model_quality_point"/>
+      <field name="binding_model_id" ref="quality_control.model_quality_point" />
+      <field name="state">code</field>
+      <field name="code">
+        if records:
+          action = records.action_generate_inspection_plan()
+      </field>
+    </record>
+
+    <record id="view_stock_move_line_detailed_op_quality_hide_quality_button" model="ir.ui.view">
+      <field name="name">stock.picking.list.view.quality.button</field>
+      <field name="model">stock.move.line</field>
+      <field name="inherit_id" ref="quality_control.view_stock_move_line_detailed_operation_tree_inherit_quality"/>
+      <field name="arch" type="xml">
+        <xpath expr="//button[@name='action_open_quality_check_wizard']" position="attributes">
+          <attribute name="invisible">1</attribute>
+        </xpath>
+        <xpath expr="//button[@name='action_open_quality_check_wizard'][2]" position="attributes">
+          <attribute name="invisible">1</attribute>
+        </xpath>
+        <xpath expr="//button[@name='action_open_quality_check_wizard'][3]" position="attributes">
+          <attribute name="invisible">1</attribute>
+        </xpath>
+      </field>
+    </record>
+
+    <record id="stock_picking_view_form_hide_quality_checks_button" model="ir.ui.view">
+      <field name="name">stock.picking.list.view.quality.button.hide</field>
+      <field name="model">stock.picking</field>
+      <field name="inherit_id" ref="quality_control.stock_picking_view_form_inherit_quality"/>
+      <field name="arch" type="xml">
+        <xpath expr="//button[@name='check_quality']" position="attributes">
+          <attribute name="invisible">1</attribute>
+        </xpath>
+        <xpath expr="//button[@name='button_quality_alert']" position="attributes">
+          <attribute name="invisible">1</attribute>
+        </xpath>
+      </field>
+    </record>
+
+
+    <record id="stock_picking_quality_check_status_tree" model="ir.ui.view">
+      <field name="name">stock.picking.list.view.quality.check.status</field>
+      <field name="model">stock.picking</field>
+      <field name="inherit_id" ref="stock.vpicktree"/>
+      <field name="arch" type="xml">
+        <field name="state" position="after">
+          <field name="y_quality_sheet_status" optional="show" widget="badge" decoration-info="y_quality_sheet_status== 'partial'" decoration-muted="y_quality_sheet_status in ('not_completed','accepted')" decoration-success="y_quality_sheet_status == 'fully_completed'"/>
+        </field>
+      </field>
+    </record>
+
+
+    <record id="quality_title_mrp_workorder_view_form_tablet_inherited" model="ir.ui.view">
+      <field name="name">mrp.workorder.view.form.inherit.quality.tablet.quality.title</field>
+      <field name="model">mrp.workorder</field>
+      <field name="inherit_id" ref="mrp_workorder.mrp_workorder_view_form_tablet"/>
+      <field name="arch" type="xml">
+        <xpath expr="//div[hasclass('o_workorder_bar')][2]/div[hasclass('o_workorder_bar_left')]" position="inside">
+          <div class="o_row o_workorder_bar_content" style="padding-left:15px;background-color: $o-wo-tablet-bg;color:color:$o-wo-tablet-text;width:100px;">
+            <label for='y_quality_point_title' string="Quality Check:" style="font-size:18px;" />
+            <field name="y_quality_point_title" style="font-size:18px;" />
+          </div>
+        </xpath>
+        <xpath expr="//div[hasclass('o_workorder_field')]/field[@name='production_id']"
+          position="after">
+          <field name="test_type" invisible='1' />
+          <div invisible="test_type != 'measure'" class="o_row mb8">
+            <label for="y_quality_point_norm" string="Norm:" />
+            <field name="y_quality_point_norm" />
+            <label for="y_quality_point_tolerance_max" string="Tolerance Max:" />
+            <field name="y_quality_point_tolerance_max" />
+            <label for="y_quality_point_tolerance_min" string="Tolerance Min:" />
+            <field name="y_quality_point_tolerance_min" />
+          </div>
+        </xpath>
+      </field>
+    </record>
+
+    <!-- Inspection Plan -->
+    <record id="inspection_plan_tree_view" model="ir.ui.view">
+      <field name="name">inspection plan list view</field>
+      <field name="model">inspection.plan</field>
+      <field name="arch" type="xml">
+        <list>
+          <field name="y_name"/>
+          <field name="y_picking_type_id" string="Operation Type"/>
+          <field name="y_product_tmpl_id" string="Product"/>
+          <field name="y_product_id" groups="product.group_product_variant" string="Product Varient"/>
+          <field name="y_team_id" required="1" options="{'no_create': True, 'no_create_edit':True}" force_save="1"/>
+          <field name="y_company_id" groups="base.group_multi_company" optional="show"/>
+        </list>
+      </field>
+    </record>
+
+    <record id="inspection_plan_form_view" model="ir.ui.view">
+      <field name="name">inspection plan form view</field>
+      <field name="model">inspection.plan</field>
+      <field name="arch" type="xml">
+        <form>
+          <sheet>
+            <group>
+              <group>
+                <h1><field name="y_name" string="" readonly="1"/></h1>
+              </group>
+            </group>
+            <group>
+              <group>
+                <field name="y_company_id" required="1" readonly="1" options="{'no_create': True, 'no_create_edit':True}"/>
+                <field name="y_team_id" required="1" options="{'no_create': True, 'no_create_edit':True}" force_save="1"/>
+                <field name="y_picking_type_id" required="1" string="Operation Type" options="{'no_create': True, 'no_create_edit':True}" force_save="1"/>
+                <field name="y_product_tmpl_id" string="Product" options="{'no_create': True, 'no_create_edit':True}" force_save="1"/>
+                <field name="y_product_id" groups="product.group_product_variant" string="Product Varient" options="{'no_create': True, 'no_create_edit':True}" force_save="1"/>
+              </group>
+              <group>
+                <field name="y_start_date"/>
+                <field name="y_end_date"/>
+                <field name="y_product_category_ids" widget="many2many_tags" options="{'no_create': True, 'no_create_edit':True}" force_save="1"/>
+                <field name="y_operation_id" invisible="not y_is_workorder_step" options="{'no_create': True, 'no_create_edit':True}"/>
+                <field name="y_is_workorder_step" invisible="1"/>
+              </group>
+            </group>
+            <field name="y_quality_point_ids">            
+              <list>
+                <field name="title"/>
+                <field name="measure_frequency_type"/>
+                <field name="test_type_id"/>
+                <field name="y_test_method_id"/>
+                <field name="norm"/>
+                <field name="norm_unit"/>
+                <field name="tolerance_min"/>
+                <field name="tolerance_max"/>
+                <field name="team_id" column_invisible="True"/>
+                <field name="company_id" column_invisible="True"/>
+              </list>
+            </field>        
+          </sheet>
+          <chatter/>
+        </form>
+      </field>
+    </record>
+
+    <record id="inspection_plan_server_action_new" model="ir.actions.server">
+      <field name="name">Add Control Points</field>
+      <field name="model_id" ref="quality_control_base.model_inspection_plan"/>
+      <field name="binding_model_id" ref="quality_control_base.model_inspection_plan"/>
+      <field name="binding_view_types">form</field>
+      <field name="state">code</field>
+      <field name="code">
+          action = model.add_items()
+      </field>
+    </record>
+
+    <record model="ir.rule" id="inspection_plan_record_restricted_company_rule">
+        <field name="name">Inspection Plan Restricted Record: multi-company</field>
+        <field name="model_id" ref="model_inspection_plan"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">
+            ['|', ('y_company_id', '=', False), ('y_company_id', 'parent_of', company_ids)]
+        </field>
+    </record>
+
+    <record model="ir.rule" id="inspection_sheet_record_restricted_company_rule">
+        <field name="name">Inspection Sheet Restricted Record: multi-company</field>
+        <field name="model_id" ref="model_inspection_sheet"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">
+            ['|', ('y_company_id', '=', False), ('y_company_id', 'parent_of', company_ids)]
+        </field>
+    </record>
+
+    <record id="inspection_plan_action" model="ir.actions.act_window">
+      <field name="name">Inspection Plan</field>
+      <field name="res_model">inspection.plan</field>
+      <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_operations" name="Operations"
+      parent="quality_control.menu_quality_control" sequence="20"/>
+    
+    <menuitem id="menu_inspection_plan" name="Inspection Plan"
+      parent="menu_operations" action="inspection_plan_action" sequence="1"/>
+
+    <!-- Inspection Sheet -->
+
+    <record id="inspection_sheet_tree_view" model="ir.ui.view">
+      <field name="name">inspection sheet list view</field>
+      <field name="model">inspection.sheet</field>
+      <field name="arch" type="xml">
+        <list>
+          <field name="y_product_id" string="Product"/>
+          <field name="y_picking_id"/>
+          <field name="y_production_id"/>
+          <field name="y_lot_id"/>
+          <field name="y_partner_id"/>
+          <field name="y_state" decoration-info="y_state== 'open'" decoration-muted="y_state == 'accept'" decoration-success="y_state == 'released'" decoration-danger="y_state == 'cancel'" widget="badge"/>
+          <field name="y_company_id" groups="base.group_multi_company" optional="show"/>
+        </list>
+      </field>
+    </record>
+
+    <record id="quality_point_inherit_tree_view_new" model="ir.ui.view">
+      <field name="name">quality.point.inherit.new</field>
+      <field name="model">quality.point</field>
+      <field name="arch" type="xml">
+        <list >
+          <header>
+            <button string="select" name="select_button" type="object" />
+          </header>
+          <field name="sequence" widget="handle"/>
+          <field name="name" decoration-bf="1"/>
+          <field name="title" optional="show"/>
+          <field name="product_ids" widget="many2many_tags" optional="show"/>
+          <field name="product_category_ids" widget="many2many_tags" optional="hide"/>
+          <field name="picking_type_ids" widget="many2many_tags" optional="show" string="Operations"/>
+          <field name="operation_id" optional="hide" string="Work Order Operation"/>
+
+          <field name="test_type_id" optional="show" string="Type"/>
+          <field name="measure_on" optional="show"/>
+          <field name="measure_frequency_type" optional="hide"/>
+          <field name="is_lot_tested_fractionally" optional="hide"/>
+          <field name="testing_percentage_within_lot" optional="hide" string="Testing % Within Lot"/>
+          <field name="team_id" optional="show"/>
+          <field name="user_id" optional="hide" widget="many2one_avatar_user"/>
+          <field name="company_id" groups="base.group_multi_company" optional="show"/>
+        </list>
+      </field>
+    </record> 
+
+    <record id="inspection_sheet_form_view" model="ir.ui.view">
+      <field name="name">inspection sheet form view</field>
+      <field name="model">inspection.sheet</field>
+      <field name="arch" type="xml">
+        <form>
+          <header>
+            <field name="y_processed" invisible="1"/>
+            <button name="process_quantities" type="object" string="Release Inventory" invisible="y_state in ('cancel','open') or y_processed"/>
+            <button name="state_approve" type="object" class="oe_highlight" string="Approve" invisible="y_state != 'open'"/>
+            <button name="button_cancel" type="object" class="oe_highlight" string="Cancel" invisible="y_state != 'open'"/>
+            <field name="y_state" widget="statusbar" statusbar_visible="open,accept,released,cancel"/>
+          </header>
+          <sheet>
+            <h1><field name="y_name" string="" readonly="1"/></h1>
+            <group>
+              <group>
+                <field name="y_date" readonly="1"/>
+                <field name="y_company_id" readonly="1" options="{'no_create': True, 'no_create_edit':True}"/>
+                <field name="y_team_id" readonly="y_processed != False or y_state != 'open'" options="{'no_create': True, 'no_create_edit':True}"/>
+                <field name="y_picking_id" readonly="1" options="{'no_create': True, 'no_create_edit':True}"/>
+                <field name="y_partner_id" readonly="1"/>
+                <field name="y_source" readonly="1"/>
+                <field name="y_production_id" invisible="not y_production_id" readonly="1" options="{'no_create': True, 'no_create_edit':True}"/>
+                <field name="y_product_id" string="Product" options="{'no_create': True, 'no_create_edit':True}" readonly="1"/>
+                <field name="y_available_product_ids" invisible="1"/>
+                <field name="y_lot_id" options="{'no_create': True, 'no_create_edit':True}" readonly="1"/>
+                <field name="y_related_sheet_id" readonly="y_processed != False or y_state != 'open'" invisible="not y_related_sheet_id" options="{'no_create': True, 'no_create_edit':True}"/>
+              </group>
+              <group>
+                <field name="y_is_editable" invisible="1" />
+                <field name="y_processed" invisible="1"/>
+                <field name="y_quantity_recieved" readonly="1" />
+                <field name="y_sampled_quantity" readonly="y_processed != False or y_state != 'open'"/>
+                <field name="y_quantity_accepted" readonly="y_processed != False or y_state != 'open'"/>
+                <field name="y_quantity_rejected" readonly="y_processed != False or y_state != 'open'"/>
+                <field name="y_quantity_destructive" readonly="y_processed != False or y_state != 'open'"/>
+                <field name="y_under_deviation" readonly="y_processed != False or y_state != 'open'"/>
+                <field name="y_quantity_pending" string="Quantity Pending" readonly="y_processed != False or y_state != 'open'"/>
+                <field name="y_quality_inspector_ids" widget="many2many_tags" required="1"  options="{'no_create': True, 'no_create_edit':True}" readonly="y_processed != False or y_state != 'open'"/>
+                <field name="y_quality_inspector_id" invisible="1" options="{'no_create': True, 'no_create_edit':True}"/>
+              </group>
+            </group>
+            <notebook>
+              <page string="Quality Checks">
+                <field name="y_quality_check_ids">
+                  <form>
+                  </form>
+                  <list editable="bottom" delete="1" create="1" decoration-info="quality_state == 'none'" decoration-danger="quality_state == 'fail'">
+                    <field name="point_id" icon="fa-info" domain="[('product_ids','in',y_test_product_id)]" readonly="parent.y_processed != False or parent.y_state != 'open'"/>
+                    <field name="y_test_product_id" column_invisible="True" readonly="parent.y_processed != False or parent.y_state != 'open'"/>
+                    <field name="team_id" options="{'no_create': True, 'no_create_edit':True}" readonly="parent.y_processed != False or parent.y_state != 'open'" optional="hide"/>
+                    <field name="title" readonly="parent.y_processed != False or parent.y_state != 'open'"/>
+                    <field name="product_id" column_invisible="True" readonly="parent.y_processed != False or parent.y_state != 'open'"/>
+                    <field name="lot_id" options="{'no_create': True, 'no_create_edit':True}" readonly="parent.y_processed != False or parent.y_state != 'open'" optional="hide"/>
+                    <field name="test_type" column_invisible="True" readonly="parent.y_processed != False or parent.y_state != 'open'"/>
+                    <field name="quality_state" column_invisible="True" readonly="parent.y_processed != False or parent.y_state != 'open'"/>
+                    <field name="company_id" column_invisible="True" readonly="parent.y_processed != False or parent.y_state != 'open'"/>
+                    <field name="alert_ids" column_invisible="True" readonly="parent.y_processed != False or parent.y_state != 'open'"/>
+                    <field name="test_type_id"/>
+                    <field name="y_test_method_id" readonly="1"/>
+                    <field name="measure" readonly="test_type != 'measure' or parent.y_processed != False or parent.y_state != 'open'" optional="show"/>
+                    <field name="y_confirm_measurement" column_invisible="True" readonly="parent.y_processed != False or parent.y_state != 'open'"/>
+                    <button name="confirm_measure_btn" type="object" icon="fa-thumbs-up" style="color:green" invisible="parent.y_state in ['cancel'] or test_type == 'measure' or quality_state != 'none'" class="btn-success"/>
+                    <button name="fail_btn" type="object" icon="fa-thumbs-down" class="btn-danger" style="color:red" invisible="parent.y_state in ['cancel'] or quality_state != 'none' or test_type in ['measure']"/>
+                    <field name="y_norm" readonly="test_type != 'measure' or parent.y_processed != False or parent.y_state != 'open'" optional="show"/>
+                    <field name="norm_unit" readonly="test_type != 'measure' or parent.y_processed != False or parent.y_state != 'open'" optional="show"/>
+                    <field name="tolerance_min" readonly="test_type != 'measure' or parent.y_processed != False or parent.y_state != 'open'" optional="show"/>
+                    <field name="tolerance_max" readonly="test_type != 'measure' or parent.y_processed != False or parent.y_state != 'open'" optional="show"/>
+                    <field name="quality_state" readonly="test_type in ['measure'] or parent.y_processed != False or parent.y_state != 'open'"/>
+                    <button name="do_alert" icon="fa-bell" type="object" invisible="not alert_ids or quality_state != 'fail'" style="color:red;" />
+                  </list>
+                </field>
+              </page>
+              <page string="Revisions">
+                <field name="y_code" invisible="1"/>
+                <field name="y_revised_sheet_ids">
+                  <list>
+                    <field name="y_name"/>
+                  </list>
+                </field>
+              </page>
+            </notebook>
+          </sheet>
+          <chatter/>
+        </form>
+      </field>
+    </record>
+
+    <record id="inspection_sheet_view_pivot" model="ir.ui.view">
+      <field name="name">inspection.sheet.view.pivot</field>
+      <field name="model">inspection.sheet</field>
+      <field name="arch" type="xml">
+        <pivot string="Quality Check Analysis" sample="1">
+          <field name="y_quantity_recieved" type="measure" />
+          <field name="y_quantity_accepted" type="measure" />
+          <field name="y_under_deviation" type="measure" />
+          <field name="y_quantity_rejected" type="measure" />
+          <field name="y_quantity_destructive" type="measure" />
+          <field name="y_product_id" type="row"/>
+          <field name="y_partner_id" type="row"/>
+        </pivot>
+      </field>
+    </record>
+
+    <record id="inspection_sheet_action" model="ir.actions.act_window">
+      <field name="name">Inspection Sheet</field>
+      <field name="res_model">inspection.sheet</field>
+      <field name="view_mode">list,form,pivot</field>
+      <field name="view_ids" eval="[(5, 0, 0),
+          (0, 0, {'view_mode': 'list', 'view_id': ref('inspection_sheet_tree_view')}),
+          (0, 0, {'view_mode': 'form', 'view_id': ref('inspection_sheet_form_view')})]"/>
+    </record>
+
+    <menuitem id="menu_inspection_sheet" name="Inspection Sheet"
+      parent="menu_operations" action="inspection_sheet_action" sequence="2"/>
+
+    <record id="qualityalert__base_alert_team_view_form" model="ir.ui.view">
+      <field name="name">quality.alert.base.alert.team.view.form</field>
+      <field name="model">quality.alert</field>
+      <field name="inherit_id" ref="quality_control.quality_alert_view_form"/>
+      <field name="arch" type="xml">
+          <field name="picking_id" position="after">
+              <field name="y_source"/>
+          </field>
+      </field>
+    </record>
+
+    <record id="view_picking_type_form_inspection_sequences" model="ir.ui.view">
+      <field name="name">view.picking.type.form.inspection.sequences</field>
+      <field name="model">stock.picking.type</field>
+      <field name="inherit_id" ref="stock.view_picking_type_form"/>
+      <field name="arch" type="xml"> 
+        <field name="sequence_code" position="after">
+          <field name="y_sequence_for_inspection_plan"/>
+          <field name="y_sequence_for_inspection_sheet"/>
+        </field>
+      </field>
+    </record>
+
+    <record id="view_quality_base_alert_team_view_form" model="ir.ui.view">
+      <field name="name">view.quality.base.alert.team.view.form</field>
+      <field name="model">quality.alert.team</field>
+      <field name="inherit_id" ref="quality_control.quality_alert_team_view_form" />
+      <field name="arch" type="xml">
+        <field name="alias_contact" position="after">
+          <field name="y_approver_ids" widget="many2many_tags" />
+          <field name="y_quality_inspector_ids" widget="many2many_tags"/>
+        </field>
+      </field>
+    </record>
+
+    <record id="view_stock_move_line_operation_tree_expiry_inherited" model="ir.ui.view">
+      <field name="name">stock.move.line.inherit.list.inherited</field>
+      <field name="model">stock.move.line</field>
+      <field name="inherit_id" ref="product_expiry.view_stock_move_line_operation_tree_expiry" />
+      <field name="arch" type="xml">
+        <xpath expr="//field[@name='expiration_date']" position="attributes">
+          <attribute name="readonly">state in ['done']</attribute>
+          <attribute name="column_invisible">parent.use_expiration_date != True or parent.picking_code != 'incoming'</attribute>
+        </xpath>
+      </field>
+    </record>
+
+    <record id="view_location_form_destructive_location" model="ir.ui.view">
+      <field name="name">view.location.form.destructive.location</field>
+      <field name="model">stock.location</field>
+      <field name="inherit_id" ref="stock.view_location_form"/>
+      <field name="arch" type="xml">
+        <xpath expr="//group/group[@name='additional_info']/field[@name='company_id']" position="after">
+          <field name="y_destructive_location"/>
+          <field name="y_reject_location"/>
+        </xpath>
+      </field>
+    </record>
+
+
+    <!-- Characteristics -->
+    <record id="quality_characteristic_search_view" model="ir.ui.view">
+      <field name="name">quality.characteristic.serarch.view</field>
+      <field name="model">quality.characteristic</field>
+      <field name="arch" type="xml">
+          <search>
+              <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+          </search>
+      </field>
+    </record>
+
+    <record id="quality_characteristic_tree_view" model="ir.ui.view">
+      <field name="name">quality.characteristic.list.view</field>
+      <field name="model">quality.characteristic</field>
+      <field name="arch" type="xml">
+        <list>
+          <field name="y_code"/>
+          <field name="y_description"/>
+        </list>
+      </field>
+    </record>
+
+    <record id="quality_characteristic_form_view" model="ir.ui.view">
+      <field name="name">quality.characteristic.form.view</field>
+      <field name="model">quality.characteristic</field>
+      <field name="arch" type="xml">
+        <form>
+          <sheet>
+            <group>
+              <group>
+                <field name="y_code"/>
+                <field name="y_description"/>
+              </group>
+            </group>
+          </sheet>
+          <chatter/>
+        </form>
+      </field>
+    </record>
+
+    <record id="quality_characteristic_action" model="ir.actions.act_window">
+      <field name="name">Characteristics</field>
+      <field name="res_model">quality.characteristic</field>
+      <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_quality_characteristic" name="Characteristics"
+      parent="quality_control.menu_quality_configuration" action="quality_characteristic_action"
+      sequence="30"/>
+
+
+    <record id="quality_point_view_form_characteristic" model="ir.ui.view">
+      <field name="name">quality.point.view.form.characteristic</field>
+      <field name="model">quality.point</field>
+      <field name="inherit_id" ref="quality.quality_point_view_form"/>
+      <field name="arch" type="xml">
+        <xpath expr="//form" position="attributes">
+          <attribute name="create">0</attribute>
+        </xpath>
+        <xpath expr="//field[@name='product_category_ids']" position="after">
+          <field name="y_is_readonly" invisible="1"/>
+          <field name="y_code" invisible="1"/>
+          <field name="y_product_tmpl_id" invisible="1"/>
+        </xpath> 
+        <xpath expr="//field[@name='product_ids']" position="attributes">
+          <attribute name="force_save">1</attribute>
+          <attribute name="options">{'no_create': True,'no_edit':True}</attribute>
+          <attribute name="readonly">y_is_readonly != False</attribute>
+        </xpath>  
+        <xpath expr="//field[@name='product_category_ids']" position="attributes">
+          <attribute name="force_save">1</attribute>
+          <attribute name="options">{'no_create': True,'no_edit':True}</attribute>
+          <!-- <attribute name="readonly">y_is_readonly != False</attribute> -->
+        </xpath>  
+        <xpath expr="//field[@name='picking_type_ids']" position="attributes">
+          <attribute name="force_save">1</attribute>
+          <attribute name="options">{'no_create': True,'no_edit':True}</attribute>
+          <attribute name="readonly">y_is_readonly != False</attribute>
+        </xpath> 
+        <xpath expr="//field[@name='user_id']" position="attributes">
+          <attribute name="options">{'no_create': True,'no_edit':True}</attribute>
+        </xpath>  
+        <field name="team_id" position="after">
+          <field name="y_test_method_id"/>
+          <field name="y_inspection_plan_id" invisible="1" readonly="1"/>
+          <field name="y_product_tmpl_id" invisible="1" readonly="1"/>
+        </field>
+        <field name="title" position="replace">
+          <field name="y_characteristic_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+          <field name="title" />
+        </field>
+       
+      </field>
+    </record>
+
+    
+    <!-- Alert Kanban -->
+    <record id="quality_alert_action_team_inspection_sheet" model="ir.actions.act_window">
+      <field name="name">Inspection Sheet</field>
+      <field name="res_model">inspection.sheet</field>
+      <field name="view_mode">list,form</field>
+      <field name="domain">[('y_state','in',('open','accept')),('y_processed', '=',False),('y_team_id', '=', active_id)]</field>
+      <field name="help" type="html">
+        <p class="o_view_nocontent_smiling_face">
+          Nothing To Inspect
+        </p>
+      </field>
+    </record>
+
+    <record id="quality_alert_team_dashboard_view_kanban_inspection_sheet" model="ir.ui.view">
+      <field name="name">quality.alert.team.dashboard.view.kanban.inspection.sheet</field>
+      <field name="model">quality.alert.team</field>
+      <field name="inherit_id" ref="quality_control.quality_alert_team_dashboard_view_kanban"/>
+      <field name="arch" type="xml">
+        <xpath expr="//templates/t[2]/div[2]" position="after">
+          <div class="col-6">            
+            <br/>
+            <button class="btn btn-primary ms-2" name="%(quality_control_base.quality_alert_action_team_inspection_sheet)d" type="action">
+                <span><field name="y_inspection_sheet_count"/> Inspection Sheets</span>
+            </button>
+          </div>
+        </xpath>
+      </field>
+    </record>
+
+
+    <record model="ir.ui.view" id="view_picking_type_form_quality_control_base">
+      <field name="name">view.picking.type.form.quality.control.base</field>
+      <field name="model">stock.picking.type</field>
+      <field name="inherit_id" ref="stock.view_picking_type_form"/>
+      <field name="arch" type="xml">
+        <field name="code" position="attributes">
+          <attribute name="required">1</attribute>
+        </field>
+      </field>
+    </record>
+
+    <record id="inspection_sheet_view_search" model="ir.ui.view">
+      <field name="name">inspection.sheet.view.search</field>
+      <field name="model">inspection.sheet</field>
+      <field name="arch" type="xml">
+          <search>
+              <field name="y_picking_id"/>
+              <field name="y_production_id"/>
+          </search>
+      </field>
+    </record>
+
+    <record id="quality_inspection_sheet_action_picking" model="ir.actions.act_window">
+      <field name="name">Inspection Sheet</field>
+      <field name="res_model">inspection.sheet</field>
+      <field name="view_mode">list,form</field>
+      <field name="context">{
+          'search_default_y_picking_id': [active_id],
+          'default_y_picking_id': active_id}
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_picking_form_quality_control_base">
+      <field name="name">view.picking.form.quality.control.base</field>
+      <field name="model">stock.picking</field>
+      <field name="inherit_id" ref="stock.view_picking_form"/>
+      <field name="arch" type="xml">
+        <xpath expr="//header" position="inside">
+          <field name="y_is_quality_check_required" invisible="1"/>
+          <button string="Generate Inspection Sheet" name="button_genarate_quality_checks_inspection_sheets" type="object" class="oe_highlight" invisible="y_is_quality_check_required != True"/>
+        </xpath>     
+        <button name="check_quality" position="attributes">
+          <attribute name="invisible">1</attribute>
+        </button>
+        <xpath expr="//form//button[@name='button_quality_alert'][1]"  position="attributes">
+          <attribute name="invisible">1</attribute>
+        </xpath>
+        <xpath expr="//form//div[@name='button_box']//button[@icon='fa-check']" position="replace">
+          <button name="view_inspection_sheet" invisible="not check_ids" type="object" class="oe_stat_button" icon="fa-check" groups="quality.group_quality_user">
+              <span class="o_stat_text text-success">Inspection Sheet</span>              
+          </button>
+        </xpath>
+        <xpath expr="//field[@name='backorder_id']" position="after">
+            <field name="y_inspection_sheet_ids" invisible="1"/>
+            <field name="y_quality_sheet_status" widget="badge" invisible="not y_inspection_sheet_ids" decoration-info="y_quality_sheet_status== 'partial'" decoration-muted="y_quality_sheet_status in ('not_completed','accepted')" decoration-success="y_quality_sheet_status == 'fully_completed'"/>
+        </xpath>
+      </field>
+    </record>
+
+    <record id="quality_inspection_sheet_action_mrp" model="ir.actions.act_window">
+        <field name="name">Inspection Sheet</field>
+        <field name="res_model">inspection.sheet</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{
+            'search_default_y_production_id': [active_id],
+            'default_y_production_id': active_id}
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="mrp_production_form_view_inherit">
+      <field name="name">mrp.production.form.inherit</field>
+      <field name="model">mrp.production</field>
+      <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+      <field name="arch" type="xml">
+        <xpath expr="//header" position="inside">
+          <field name="y_valid_inspection_sheet_count" invisible="1"/>
+          <button name="button_genarate_inpection_sheet" type="object" string="Generate Inspection Sheet" invisible="y_valid_inspection_sheet_count > 0 or not check_ids" class="oe_highlight"/>
+        </xpath>
+        <button name="check_quality" position="attributes">
+          <attribute name="invisible">1</attribute>
+        </button>
+        <xpath expr="//form//button[@name='button_quality_alert'][1]"  position="attributes">
+          <attribute name="invisible">1</attribute>
+        </xpath>
+        <xpath expr="//form//button[@name='button_quality_alert'][2]"  position="attributes">
+          <attribute name="invisible">1</attribute>
+        </xpath>
+        <xpath expr="//form//div[@name='button_box']//button[@icon='fa-check']" position="replace">
+          <button name="%(quality_inspection_sheet_action_mrp)d" invisible="y_valid_inspection_sheet_count == 0 or not check_ids" type="action" class="oe_stat_button" icon="fa-check">
+              <span class="o_stat_text text-success">Inspection Sheet</span>              
+          </button>
+        </xpath>
+      </field>
+    </record>
+
+
+    <!-- Inspection Sheet Revision-->
+    <record id="inspection_sheet_revision_tree_view" model="ir.ui.view">
+      <field name="name">inspection.sheet.revision.list.view</field>
+      <field name="model">inspection.sheet.revision</field>
+      <field name="arch" type="xml">
+        <list>
+          <field name="y_name" string="Revised Sheets"/>
+        </list>
+      </field>
+    </record>
+
+    <record id="inspection_sheet_revision_form_view" model="ir.ui.view">
+      <field name="name">inspection.sheet.revision.form.view</field>
+      <field name="model">inspection.sheet.revision</field>
+      <field name="arch" type="xml">
+        <form create="false" edit="false">
+          <sheet>
+            <group>
+              <group>
+                <h1><field name="y_name" string="" readonly="1"/></h1>
+              </group>
+            </group>
+            <group>
+              <group>
+                <field name="y_date" readonly="1"/>
+                <field name="y_company_id" readonly="1"/>
+                <field name="y_team_id" readonly="1"/>
+                <field name="y_source" readonly="1"/>
+                <field name="y_picking_id" readonly="1" invisible="not y_picking_id"/>
+                <field name="y_production_id" readonly="1" invisible="not y_production_id"/>
+                <field name="y_product_id" readonly="1" string="Product"/>
+                <field name="y_lot_id" readonly="1"/>
+              </group>
+              <group>
+                <field name="y_status" readonly="1"/>
+                <field name="y_quantity_recieved" readonly="1"/>
+                <field name="y_sampled_quantity" readonly="1"/>
+                <field name="y_quantity_accepted" readonly="1"/>
+                <field name="y_quantity_rejected" readonly="1"/>
+                <field name="y_quantity_destructive" readonly="1"/>
+                <field name="y_under_deviation" readonly="1"/>
+              </group>
+            </group>
+            <field name="y_quality_check_ids">
+              <form>
+              </form>
+              <list editable="bottom" delete="0" create="0"
+                decoration-info="y_quality_state == 'none'"
+                decoration-danger="y_quality_state == 'fail'">
+                <field name="y_point_id" icon="fa-info" readonly="1"/>
+                <field name="y_title"/>
+                <field name="y_test_type" invisible="1"/>
+                <field name="y_quality_state" invisible="1"/>
+                <field name="y_test_type_id" readonly="1"/>
+                <field name="y_test_method_id" readonly="1"/>
+                <field name="y_measure" invisible="y_test_type != 'measure'"/>
+                <field name="y_norm" readonly="1" invisible="y_test_type != 'measure'"/>
+                <field name="y_norm_unit" readonly="1" invisible="y_test_type != 'measure'"/>
+                <field name="y_tolerance_min" readonly="1" invisible="y_test_type != 'measure'"/>
+                <field name="y_tolerance_max" readonly="1" invisible="y_test_type != 'measure'"/>
+                <field name="y_quality_state" readonly="y_test_type in ['measure']"/>
+              </list>
+            </field>
+          </sheet>
+          <chatter/>
+        </form>
+      </field>
+    </record>
+
+    <record id="ir_action_open_revise" model="ir.actions.server">
+      <field name="name">Revise</field>
+      <field name="model_id" ref="model_inspection_sheet" />
+      <field name="binding_model_id" ref="model_inspection_sheet" />
+      <field name="binding_view_types">form</field>
+      <field name="state">code</field>
+          <field name="code">records.revise()</field>
+    </record>
+
+  </data>
+</odoo>

@@ -1,0 +1,609 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<record id="retail_invoice_report_page_format_retail" model="report.paperformat">
+		<field name="name">Invoice Paperformat</field>
+		<field name="default" eval="True" />
+		<field name="format">A4</field>
+		<field name="orientation">Portrait</field>
+		<field name="margin_top">50</field>
+		<field name="margin_bottom">33</field>
+		<field name="margin_left">5</field>
+		<field name="margin_right">5</field>
+		<field name="header_line" eval="False" />
+		<field name="header_spacing">40</field>
+		<field name="dpi">90</field>
+	</record>
+
+	<record id="account_retail_invoices_vahini" model="ir.actions.report">
+		<field name="name">Retail Invoice </field>
+		<field name="model">account.move</field>
+		<field name="report_type">qweb-pdf</field>
+		<field name="report_name">retail_invoice_report.report_retail_invoice</field>
+		<field name="report_file">retail_invoice_report.report_retail_invoice</field>
+		<field name="print_report_name">(object.name)</field>
+		<field name="binding_model_id" ref="account.model_account_move" />
+		<field name="binding_type">report</field>
+		<field name="paperformat_id"
+			ref="retail_invoice_report.retail_invoice_report_page_format_retail" />
+	</record>
+
+	<template id="report_retail_invoice">
+		<t t-call="web.html_container">
+			<t t-foreach="docs" t-as="doc">
+				<t t-call="retail_invoice_report.external_layout_standard_vahini_retail">
+					<div class="page">
+						<table class="table table-borderless m-0 p-0"
+							style="font-size:12px;width:100%;">
+							<thead>
+								<tr style="page-break-inside:avoid;">
+									<td colspan="100%" class="p-0">
+
+										<div class="col-12 p-1 text-center"
+											style="background:#fffdaf;border:1px solid black;">
+											<span class="fw-bold fs-6">TAX INVOICE / CREDIT BILL</span>
+										</div>
+
+										<div class="col-12 p-1"
+											style="border:1px solid black;border-top:0;">
+											<div class="col-12">
+												<span class="fw-bold">IRN :&#160;</span>
+												<span class="fw-bold" t-if="doc.Irn" t-esc="doc.Irn" />
+											</div>
+											<div class="col-12 d-flex">
+												<div class="col-6">
+													<strong>Acknowledgement No :&#160;&#160; <span
+															t-if="doc.AckNo" t-esc="doc.AckNo" />
+													</strong>
+												</div>
+												<div class="col-6 fw-bold" style="text-align:left;">
+													<span class="">Acknowledgement Date
+														:&#160;&#160;</span>
+													<span t-if="doc.AckDt"
+														t-esc="doc.AckDt.strftime('%d-%m-%Y')" />
+												</div>
+											</div>
+										</div>
+
+										<div class="col-12 d-flex"
+											style="border:1px solid black;border-top:0;">
+											<div class="col-6 p-1"
+												style="border-right:1px solid black;">
+												<div class="d-flex">
+													<div style="width:27%;">
+														<span class="fw-bold">Buyer</span>
+													</div>
+													<div class="px-1" style="width:3%">
+														<span>:</span>
+													</div>
+													<div style="width:70%;">
+														<span t-field="doc.partner_id.name" />
+													</div>
+												</div>
+												<div class="d-flex">
+													<div style="width:27%;">
+														<span class="fw-bold">Dealer Code</span>
+													</div>
+													<div class="px-1" style="width:3%">
+														<span>:</span>
+													</div>
+													<div style="width:70%;">
+														<!-- <span t-field="doc.partner_id.name" />
+														<br /> -->
+														<span
+															t-field="doc.partner_id.contact_address_complete" />
+													</div>
+												</div>
+												<div class="d-flex">
+													<div style="width:27%;">
+														<span class="fw-bold">GSTIN</span>
+													</div>
+													<div class="px-1" style="width:3%">
+														<span>:</span>
+													</div>
+													<div style="width:70%;">
+														<span t-if="doc.partner_id.vat"
+															t-field="doc.partner_id.vat" />
+													</div>
+												</div>
+												<div class="d-flex">
+													<div style="width:27%;">
+														<span class="fw-bold">Mobile No</span>
+													</div>
+													<div class="px-1" style="width:3%">
+														<span>:</span>
+													</div>
+													<div style="width:70%;">
+														<span t-field="doc.partner_id.mobile" />
+													</div>
+												</div>
+												<div class="d-flex">
+													<div style="width:27%;">
+														<span class="fw-bold">Email</span>
+													</div>
+													<div class="px-1" style="width:3%">
+														<span>:</span>
+													</div>
+													<div style="width:70%;">
+														<span t-field="doc.partner_id.email" />
+													</div>
+												</div>
+											</div>
+											<div class="col-6 p-1" style="">
+												<div class="d-flex">
+													<div style="width:27%;">
+														<span class="fw-bold">Invoice No</span>
+													</div>
+													<div class="px-1" style="width:3%">
+														<span>:</span>
+													</div>
+													<div style="width:70%;">
+														<span t-field="doc.name" />
+													</div>
+												</div>
+												<div class="d-flex">
+													<div style="width:27%;">
+														<span class="fw-bold">Invoice Date</span>
+													</div>
+													<div class="px-1" style="width:3%">
+														<span>:</span>
+													</div>
+													<div style="width:70%;">
+														<span t-field="doc.invoice_date" />
+													</div>
+												</div>
+												<div class="d-flex">
+													<div style="width:27%;">
+														<span class="fw-bold">Delivery Date</span>
+													</div>
+													<div class="px-1" style="width:3%">
+														<span>:</span>
+													</div>
+													<div style="width:70%;">
+														<span t-if="doc.delivery_date"
+															t-esc="doc.delivery_date.strftime('%d-%m-%Y')" />
+													</div>
+												</div>
+												<div class="d-flex">
+													<div style="width:27%;">
+														<span class="fw-bold">Terms of Payment :</span>
+													</div>
+													<div class="px-1" style="width:3%">
+														<span>:</span>
+													</div>
+													<div style="width:70%;">
+														<span t-field="doc.invoice_payment_term_id" />
+													</div>
+												</div>
+												<div class="mt-2">
+													<div class="col-12 d-flex">
+														<div class="col-6 p-2">
+															<span class="fw-bold" style="width:40%;">AREA
+																: </span>
+															<span class="fw-bold" style="width:60%;">
+																___________________</span>
+														</div>
+														<div class="col-6 p-2">
+															<span class="fw-bold" style="width:40%;">CROP
+																:</span>
+															<span class="fw-bold" style="width:60%;">
+																___________________</span>
+														</div>
+													</div>
+													<div class="col-12 d-flex mt-2">
+														<div class="col-6 p-2">
+															<span class="fw-bold" style="width:40%;">SY
+																NO : </span>
+															<span class="fw-bold" style="width:60%;">
+																___________________</span>
+														</div>
+														<div class="col-6 p-2">
+															<span class="fw-bold" style="width:40%;">SPACING
+																:</span>
+															<span class="fw-bold" style="width:60%;">
+																___________________</span>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<th class="text-center fw-bold"
+										style="width:7%; border:1px solid black;border-top:0;">SL
+										No.</th>
+									<th class="text-center fw-bold"
+										style="width:40%; border:1px solid black;border-top:0;">
+										Description</th>
+									<th class="text-center fw-bold"
+										style="width:10%; border:1px solid black;border-top:0;">
+										HSN/SAC</th>
+									<th class="text-center fw-bold"
+										style="width:10%; border:1px solid black;border-top:0;">
+										Quantity</th>
+									<th class="text-center fw-bold"
+										style="width:8%; border:1px solid black;border-top:0;">UOM</th>
+									<th class="text-center fw-bold"
+										style="width:10%; border:1px solid black;border-top:0;">Rate</th>
+									<th class="text-center fw-bold"
+										style="width:15%; border:1px solid black;border-top:0;">Taxable
+										Amount</th>
+								</tr>
+							</thead>
+							<tbody>
+								<t t-set="i" t-value="1" />
+								<!-- Main product line table (excluding retail print products) -->
+								<t t-foreach="doc.invoice_line_ids" t-as="line">
+									<t
+										t-if="line.product_id.default_code != 'BG0317'
+                 and line.product_id.default_code != 'R1'
+                 and not line.product_id.y_retail_print_product">
+										<tr style="page-break-inside:avoid;">
+											<td class="p-0 px-1 text-center"
+												style="border:1px solid black;">
+												<span t-esc="i" />
+												<t t-set="i" t-value="i+1" />
+											</td>
+											<td class="p-0 px-1" style="border:1px solid black;">
+												<span t-field="line.name" />
+											</td>
+											<td class="p-0 px-1 text-center"
+												style="border:1px solid black;">
+												<span t-field="line.product_id.l10n_in_hsn_code" />
+											</td>
+											<td class="p-0 px-1 text-center"
+												style="border:1px solid black;">
+												<t t-if="line.y_quantity_alt_uom">
+													<span t-esc="'%.0f'%(line.y_quantity_alt_uom)" />
+												</t>
+												<t t-else="">
+													<span t-esc="'%.0f'%(line.quantity)" />
+												</t>
+											</td>
+											<td class="p-0 px-1 text-center"
+												style="border:1px solid black;">
+												<span t-field="line.y_alternate_uom" />
+											</td>
+											<td class="p-0 px-1 text-center"
+												style="border:1px solid black;">
+												<span
+													t-esc="line.price_unit / line.product_id.y_conversion"
+													t-options='{"widget": "float", "precision": 2}' />
+											</td>
+											<td class="p-0 px-1 text-end"
+												style="border:1px solid black;">
+												<span t-field="line.price_subtotal" />
+											</td>
+										</tr>
+									</t>
+								</t>
+
+								<!-- Retail products displayed separately -->
+								<t t-foreach="doc.invoice_line_ids" t-as="line">
+									<t t-if="line.product_id.y_retail_print_product">
+										<tr style="page-break-inside:avoid;">
+											<td colspan="6" class="text-end p-1"
+												style="border:1px solid black; text-align:right">
+												<span t-esc="line.product_id.name" />
+											</td>
+											<td class="text-end p-1"
+												style="border:1px solid black; text-align:right">
+												<span t-field="doc.currency_id.symbol" />
+												<span t-esc="line.price_subtotal"
+													t-options="{'widget': 'float', 'precision': 2}" />
+											</td>
+										</tr>
+									</t>
+								</t>
+
+								<!-- Total row -->
+								<tr style="page-break-inside:avoid;">
+									<td colspan="6" class="text-end p-1"
+										style="border:1px solid black;">
+										<b>Total</b>
+									</td>
+									<td class="text-end p-1" style="border:1px solid black;">
+										<span t-field="doc.amount_untaxed"
+											t-options="{'widget': 'float', 'precision': 2}" />
+									</td>
+								</tr>
+
+
+								<!-- <t t-if="doc.currency_id.name == 'INR' ">
+									<t t-foreach="doc.tax_totals['subtotals'][0]['tax_groups']" t-as="tax_group">
+										<tr t-if="tax_group['group_name']" style="page-break-inside: avoid;">
+											<td colspan="6" class="text-end p-1" style="border:1px solid black;">
+												<t class="fw-bold" t-esc="tax_group['group_name']" />
+											</td>
+											<td class="p-1 text-end" style="border:1px solid black;">
+												<span t-field="doc.currency_id.symbol" />
+												<span t-esc="tax_group['tax_amount_currency']" t-options="{'widget': 'float', 'precision': 2}" />
+											</td>
+										</tr>
+									</t>
+								</t> -->
+								<!-- GST Taxes  -->
+								<t t-if="doc.currency_id.name == 'INR'">
+
+									<t t-set="cgst_totals" t-value="{}" />
+									<t t-set="sgst_totals" t-value="{}" />
+									<t t-set="igst_totals" t-value="{}" />
+									<t t-set="tcs_totals" t-value="{}" />
+									<t t-set="total_tax" t-value="0.0" />
+
+									<t t-foreach="doc.invoice_line_ids" t-as="line">
+										<t t-set="line_taxes"
+											t-value="line._get_tax_line_group_values()" />
+
+										<!-- CGST -->
+										<t t-if="line_taxes.get('CGST')">
+											<t t-set="rate"
+												t-value="line_taxes.get('CGST_RATE')" />
+											<t t-set="cgst_totals"
+												t-value="dict(cgst_totals, **{rate: cgst_totals.get(rate, 0) + line_taxes.get('CGST', 0)})" />
+											<t t-set="total_tax"
+												t-value="total_tax + line_taxes.get('CGST', 0)" />
+										</t>
+
+										<!-- SGST -->
+										<t t-if="line_taxes.get('SGST')">
+											<t t-set="rate"
+												t-value="line_taxes.get('SGST_RATE')" />
+											<t t-set="sgst_totals"
+												t-value="dict(sgst_totals, **{rate: sgst_totals.get(rate, 0) + line_taxes.get('SGST', 0)})" />
+											<t t-set="total_tax"
+												t-value="total_tax + line_taxes.get('SGST', 0)" />
+										</t>
+
+										<!-- IGST -->
+										<t t-if="line_taxes.get('IGST')">
+											<t t-set="rate"
+												t-value="line_taxes.get('IGST_RATE')" />
+											<t t-set="igst_totals"
+												t-value="dict(igst_totals, **{rate: igst_totals.get(rate, 0) + line_taxes.get('IGST', 0)})" />
+											<t t-set="total_tax"
+												t-value="total_tax + line_taxes.get('IGST', 0)" />
+										</t>
+
+										<!-- TCS -->
+										<t t-if="line_taxes.get('TCS')">
+											<t t-set="rate" t-value="line_taxes.get('TCS_RATE')" />
+											<t t-set="tcs_totals"
+												t-value="dict(tcs_totals, **{rate: tcs_totals.get(rate, 0) + line_taxes.get('TCS', 0)})" />
+											<t t-set="total_tax"
+												t-value="total_tax + line_taxes.get('TCS', 0)" />
+										</t>
+									</t>
+
+									<t t-set="cgst_rates" t-value="{}" />
+									<t t-set="sgst_rates" t-value="{}" />
+									<t t-set="igst_rates" t-value="{}" />
+									<t t-set="tcs_rates" t-value="{}" />
+
+									<t t-foreach="doc.invoice_line_ids" t-as="line">
+										<t t-set="line_taxes"
+											t-value="line._get_tax_line_group_values()" />
+
+										<t t-if="line_taxes.get('CGST_RATE')">
+											<t t-set="cgst_rates"
+												t-value="dict(cgst_rates, **{line_taxes.get('CGST_RATE'): True})" />
+										</t>
+										<t t-if="line_taxes.get('SGST_RATE')">
+											<t t-set="sgst_rates"
+												t-value="dict(sgst_rates, **{line_taxes.get('SGST_RATE'): True})" />
+										</t>
+										<t t-if="line_taxes.get('IGST_RATE')">
+											<t t-set="igst_rates"
+												t-value="dict(igst_rates, **{line_taxes.get('IGST_RATE'): True})" />
+										</t>
+										<t t-if="line_taxes.get('TCS_RATE')">
+											<t t-set="tcs_rates"
+												t-value="dict(tcs_rates, **{line_taxes.get('TCS_RATE'): True})" />
+										</t>
+									</t>
+									<tr style="page-break-inside: avoid;">
+										<td colspan="6" class="text-end p-1"
+											style="border:1px solid black;">
+											<t t-set="all_rates"
+												t-value="sorted(list(set(cgst_rates.keys()) | set(sgst_rates.keys())))" />
+											<t t-foreach="all_rates" t-as="rate">
+												<t t-if="cgst_rates.get(rate)">CGST <t
+														t-esc="rate" />%<br /></t>
+												<t t-if="sgst_rates.get(rate)">SGST <t
+														t-esc="rate" />%<br /></t>
+											</t>
+											<t t-foreach="sorted(igst_rates.keys())" t-as="rate">
+												IGST <t
+													t-esc="rate" />%<br />
+											</t>
+											<t t-foreach="sorted(tcs_rates.keys())" t-as="rate"> TCS <t
+													t-esc="rate" />%<br />
+											</t>
+										</td>
+										<td class="p-1 text-end" style="border:1px solid black;">
+											<t t-foreach="all_rates" t-as="rate">
+												<t
+													t-if="cgst_rates.get(rate) and cgst_totals.get(rate)">
+													<span t-field="doc.currency_id.symbol" />
+													<t
+														t-esc="'{:,.2f}'.format(cgst_totals[rate])" />
+													<br />
+												</t>
+												<t
+													t-if="sgst_rates.get(rate) and sgst_totals.get(rate)">
+													<span t-field="doc.currency_id.symbol" />
+													<t
+														t-esc="'{:,.2f}'.format(sgst_totals[rate])" />
+													<br />
+												</t>
+											</t>
+											<t t-foreach="sorted(igst_rates.keys())" t-as="rate">
+												<t t-if="igst_totals.get(rate)">
+													<span t-field="doc.currency_id.symbol" />
+													<t
+														t-esc="'{:,.2f}'.format(igst_totals[rate])" />
+													<br />
+												</t>
+											</t>
+											<t t-foreach="sorted(tcs_rates.keys())" t-as="rate">
+												<t t-if="tcs_totals.get(rate)">
+													<span t-field="doc.currency_id.symbol" />
+													<t
+														t-esc="'{:,.2f}'.format(tcs_totals[rate])" />
+													<br />
+												</t>
+											</t>
+										</td>
+									</tr>
+								</t>
+								<t t-else="">
+								</t>
+								<tr style="page-break-inside: avoid;">
+									<td colspan="6" class="text-end p-1"
+										style="border:1px solid black;">
+										<span class="fw-bold">Grand Total</span>
+									</td>
+									<t t-if="doc.currency_id.name == 'INR' ">
+										<td class="text-end p-1" style="border:1px solid black;">
+											<span t-field="doc.amount_total" />
+										</td>
+									</t>
+									<t t-else="">
+										<td class="text-end p-1" style="border:1px solid black;">
+											<span t-if="doc.amount_untaxed"
+												t-field="doc.amount_untaxed" />
+										</td>
+									</t>
+								</tr>
+								<t t-if="doc.y_farmer_share">
+									<tr style="page-break-inside:avoid;">
+										<td colspan="6" class="text-end p-1"
+											style="border:1px solid black;">
+											<strong>Farmer Share</strong>
+										</td>
+										<td class="text-end p-1" style="border:1px solid black;">
+											<span t-field="doc.currency_id.symbol" />
+											<span t-field="doc.y_farmer_share" />
+										</td>
+									</tr>
+								</t>
+								<t t-if="doc.y_government_share">
+									<tr style="page-break-inside:avoid;">
+										<td colspan="6" class="text-end p-1"
+											style="border:1px solid black;">
+											<strong>Government Share</strong>
+										</td>
+										<td class="text-end p-1" style="border:1px solid black;">
+											<span t-field="doc.currency_id.symbol" />
+											<span t-field="doc.y_government_share" />
+										</td>
+									</tr>
+								</t>
+								<t t-if="doc.y_custom_farmer_share">
+									<tr style="page-break-inside:avoid;">
+
+										<td colspan="6" class="text-end p-1"
+											style="border:1px solid black;">
+											<strong>Farmer/Kisan Share</strong>
+										</td>
+										<td class="text-end p-1" style="border:1px solid black;">
+											<span t-field="doc.currency_id.symbol" />
+											<span t-field="doc.y_custom_farmer_share" />
+										</td>
+									</tr>
+								</t>
+								<t>
+									<tr style="page-break-inside:avoid;">
+										<td colspan="6" class="text-end p-1"
+											style="border:1px solid black;">
+											<b>Round Off</b>
+										</td>
+										<td class="text-end p-1" style="border:1px solid black;">
+											<span style="text-align:right"
+												t-field="doc.currency_id.symbol" />
+											<t t-set="roundoff_amount"
+												t-value="doc.roundoff_amount()" />
+											<span t-esc="roundoff_amount" />
+										</td>
+									</tr>
+								</t>
+								<t t-set="net_total" t-value="0" />
+								<tr style="page-break-inside:avoid;">
+									<td colspan="6" class="text-end p-1"
+										style="border:1px solid black;">
+										<strong>100% BILL</strong>
+									</td>
+									<t t-if="doc.currency_id.name == 'INR' ">
+										<td class="text-end p-1" style="border:1px solid black;">
+											<span style="" t-field="doc.currency_id.symbol" />
+											<t t-if="doc.invoice_cash_rounding_id">
+												<t t-set="net_total"
+													t-value="round(doc.amount_total - doc.y_farmer_share - doc.y_government_share - doc.y_custom_farmer_share - roundoff_amount,2)" />
+												<span t-esc="round(net_total,2)" />
+											</t>
+											<t t-else="">
+												<t t-set="net_total"
+													t-value="doc.amount_total - doc.y_farmer_share - doc.y_government_share - doc.y_custom_farmer_share" />
+												<span t-esc="round(net_total,2)" />
+											</t>
+										</td>
+									</t>
+									<t t-else="">
+										<td class="text-end p-1" style="border:1px solid black;">
+											<span style="" t-field="doc.currency_id.symbol" />
+											<t t-if="doc.invoice_cash_rounding_id">
+												<t t-set="net_total"
+													t-value="round(doc.amount_untaxed - doc.y_farmer_share - doc.y_government_share - doc.y_custom_farmer_share - roundoff_amount,2)" />
+												<span t-esc="round(net_total,2)" />
+											</t>
+											<t t-else="">
+												<t t-set="net_total"
+													t-value="doc.amount_untaxed - doc.y_farmer_share - doc.y_government_share - doc.y_custom_farmer_share" />
+												<span t-esc="round(net_total,2)" />
+											</t>
+										</td>
+									</t>
+								</tr>
+
+								<tr style="page-break-inside:avoid;">
+									<td class="p-1" colspan="100%"
+										style="font-size:12px;border:1px solid black;">
+										<span class="fw-bold">Amount in Words:</span>
+										<t t-if="doc.currency_id.name == 'INR'">
+											<t t-set="amountwords"
+												t-value="doc.amount_in_words(net_total).title()" />
+											<span t-esc="amountwords" />
+										</t>
+										<t t-else="">
+											<span t-if="net_total"
+												t-esc="doc.currency_id.amount_to_text(net_total).replace('And', '').strip().title()" />
+										</t>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<table class="table table-borderless" style="font-size:12px;">
+							<thead>
+							</thead>
+							<tbody>
+								<tr style="word-break: break-all;">
+									<td class="p-1" style="border-top:none;">
+										<span class="fw-bold p-1"></span>
+										<strong>Terms and Conditions:</strong>
+										<br />
+										<div class="row p-2" style="word-break: break-all;">
+											<div style="width:96%;">
+												<span style="word-break: break-all;"
+													t-esc="doc.narration"></span>
+											</div>
+										</div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</t>
+			</t>
+		</t>
+	</template>
+</odoo>

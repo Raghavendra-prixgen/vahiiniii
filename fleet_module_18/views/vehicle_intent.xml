@@ -1,0 +1,174 @@
+<odoo>
+
+    <record id="ir_form_get_picking_details" model="ir.actions.server">
+        <field name="name">Get Pickings</field>
+        <field name="model_id" ref="model_fleet_vehicle_intent" />
+        <field name="binding_model_id" ref="model_fleet_vehicle_intent" />
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="code">
+            if records:
+            action = records.get_picking()
+        </field>
+    </record>
+
+    <record id="ir_form_get_transportatio_order" model="ir.actions.server">
+        <field name="name">Create Transportation Order</field>
+        <field name="model_id" ref="model_fleet_vehicle_intent" />
+        <field name="binding_model_id" ref="model_fleet_vehicle_intent" />
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="code">
+            if records:
+            action = records.create_transportation_order()
+        </field>
+    </record>
+
+    <record id="view_fleet_vehicle_intent_form" model="ir.ui.view">
+        <field name="name">fleet.vehicle.intent.form</field>
+        <field name="model">fleet.vehicle.intent</field>
+        <field name="arch" type="xml">
+            <form string="Vehicle Indents">
+                <header>
+                    <button name="action_posted" type="object" class="oe_highlight" string="Release" invisible="y_status  in ('released', 'cancel')" />
+                    <button name="button_cancel" type="object" class="oe_highlight" string="Cancel" invisible="y_status   in ('draft', 'cancel')" />
+                    <button name="button_reset_draft" type="object" class="oe_highlight" string="Reset to Draft" invisible="y_status != 'cancel'" />
+                    
+                    <field name="y_status" widget="statusbar" statusbar_visible="draft,released,cancel"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_transportation_order" class="oe_stat_button"
+                          type="object" invisible="not y_transportation_order_id" string="Transportation Order">
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <h1>
+                            <field name="y_name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="y_vehicle_type" readonly="y_status != 'draft'"/>
+                            <field name="vehicle_category_id" placeholder="semi-truck" readonly="y_status != 'draft'" required="y_vehicle_type != 'cust_ven'" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <label for="used_weight_percentage" string="Weight" invisible="not vehicle_category_id or not vehicle_weight_capacity"/>
+                            <div class="d-flex flex-row gap-4" invisible="not vehicle_category_id or not vehicle_weight_capacity">
+                                <div class="d-flex flex-row gap-1">
+                                    <field name="estimated_shipping_weight"/>
+                                    <span><field name="weight_uom_name"/></span>
+                                </div>
+                                <field name="used_weight_percentage" widget="progressbar"/>
+                            </div>
+
+                            <field name="y_from_city_id" readonly="y_status != 'draft'" required="1" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <field name="y_to_city_id" readonly="y_status != 'draft'" required="1" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                        </group>
+                        <group>
+                            <field name="create_uid" string="Created By"/>
+                            <!-- <field name="y_weight" widget="weight" readonly="y_status != 'draft'"/> -->
+                            <field name="y_company_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}" readonly="y_status != 'draft'" required="1"/>
+                            <field name="y_date_of_transport" readonly="y_status != 'draft'"/>
+                            <field name="y_remark" readonly="y_status != 'draft'"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="Pickings" string="Pickings">
+                            <field name="y_fleet_vehicle_intent_line_ids" widget="one2many" readonly="y_status != 'draft'">
+                                <list editable="bottom">
+                                    <field name="y_picking_id" required="1" domain="[('picking_type_code', 'in', ('incoming','outgoing','internal')),('state','in',('assigned','confirmed','done')),('y_transportation_order_id','=',False)]"/>
+                                    <field name="y_source_document" optional="show"/>
+                                    <field name="y_partner_id" optional="show"/>
+                                    <field name="y_from_city"/>
+                                    <field name="y_to_city"/>
+                                    <field name="y_scheduled_date"/>
+                                    <field name="y_picking_state" optional="show" widget="badge" decoration-danger="y_picking_state=='cancel'" decoration-info="y_picking_state== 'assigned'" decoration-muted="y_picking_state == 'draft'" decoration-success="y_picking_state == 'done'" decoration-warning="y_picking_state not in ('draft','cancel','done','assigned')"/>
+                                    <field name="y_weight"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                    </sheet>
+                    <chatter/> 	
+                </form>
+            </field>
+    </record>
+
+    <record id="view_fleet_vehicle_intent_tree" model="ir.ui.view">
+        <field name="name">fleet.vehicle.intent.list</field>
+        <field name="model">fleet.vehicle.intent</field>
+        <field name="arch" type="xml">
+            <list string="Vehicle Indents">
+                <field name="y_name"/>
+                <field name="vehicle_category_id"/>
+                <field name="y_from_city_id"/>
+                <field name="y_to_city_id"/>
+                <field name="estimated_shipping_weight"/>
+                <field name="y_date_of_transport"/>
+                <field name="y_sale_order_ids" widget="many2many_tags" optional="hide"/>
+                <field name="y_customer_ids" widget="many2many_tags" optional="hide"/>
+
+                <field name="y_status" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_fleet_vehicle_intent_transportation_order_tree" model="ir.ui.view">
+        <field name="name">fleet.vehicle.intent.list</field>
+        <field name="model">fleet.vehicle.intent</field>
+        <field name="arch" type="xml">
+            <list string="Vehicle Indents">
+                <header>
+                    <button type="object" name="action_execute" string="Execute"/>
+                </header>
+                <field name="y_name"/>
+                <field name="vehicle_category_id"/>
+                <field name="y_from_city_id"/>
+                <field name="y_to_city_id"/>
+                <field name="estimated_shipping_weight"/>
+                <field name="y_date_of_transport"/>
+                <field name="y_status" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record model="ir.rule" id="fleet_vehicle_intent_record_restricted_company_rule">
+        <field name="name">Vehicle Indents Restricted Record: multi-company</field>
+        <field name="model_id" ref="model_fleet_vehicle_intent"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">
+            ['|', ('y_company_id', '=', False), ('y_company_id', 'in', company_ids)]
+        </field>
+    </record>
+
+    <record id="action_fleet_vehicle_intent" model="ir.actions.act_window">
+        <field name="name">Vehicle Indents</field>
+        <field name="res_model">fleet.vehicle.intent</field>
+        <field name="view_mode">list,form,kanban,graph,pivot,activity</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to create a new vehicle indent.
+            </p>
+        </field>
+    </record>
+
+    <record id="view_fleet_vehicle_intent_search" model="ir.ui.view">
+        <field name="name">fleet.vehicle.intent.search</field>
+        <field name="model">fleet.vehicle.intent</field>
+        <field name="arch" type="xml">
+            <search string="Vehicle Indents">
+                <field name="y_name"/>
+                <field name="estimated_shipping_weight"/>
+                <field name="y_date_of_transport"/>
+                <field name="vehicle_category_id"/>
+                <group expand="0" string="Group By">
+                    <filter string="Vehicle Category" name="group_by_vehicle_category" context="{'group_by':'vehicle_category_id'}"/>
+                    <filter string="Date of Transport" name="group_by_date_of_transport" context="{'group_by':'y_date_of_transport'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <menuitem id="menu_fleet_vehicle_intent" name="Vehicle Indents" parent="fleet.menu_root" action="action_fleet_vehicle_intent" sequence="9"/>
+
+</odoo>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="blanket_order_purchase_orequest" model="ir.ui.view">
+        <field name="name">blanket.order.purchase.request</field>
+        <field name="model">purchase.requisition</field>
+        <field name="inherit_id" ref="purchase_requisition.view_purchase_requisition_form"/>
+        <field name="arch" type="xml">
+            <field name="vendor_id" position="after">
+                <field name="y_purchase_request_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+            </field>
+        </field>
+    </record>
+    
+</odoo>

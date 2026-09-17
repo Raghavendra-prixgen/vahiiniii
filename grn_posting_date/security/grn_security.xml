@@ -1,0 +1,8 @@
+<odoo>
+    <data>
+        <record id="group_grn_posting_date_manager" model="res.groups">
+            <field name="name">GRN Posting Date Manager</field>
+            <field name="category_id" ref="base.module_category_hidden"/>
+        </record>
+    </data>
+</odoo>

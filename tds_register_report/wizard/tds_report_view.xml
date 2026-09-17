@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+   
+    <record id="tds_report_view_tree" model="ir.ui.view">
+        <field name="name">tds_report.view.list</field>
+        <field name="model">tds.report.view</field>
+        <field name="arch" type="xml">
+            <list string="Tds Report ">
+                <field name="y_posting_date" optional="show"/>
+                <field name="y_bill_date" optional="show"/>
+                <field name="y_company_pan" optional="show"/>
+                <field name="y_vendor_bill_id"/>
+                <field name="y_vendor_ref"/>
+                <field name="y_party_code" optional="show"/>
+                <field name="y_partner_id"/>
+                <field name="y_pan_no" optional="show"/>
+                <field name="y_product_id"/>
+                <field name="y_product_code" optional="show"/>
+                <field name="y_account_id"/>
+                <field name="y_qty"/>
+                <field name="y_unit_price"/>
+                <field name="y_tds_tax_name"/>
+                <field name="y_l10n_in_section_id"/>
+                <field name="y_base_amount"/>
+                <field name="y_tds_percent"/>
+                <field name="y_tds_amount"/>
+                <field name="y_company_id" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="search_view_tds_report_view" model="ir.ui.view">
+        <field name="name">tds.report.view.search</field>
+        <field name="model">tds.report.view</field>
+        <field name="arch" type="xml">
+            <search>
+              <field name="y_vendor_bill_id"/>
+              <field name="y_partner_id"/>
+              <field name="y_company_id"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="tds_report_view_form" model="ir.ui.view">
+        <field name="name">tds.register.report.list.form</field>
+        <field name="model">tds.register.report.tree</field>
+        <field name="arch" type="xml">
+            <form string="Tds Summary">
+                <group>
+                  <group> 
+                      <field name="y_date_start"/>
+                      <field name="y_company_id" required="1" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                  </group>
+                  <group> 
+                      <field name="y_date_end"/>
+                  </group>                  
+              </group>
+                <footer>
+                    <button string="View Report" type="object" name="get_summary_tree" class="oe_highlight"/>
+                    <button string="Cancel" special="cancel" type="object" class="btn btn-secondary oe_inline"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_to_tds_report" model="ir.actions.act_window">
+        <field name="name">TDS Register</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">tds.register.report.tree</field>
+        <field name="view_mode">form,list</field>
+        <field name="view_id" ref="tds_report_view_form"/>
+        <field name="target">new</field>
+    </record>
+ 
+    <menuitem id="menu_tds_report_action"
+            name="TDS Register"
+            parent="account_additional_reports.menu_additional_reports"
+            action="action_to_tds_report"
+            sequence= "700"
+        />
+       
+</odoo>

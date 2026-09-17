@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+
+        <record id="view_res_company_form_inherit_import" model="ir.ui.view">
+            <field name="name">res.company.form.inherit.import</field>
+            <field name="model">res.company</field>
+            <field name="inherit_id" ref="base.view_company_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='currency_id']" position="after">
+                    <field name="y_iec_number" invisible="0"/>
+                    <field name="y_lut_arn_number" invisible="0"/>
+                </xpath>
+
+            </field>
+        </record>
+
+
+        <record id="view_account_move_form_inherit_account_new_demoo" model="ir.ui.view">
+            <field name="name">account.move.form.inhzerit.account,demo</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='other_info']/group/group[@name='accounting_info_group']" position="inside">
+                    <field name="y_pre_carriage" invisible="move_type not in ('out_invoice','in_invoice')"/>
+                </xpath>
+                <notebook position="inside">
+                    <page string="Import" name="import_export" invisible="move_type != 'in_invoice'">
+                        <group>
+                            <group>
+                                <field name="y_country_orgin_goods_id"
+                                       options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                                <field name="y_country_final_destination_id"
+                                       options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                                <field name="y_final_destination_id"
+                                       options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                                <field name="y_pre_carriage" invisible="1"/>
+
+                            </group>
+                            <group>
+                                <field name="y_vessel_number"/>
+                                <field name="y_port_loading_id" domain="[('y_pre_carriage','=',y_pre_carriage)]"
+                                       options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                                <field name="y_port_discharge_id" domain="[('y_pre_carriage','=',y_pre_carriage)]"
+                                       options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                                <field name="y_export_type_new"/>
+                            </group>
+                        </group>
+                    </page>
+
+                    <page string="Exports" name="import_export_new" invisible="move_type != 'out_invoice'">
+                        <group>
+                            <group>
+                                <field name="y_country_orgin_goods_id"
+                                       options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                                <field name="y_country_final_destination_id"
+                                       options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                                <field name="y_final_destination_id"
+                                       options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                                <field name="y_pre_carriage" invisible="1"/>
+                                <field name="y_pre_carriage_place" invisible="0"/>
+                            </group>
+                            <group>
+                                <field name="y_vessel_number"/>
+                                <field name="y_port_loading_id" domain="[('y_pre_carriage','=',y_pre_carriage)]"
+                                       options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                                <field name="y_port_discharge_id" domain="[('y_pre_carriage','=',y_pre_carriage)]"
+                                       options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                                <field name="y_export_type_new"/>
+                                <field name="y_voyage_no"/>
+                            </group>
+                        </group>
+                    </page>
+
+                    <page string="Packaging Info" name="packaging_info" invisible="move_type != 'out_invoice'">
+                        <group>
+                            <group>
+                                <field name="y_container_number" readonly="state in ['posted']"/>
+                                <field name="y_container_seal_number" readonly="state in ['posted']"/>
+                                <field name="y_net_weight" readonly="state in ['posted']"/>
+                                <field name="y_gross_weight" readonly="state in ['posted']"/>
+                            </group>
+                        </group>
+                    </page>
+                </notebook>
+            </field>
+        </record>
+
+
+        <record id="view_purchase_order_form_inherit_account_new_demoo" model="ir.ui.view">
+            <field name="name">purchase.order.form.inhzerit.account,demo</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@name='other_info']" position="inside">
+                    <field name="y_pre_carriage"/>
+                </xpath>
+                <notebook position="inside">
+                    <page string="Import" name="import_export" invisible="not y_check_bool">
+                        <group>
+                            <group>
+                                <field name="y_check_bool" invisible="1"/>
+                                <field name="y_country_orgin_goods_id"
+                                       options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                                <field name="y_country_final_destination_id"
+                                       options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                                <field name="y_final_destination_id"
+                                       options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                                <field name="y_pre_carriage" invisible="1"/>
+                            </group>
+                            <group>
+                                <field name="y_vessel_number"/>
+                                <field name="y_port_loading_id" domain="[('y_pre_carriage','=',y_pre_carriage)]"
+                                       options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                                <field name="y_port_discharge_id" domain="[('y_pre_carriage','=',y_pre_carriage)]"
+                                       options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+
+                            </group>
+                        </group>
+                    </page>
+                </notebook>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_packaing_account_move_form_">
+            <field name="name">account.move.form.packaging</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_invoice_tree"/>
+            <field name="arch" type="xml">
+                <field name="amount_residual_signed" position="after">
+                    <field name="y_stock_packaging_id" optional="hide"/>
+                    <field name="y_container_number" optional="hide"/>
+                    <field name="y_container_seal_number" optional="hide"/>
+                    <field name="y_net_weight" optional="hide"/>
+                    <field name="y_gross_weight" optional="hide"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="view_res_partner_form_inherit_account_new_demoo" model="ir.ui.view">
+            <field name="name">res.partnerform.inhzerit.account,demo</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <notebook position="inside">
+                    <page string="Export and Import" name="import_export">
+                        <group>
+                            <group>
+                                <field name="y_country_orgin_goods_id"
+                                       options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                                <field name="y_country_final_destination_id"
+                                       options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                                <field name="y_final_destination_id"
+                                       options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                                <field name="y_pre_carriage"
+                                       options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"
+                                       invisible="1"/>
+                            </group>
+                            <group>
+                                <field name="y_port_loading_id"
+                                       options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                                <field name="y_port_discharge_id"
+                                       options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            </group>
+                        </group>
+                    </page>
+                </notebook>
+            </field>
+        </record>
+
+        <record id="view_sale_order_form_inherit_account_new_demoo" model="ir.ui.view">
+            <field name="name">sale.order.form.inhzerit.account,demo</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='other_information']/group/group[@name='sale_shipping']" position="inside">
+                    <field name="y_pre_carriage"/>
+                </xpath>
+                <notebook position="inside">
+                    <page string="Export" name="import_export" invisible="not y_check_bool">
+                        <group>
+                            <group>
+                                <field name="y_check_bool" invisible="1"/>
+                                <field name="y_country_orgin_goods_id"
+                                       options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                                <field name="y_country_final_destination_id"
+                                       options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                                <field name="y_final_destination_id"
+                                       options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                                <field name="y_pre_carriage" invisible="1"/>
+                            </group>
+                            <group>
+                                <field name="y_vessel_number"/>
+                                <field name="y_port_loading_id" domain="[('y_pre_carriage','=',y_pre_carriage)]"
+                                       options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                                <field name="y_port_discharge_id" domain="[('y_pre_carriage','=',y_pre_carriage)]"
+                                       options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                                <field name="y_export_type_new"/>
+                                <field name="y_voyage_no"/>
+                            </group>
+                        </group>
+                    </page>
+                </notebook>
+            </field>
+        </record>
+
+        <!-- <record id="tree_view_puchase_order_import" model="ir.ui.view">
+            <field name="name">purchase.order.import.list</field>
+            <field name="model">purchase.order</field>
+            <field name="arch" type="xml">
+            <list create="0" edit="0">
+                <field name="y_country_orgin_goods_id"/>
+                <field name="y_country_final_destination_id"/>
+                <field name="y_final_destination_id"/>
+                <field name="y_pre_carriage"/>
+                <field name="y_vessel_number"/>
+                <field name="y_port_loading_id"/>
+                <field name="y_port_discharge_id"/>
+            </list>
+            </field>
+        </record>
+
+        <record id="tree_view_sale_order_import" model="ir.ui.view">
+            <field name="name">sale.order.import.list</field>
+            <field name="model">sale.order</field>
+            <field name="arch" type="xml">
+            <list create="0" edit="0">
+                <field name="y_country_orgin_goods_id"/>
+                <field name="y_country_final_destination_id"/>
+                <field name="y_final_destination_id"/>
+                <field name="y_pre_carriage"/>
+                <field name="y_vessel_number"/>
+                <field name="y_port_loading_id"/>
+                <field name="y_port_discharge_id"/>
+                <field name="y_export_type_new"/>
+            </list>
+            </field>
+        </record>
+ -->
+        <record id="action_port_delivery_master" model="ir.actions.act_window">
+            <field name="name">Port Master</field>
+            <field name="res_model">l10n_in.port.code</field>
+            <field name="view_mode">list</field>
+        </record>
+
+        <record model="ir.ui.view" id="_l10n_in_port_code_tree_view_">
+            <field name="name">Port Master</field>
+            <field name="model">l10n_in.port.code</field>
+            <field name="inherit_id" ref="l10n_in.l10n_in_port_code_tree_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//list" position="attributes">
+                    <attribute name="editable">bottom</attribute>
+                </xpath>
+                <xpath expr="//field[@name='state_id']" position="attributes">
+                    <attribute name="domain">[('country_id','=',y_country_id)]</attribute>
+                </xpath>
+                <field name="state_id" position="before">
+                    <field name="y_city"/>
+                </field>
+                <field name="state_id" position="after">
+                    <field name="y_country_id"/>
+                    <field name="y_pre_carriage" required="1"/>
+                </field>
+            </field>
+        </record>
+
+        <!-- <record id="action_purchase_order_import_report_all" model="ir.actions.act_window">
+            <field name="name">Purchase Order Import</field>
+            <field name="res_model">purchase.order</field>
+            <field name="view_mode">list</field>
+            <field name="domain">[('y_check_bool','=',True)]</field>
+            <field name="view_id" ref="tree_view_puchase_order_import"/>
+        </record>
+
+        <record id="action_sale_order_import_report_all" model="ir.actions.act_window">
+            <field name="name">Sale Order Import</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_mode">list</field>
+            <field name="domain">[('y_check_bool','=',True)]</field>
+            <field name="view_id" ref="tree_view_sale_order_import"/>
+        </record> -->
+
+        <menuitem id="menu_import_export_contactss"
+                  name="Exports and Imports"
+                  parent="contacts.res_partner_menu_config"
+                  sequence="100"/>
+
+        <menuitem id="menu_country_orging_goods"
+                  name="Port"
+                  action="action_port_delivery_master"
+                  parent="menu_import_export_contactss"
+                  sequence="105"/>
+
+        <!-- <menuitem id="import_report" 
+            name="Import Report" 
+            action="action_purchase_order_import_report_all"
+            parent="purchase.purchase_report_main" 
+            sequence="100"/>
+
+
+        <menuitem id="menu_report_product_all"
+            name="Export Report"
+            action="action_sale_order_import_report_all"
+            parent="sale.menu_sale_report"
+            sequence="10"/>
+ -->
+    </data>
+</odoo>

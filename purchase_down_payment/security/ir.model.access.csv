@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_advance_payment_wizard,advance.payment.wizard,model_advance_payment_wizard,,1,1,1,1
+access_purchase_account_payment,purchase.account.payment,model_purchase_account_payment,,1,1,1,0
+access_advance_request_approval_form,advance.request.approval.form,model_advance_request_approval_form,,1,1,1,0
+access_reject_reason,reject.reason,model_reject_reason,,1,1,1,1

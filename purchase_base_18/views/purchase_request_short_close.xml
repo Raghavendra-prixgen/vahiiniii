@@ -1,0 +1,65 @@
+<odoo>
+    <record model="ir.ui.view" id="purchase_request_line_tree_short_close">
+        <field name="name">purchase.request.line.inherit </field>
+        <field name="model">purchase.request.line</field>
+        <field name="inherit_id" ref="purchase_base_18.purchase_request_line_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='company_id']" position="after">
+                <field name="y_is_short_closed" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_purchase_request_short_close_wizard_form" model="ir.ui.view">
+        <field name="name">purchase.request.short.close.wizard.form</field>
+        <field name="model">purchase.request.short.close.wizard</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form create="0" edit="0">
+                <field name="y_purchase_request_id" invisible="1" />
+                <field name="y_pr_lines_ids" string="Short Close Purchase Request Lines" domain="[('request_id','=',y_purchase_request_id),('y_is_short_closed','=',False)]">
+                    <list editable='bottom' >
+                        <field name="request_id" readonly="1" />
+                        <field name="product_id" readonly="1" />
+                        <field name="name" readonly="1"/>
+                        <field name="product_qty" readonly="1"/>
+                        <field name="y_is_short_closed"/>
+                        <field name="y_short_close_reason_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}" required="1" force_save="1" readonly="not y_is_short_closed"/>
+                    </list>
+                </field>
+                <footer>
+                    <group>
+                        <button class="btn btn-primary" type="object" name="button_action_short_close"
+                            string="Confirm" />
+                    </group>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.actions.server" id="action_purchase_request_line_short_close">
+      <field name="name">Short Close</field>
+      <field name="model_id" ref="purchase_base_18.model_purchase_request_line"/>
+      <field name="binding_model_id" ref="purchase_base_18.model_purchase_request_line"/>
+      <field name="binding_view_types">list</field>
+      <field name="state">code</field>
+      <field name="code">
+              if records:
+                action = records.purchase_request_line_short_close_form_wizard()
+      </field>
+    </record>
+
+    <record model="ir.actions.server" id="action_purchase_request_short_close">
+      <field name="name">Short Close</field>
+      <field name="model_id" ref="purchase_base_18.model_purchase_request"/>
+      <field name="binding_model_id" ref="purchase_base_18.model_purchase_request"/>
+      <field name="binding_view_types">form</field>
+      <field name="state">code</field>
+      <field name="code">
+              if records:
+                action = records.purchase_request_short_close_form_wizard()
+      </field>
+    </record>
+
+
+</odoo>

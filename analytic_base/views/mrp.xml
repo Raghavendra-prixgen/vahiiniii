@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="mrp_production_form_view_inherit_analytic_base" model="ir.ui.view">
+        <field name="name">mrp.production.view.form.inherit</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+        <field name="arch" type="xml">
+            
+            <field name="user_id" position="after">
+                <field name="analytic_distribution" widget="analytic_distribution"
+                    groups="analytic.group_analytic_accounting" string="Analytic Account"
+                    options="{'product_field': 'product_id', 'business_domain': 'mrp'}"/>
+            </field>
+        </field>
+    </record>
+
+
+    <record id="mrp_mrp_unbuild_form_view_inherit_analytic_base" model="ir.ui.view">
+        <field name="name">mrp.unbuild.view.form.inherit</field>
+        <field name="model">mrp.unbuild</field>
+        <field name="inherit_id" ref="mrp.mrp_unbuild_form_view_simplified"/>
+        <field name="arch" type="xml">
+            <field name="location_dest_id" position="after">
+                <field name="analytic_distribution" widget="analytic_distribution"
+                    groups="analytic.group_analytic_accounting" string="Analytic Account"
+                    options="{'product_field': 'product_id', 'business_domain': 'mrp'}"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="mrp_unbuild_form_view_inherit_analytic_base" model="ir.ui.view">
+        <field name="name">mrp.unbuild.view.form.inherit</field>
+        <field name="model">mrp.unbuild</field>
+        <field name="inherit_id" ref="mrp.mrp_unbuild_form_view"/>
+        <field name="arch" type="xml">
+            <field name="location_dest_id" position="after">
+                <field name="analytic_distribution" widget="analytic_distribution"
+                    groups="analytic.group_analytic_accounting" string="Analytic Account"
+                    options="{'product_field': 'product_id', 'business_domain': 'mrp'}"/>
+            </field>
+        </field>
+    </record>
+
+
+
+</odoo>

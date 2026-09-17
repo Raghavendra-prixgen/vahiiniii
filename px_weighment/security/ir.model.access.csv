@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_weighment_reason,weighment_reason,model_weighment_reason,base.group_user,1,1,1,1
+access_weighment_picking,weighment_picking,model_weighment_picking,base.group_user,1,1,1,1
+access_weighment_trolly,weighment_trolly,model_weighment_trolly,base.group_user,1,1,1,1
+access_weighment_product,weighment_product,model_weighment_product,base.group_user,1,1,1,1
+access_weighment_picking_type,weighment_picking_type,model_weighment_picking_type,base.group_user,1,1,1,0

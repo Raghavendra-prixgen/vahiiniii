@@ -1,0 +1,52 @@
+<odoo>
+	<data>
+		<record id="tree_view_inventory_balance_detailed_summmary" model="ir.ui.view">
+			<field name="name">inventory.balance.summmary.list.view</field>
+			<field name="model">inv.bal.sum.report.view</field>
+			<field name="arch" type="xml">
+				<list>
+					<field name="y_default_code" optional="show" />
+					<field name="y_product_id" />
+					<field name="y_lot_id"/>
+					<field name="y_categ_id" optional="show" />
+					<field name="y_uom_id" optional="show" />
+					<field name="y_company_id" optional="show" />
+					<field name="y_opening_stock" optional="show" />
+					<field name="y_opening_value" sum="Total Value" optional="show"/>
+					<field name="y_purchase_qty" decoration-success="1"  optional="show"/>
+					<field name="y_purchase_value" decoration-success="1"  optional="show"/>
+					<field name="y_purchase_return_qty" decoration-danger="1" optional="show"/>
+					<field name="y_purchase_return_value" decoration-danger="1" optional="show"/>
+					<field name="y_sale_qty" decoration-danger="1" optional="show"/>
+					<field name="y_sale_value" decoration-danger="1" optional="show"/>
+					<field name="y_sale_return_qty" decoration-success="1"  optional="show"/>
+					<field name="y_sale_return_value" decoration-success="1"  optional="show"/>
+					<field name="y_production_qty" decoration-success="1"  optional="show"/>
+					<field name="y_production_value" decoration-success="1"  optional="show"/>
+					<field name="y_consumption_qty" decoration-danger="1" optional="show"/>
+					<field name="y_consumption_value" decoration-danger="1" optional="show"/>
+					<field name="y_positive_adjustment_qty" decoration-success="1"  optional="show"/>
+					<field name="y_positive_adjustment_value" decoration-success="1"  optional="show"/>
+					<field name="y_negative_adjustment_qty" decoration-danger="1" optional="show"/>
+					<field name="y_negative_adjustment_value" decoration-danger="1" optional="show"/>
+					<field name="y_closing_stock" optional="show" />
+					<field name="y_closing_value" sum="Total Value" optional="show" />
+				</list>
+			</field>
+		</record>
+
+
+		<record id="inv_bal_summary_wiz_view_form_inherited" model="ir.ui.view">
+			<field name="name">inv.bal.sum.wiz.view.form</field>
+			<field name="model">inv.bal.sum.wiz</field>
+			<field name="inherit_id" ref="inventory_summary.inv_bal_summary_wiz_view_form" />
+			<field name="arch" type="xml">
+				<xpath expr="//button[@name='action_open_report']" position="after">
+					<button name="action_open_detailed_report" type="object"
+						class="oe_highlight" string="View Detailed Summary" />
+				</xpath>
+			</field>
+		</record>
+
+	</data>
+</odoo>

@@ -1,0 +1,143 @@
+<odoo>
+    <data>
+
+        <record id="account_payment_term_form_inherited_view" model="ir.ui.view">
+            <field name="name">account.payment.term.form.inherited.view</field>
+            <field name="model">account.payment.term</field>
+            <field name="inherit_id" ref="account.view_payment_term_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='line_ids']/list/field[@name='value']" position="after" >
+                    <field name="y_advance_request_required" widget="boolean_toggle"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="purchase_wizard_form_view" model="ir.ui.view">
+            <field name="name">purchase.wizard.form.view</field>
+            <field name="model">advance.payment.wizard</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form create="false" edit="false">
+                    <group>
+                        <group>
+                            <field name="y_purchase_id" invisible="1"/>
+                            <field name="y_is_payment_term_value" invisible="1"/>
+                            <field  name="y_amount_or_percentage" string="Amount Or Percentage" widget="radio" options="{'horizontal': True}"/>
+                            <field name="y_percentage" readonly="y_is_payment_term_value ==True"  invisible="y_amount_or_percentage != 'percentage'" required="y_amount_or_percentage == 'percentage'" />
+                            <field name="y_payment_amount" force_save="1" readonly="y_amount_or_percentage =='percentage'"  string="Payment Amount" required="1"/>
+                        </group>
+                        <group>
+                            <field name="y_payment_term_id" readonly="1"/>
+                            <field name="y_currency_id" readonly="1" options="{ 'no_create_edit':True, 'no_open': True}"/>
+                            <field name="y_company_id"/>
+                            
+
+                            <field name="y_invoice_date_due" />
+                            <field name="y_remark" string="Remark"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button class="oe_highlight" type="object" name="create_advance_payment" string="Down Payment Request"/>
+                        <button string="Cancel" class="oe_link btn" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="purchase_form_view_action_id" model="ir.actions.act_window">
+            <field name="name">Purchase Advance Payment</field>
+            <field name="res_model">advance.payment.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="context">{'purchase_id':purchase_id}</field>
+            <field name="view_id" ref="purchase_wizard_form_view"/>
+        </record>
+
+        <record id="purchase_form_inherited_view" model="ir.ui.view">
+            <field name="name">purchase.form.inherited.view</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                    <field name="y_is_payment_completed" invisible="1"/>
+                </field>
+                <xpath expr="//button[@name='action_view_invoice']" position="before" >
+                    <button type="object" string="Down Payment Request" name="purchase_account_payment_view" class="oe_stat_button" icon="fa-pencil-square-o" invisible="y_advace_request_count == 0">
+                        <field name="y_advace_request_count" widget="statinfo" string="Down Payment Request" invisible="y_advace_request_count == 0"/>
+                        
+                    </button>
+                </xpath>
+
+            </field>
+        </record>
+
+
+        <record id="account_payment_form_inherited_view" model="ir.ui.view">
+            <field name="name">account.payment.form.inherited.view</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_form"/>
+            <field name="arch" type="xml">
+                <field name="partner_bank_id" position="after">
+                    <field name="y_purchase_account_payment_id"  
+                    domain="[('y_is_advance_payment_done', '!=', True),('y_is_approved', '!=',False)]" 
+                    options="{'no_create': True, 'no_create_edit':True}"
+                    invisible="partner_type != 'supplier' or
+                    payment_type != 'outbound'"
+                    readonly="state != 'draft'"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="view_account_payment_tree_purchase_account_payment" model="ir.ui.view">
+            <field name="name">account.payment.list.inherit.purchase.account.payment</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_tree" />
+            <field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                    <field name="y_purchase_id"/>
+                    <field name="y_purchase_account_payment_id"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="view_account_payment_search_purchase_account_payment" model="ir.ui.view">
+            <field name="name">account.payment.search.purchase.account.payment</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_search" />
+            <field name="arch" type="xml">
+                <field name="journal_id" position="after">
+                    <field name="y_purchase_id"/>
+                </field>
+            </field>
+        </record>
+        
+
+        <record id="action_purchase_batch_bills_new" model="ir.actions.server">
+            <field name="name">Down Payment Request</field>
+            <field name="model_id" ref="purchase.model_purchase_order"/>
+            <field name="binding_model_id" ref="purchase.model_purchase_order"/>
+            <field name="groups_id" eval="[(4, ref('purchase_down_payment.y_group_advance_request_id'))]"/>
+            <field name="state">code</field>
+            <field name="code">
+                if record:
+                    action = model.create_down_payment(record)
+            </field>
+        </record>
+
+        <record id="account_payment_temp_id" model="ir.ui.view">
+            <field name="name">Payments</field>
+            <field name="model">account.payment</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="date" string="Date"/>
+                    <field name="name" string="Name"/>
+                    <field name="payment_method_id"  string="Payment Method"/>
+                    <field name="partner_id" string="Vendor"/>
+                    <field name="company_id" string="Company"/>
+                    <field name="amount" string="Amount" widget="monetary"/>
+                    <field name="state" string="Status" widget="selection"/>   
+                </list>
+            </field>
+        </record>
+    </data>
+</odoo>

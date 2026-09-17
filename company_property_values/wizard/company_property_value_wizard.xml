@@ -1,0 +1,38 @@
+<odoo>
+  
+    <record id="company_property_values_report_wizard_form_view" model="ir.ui.view">
+        <field name="name">company.property.values.report.wizard.form</field>
+        <field name="model">company.property.values.report.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group>
+                        <field name="is_company_settings"/>
+                        <field name="model_ids" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}" required="1" widget="many2many_tags"/>
+                    </group>
+                    <group>
+                        <field name="is_database_settings"/>
+                        <field name="property_field_ids" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}" required="is_company_settings" invisible="not is_company_settings" widget="many2many_tags"/>
+                        <field name="field_ids" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}" required="is_database_settings" invisible="not is_database_settings" widget="many2many_tags"/>
+                    </group>
+                </group>
+                <footer>
+                    <button string="View Report" type="object" name="retrieve_company_property_tree_report" class="oe_highlight"/>
+                    <button string="Download Xlsx Report" type="object" name="retrieve_company_property_xlsx_report" class="oe_highlight"/>
+                    <button string="Cancel" special="cancel" type="object" class="btn btn-secondary oe_inline"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_company_property_values_report_wizard" model="ir.actions.act_window">
+       <field name="name">Company Property Values</field>
+       <field name="res_model">company.property.values.report.wizard</field>
+       <field name="view_mode">form</field>
+       <field name="target">new</field>
+       <field name="view_id" ref="company_property_values_report_wizard_form_view"/>
+    </record> 
+
+    <menuitem id="company_property_values_report_wizard_menu" name="Company Property Values" parent="base.menu_users" action="action_company_property_values_report_wizard" sequence="100"/>
+
+</odoo>

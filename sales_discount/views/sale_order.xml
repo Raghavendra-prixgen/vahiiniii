@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+
+		<record id="sale_doc_type_dicount_calculation_view_form" model="ir.ui.view">
+	      	<field name="name">sale.doc.type.dicount.calculation.view.form</field>
+	      	<field name="model">sale.doc.type</field>
+	      	<field name="inherit_id" ref="sale_base_18.sale_doc_type_view_form"/>
+	      	<field name="arch" type="xml">
+	    		<xpath expr="//field[@name='y_description']" position="after">
+				    <field name="y_is_dicount_calculation" widget="boolean_toggle"/>
+				</xpath>    	
+	      	</field>
+	    </record>
+
+		<record id="group_altr_uom_so_line" model="res.groups">
+        	<field name="name">Altenative Uom on lines</field>
+        	<field name="category_id" ref="base.module_category_hidden"/>
+    	</record>
+		
+		<record id="discount_list_inherit_view" model="ir.ui.view">
+			<field name="name">sale.order.form</field>
+			<field name="model">sale.order</field>
+			<field name="inherit_id" ref="sale.view_order_form"/>
+			<field name="arch" type="xml">
+				<xpath expr="//field[@name='name']" position="after">
+					<field name="y_is_cancel_invisible" invisible="1"/>
+				</xpath>
+				
+				<xpath expr="//button[@name='action_cancel']" position="attributes">
+					<attribute name="invisible">"y_is_cancel_invisible == True"</attribute>
+				</xpath>
+				<xpath expr="//button[@name='action_cancel']" position="before">
+					<button name="merge_product_discount" type="object" string="Calculate Discount" style="text-transform: capitalize;" invisible="y_cal_done"/>
+				</xpath>
+
+				<xpath expr="//notebook" position="inside">
+					<page string="Sale Discount" name="discount_line">
+						<field name="y_discount_line_ids"   widget="one2many" force_save="1" nolabel="1">
+							<list string="Discount Lines" editable="bottom"  create="0" delete="0">
+								<field name="y_currency_id" column_invisible="True"/>
+								<field name="y_state" column_invisible="1" force_save="1"/>
+								<field name="y_category" options="{'no_create': True, 'no_create_edit':True}"  readonly='1' force_save="1"/>
+								<field name="y_amount" sum="Total amount" readonly='1' force_save="1"/>
+								<field name="y_trade_discount_id" column_invisible="True"/>
+								<field name="y_trade_discounts" readonly='1' force_save="1" />
+								<field name="y_trade_amount" sum="Total Trade Discount amount"/>
+								<field name="y_quantity_discount_id" column_invisible="True"/>
+								<field name="y_quantity_discount" readonly='1' force_save="1"/>
+								<field name="y_quantity_amount" sum="Total Quantity Discount amount"/>
+								<field name="y_special_discount_id" column_invisible="True" />
+								<field name="y_special_discount" readonly="y_state != 'draft'"/>
+								<field name="y_special_amount" sum="Total Special Discount amount" readonly="y_state != 'draft'"/>
+								<field name="y_total_discount_amount" sum="total_discount_amount" readonly='1'/>								
+							</list>
+						</field>
+					</page>
+				</xpath>
+
+				<xpath expr="//field[@name='order_line']/list/field[@name='product_template_id']" position="after">
+					<field name="y_item_group" readonly="1" optional='show'/>				
+				</xpath>
+
+				<field name="payment_term_id" position="after">
+					<div string="Calculate Discount" >
+	            		<field name='y_discount_note' style="color:Red;" readonly='1'/>
+	        		</div>
+	            </field>
+
+				<xpath expr="//field[@name='order_line']/list/field[@name='price_unit']" position="before">
+					<field name="y_discount_amount" sum="discount_amount" optional='show' readonly='1'/>				
+				</xpath>
+				<xpath expr="//group[@name='note_group']/group[@name='sale_total']" position="before">
+						<table class="float-end">
+							<tbody>
+								<tr>
+									<td class="o_td_label">
+										<p>Gross Amount</p>
+									</td>
+									<td class="o_list_monetary">
+										<span style="white-space: nowrap;" name="Gross Amount"><field name="y_gross_amount"/></span>
+									</td>
+								</tr>
+								<tr>
+									<td class="o_td_label">
+										<p>Discount Amount</p>
+									</td>
+									<td class="o_list_monetary">
+										<span style="white-space: nowrap; " name="Gross Amount"><field name="y_total_discount_amt"/></span>
+									</td>
+								</tr>
+								<tr>
+
+									<td class="o_td_label">
+										<p>Round off Amount</p>
+									</td>
+									<td class="o_list_monetary">
+										<span style="white-space: nowrap;" name="Gross Amount"><field name="y_round_off_value"/></span>
+									</td>
+								</tr>
+
+							</tbody>
+						</table>
+
+				</xpath>
+	            <xpath expr="//field[@name='order_line']/list/field[@name='product_uom']" position="after">
+					<!-- <field name="y_alu_qty" column_invisible="True"/>	 -->
+					<!-- <field name="y_alt_uom" column_invisible="True"/>			 -->
+					<field name="y_trade_amount" column_invisible="True"/>			
+					<field name="y_quantity_discount" column_invisible="True"/>			
+					<field name="y_special_amount" column_invisible="True"/>			
+				</xpath>
+				<!-- Anke -->
+				
+				<!--<xpath expr="//field[@name='amount_untaxed']" position="replace">
+					<field name="amount_untaxed"  widget="monetary" options="{'currency_field': 'currency_id'}" string="Gross Sales"/> 
+				</xpath>
+	 -->
+				<!-- <xpath expr="//field[@name='amount_total']" position="replace">         
+					<field name="amount_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}" 
+						string="Net Sales"/>
+
+				</xpath>
+	            
+	             <xpath expr="//field[@name='amount_tax']" position="after">
+					<field name="round_off_value" />
+				</xpath> -->
+			</field>
+		</record>
+
+</data>
+</odoo>

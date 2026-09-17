@@ -1,0 +1,28 @@
+<odoo>
+
+  <record id="company_property_values_report_view_tree_view" model="ir.ui.view">
+    <field name="name">company.property.values.report.list.view</field>
+    <field name="model">company.property.values.report</field>
+    <field name="arch" type="xml">
+      <list create="0" edit="0">
+        <field name="field_id"/>
+        <field name="record"/>
+        <field name="rec_id"/>
+        <field name="company_id"/>
+        <field name="value"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="company_property_values_report_view_filter" model="ir.ui.view">
+    <field name="name">company.property.values.report.search.view</field>
+    <field name="model">company.property.values.report</field>
+    <field name="arch" type="xml">
+        <search string="Search">
+            <field name="field_id"/>
+            <field name="company_id"/>
+       </search>
+    </field>
+  </record>
+
+</odoo>

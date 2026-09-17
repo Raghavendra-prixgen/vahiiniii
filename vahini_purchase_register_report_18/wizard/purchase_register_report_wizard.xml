@@ -1,0 +1,42 @@
+<odoo>
+    
+    <record id="cust_purchase_register_report_wizard_view_form" model="ir.ui.view">
+        <field name="name">cust.purchase.register.report.wizard.form</field>
+        <field name="model">cust.purchase.register.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Project Wise Form">
+                <group>
+                    <group>
+                        <field name="y_start_date" required="1"/>
+                        <field name="y_company_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}" required="1"/>
+                    </group>
+                    <group >
+                        <field name="y_end_date" required="1"/>
+                        <field name="y_move_type"/>
+                    </group>                
+                </group>
+                <footer>
+                    <button string="Generate Report" type="object" name="get_cust_purchase_register_report" class="oe_highlight"/>
+                    <button string="Cancel" special="cancel" type="object" class="btn btn-secondary oe_inline"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_cust_purchase_register_report_wizard" model="ir.actions.act_window">
+        <field name="name">Purchase Register Report</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">cust.purchase.register.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="cust_purchase_register_report_wizard_view_form"/>
+        <field name="target">new</field>
+    </record>
+    
+    
+    <menuitem id="menu_cust_purchase_register_report_wizard"
+            name="Purchase Register Report"
+            action="action_cust_purchase_register_report_wizard"
+            parent="purchase.purchase_report_main"
+            sequence="2"/>
+    
+</odoo>

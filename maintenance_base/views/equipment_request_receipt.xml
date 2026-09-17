@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="maintenance_request_view_inherited_form_receipt" model="ir.ui.view">
+        <field name="name">maintenance.request.view.inherited.form.receipt</field>
+        <field name="model">maintenance.request</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_request_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/sheet/div[1]" position="before">
+                <div class="oe_button_box" name="button_box">
+                    <button type="object" class="oe_stat_button" name="delivery_equipment"
+                            icon="fa-truck" string="Delivery"/>
+                    <button type="object" class="oe_stat_button" name="receipt_equipment"
+                            icon="fa-truck" string="Receipt"/>
+                </div>
+            </xpath>
+
+        </field>
+    </record>
+
+
+    <record id="equipment_request_receipt_view_inherited_tree" model="ir.ui.view">
+        <field name="name">equipment.request.receipt.view.inherited.tree</field>
+        <field name="model">equipment.request.receipt</field>
+        <field name="arch" type="xml">
+            <list string="Equipment List" create="1">
+                <field name="name"/>
+                <field name="company_id"/>
+                <field name="scheduled_date"/>
+                <field name="origin"/>
+                <field name="state" widget="badge" decoration-info="state in ('assigned','confirmed')"
+                       decoration-muted="state == 'draft'" decoration-success="state == 'done'"/>
+            </list>
+        </field>
+    </record>
+    <record id="equipment_request_receipt_view_inherited_form" model="ir.ui.view">
+        <field name="name">equipment.request.receipt.view.form</field>
+        <field name="model">equipment.request.receipt</field>
+        <field name="arch" type="xml">
+            <form string="Equipment">
+                <header>
+                    <button string="Validate" name="validate_receipt_to_equipment" type="object"
+                            invisible="state == 'done'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,assigned,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button type="object" class="oe_stat_button" name="delivery_equipment"
+                                icon="fa-truck" string="Delivery"/>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name" string="Request"/>
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="received_from_id" readonly="1"/>
+                            <field name="origin" readonly="1"/>
+                            <field name="company_id" required="1"
+                                   options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"
+                                   readonly="state == 'done'"/>
+                        </group>
+                        <group>
+                            <field name="scheduled_date" readonly="state == 'done'" required="1"/>
+                            <field name="deadline" readonly="state == 'done'"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Request Lines">
+                            <field name="equipment_request_receipt_line_ids"
+                                   widget="product_label_section_and_note_field_o2m" readonly="state == 'done'">
+                                <list editable="bottom">
+                                    <control>
+
+                                        <create name="add_product_control" string="Add a line"/>
+                                        <create name="add_section_control" string="Add a section"
+                                                context="{'default_display_type': 'line_section'}"/>
+                                        <create name="add_note_control" string="Add a note"
+                                                context="{'default_display_type': 'line_note'}"/>
+
+                                    </control>
+                                    <field name="sequence" widget="handle"/>
+
+                                    <field name="display_type" column_invisible="True"/>
+
+                                    <field name="maintenance_request_id" required="not display_type"
+                                           options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"
+                                           readonly="0"/>
+                                    <field name="name"/>
+                                    
+                                    <field name="equipment_id" required="not display_type"
+                                           options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"
+                                           readonly="0"
+                                           string="Parent Equipment"/>
+                                    <field name="y_allowed_child_equipment_ids" column_invisible="1"/>
+                                    <field name="y_child_equipment_id"
+                                           options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"
+                                           readonly="1"/>
+
+
+                                    <field name="quantity" required="not display_type" readonly="1"/>
+                                    <field name="done" required="not display_type"/>
+
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                    <div>
+                        <field name="y_remarks" placeholder="Remarks"/>
+                    </div>
+                </sheet>
+                <chatter/>
+
+
+            </form>
+        </field>
+    </record>
+
+    <record id="equipment_request_receipt_action" model="ir.actions.act_window">
+        <field name="name">Maintenance Request Receipt</field>
+        <field name="res_model">equipment.request.receipt</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="equipment_request_receipt_menu" name="Maintenance Request Receipt"
+              action="equipment_request_receipt_action"
+              parent="maintenance.menu_equipment_form" sequence="4"/>
+
+</odoo>

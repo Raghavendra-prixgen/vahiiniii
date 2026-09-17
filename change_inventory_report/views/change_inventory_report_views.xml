@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_change_inventory_report_list" model="ir.ui.view">
+        <field name="name">change.inventory.report.list</field>
+        <field name="model">change.inventory.report</field>
+        <field name="arch" type="xml">
+            <list string="Change Inventory Report"
+                  create="false"
+                  edit="false"
+                  delete="false">
+
+                <field name="y_date" string="Date"/>
+                <field name="y_reference" string="Reference"/>
+                <field name="y_currency_id" column_invisible="1"/>
+
+                <field name="y_debit"
+                       string="Debit"
+                       sum="Total Debit"
+                       widget="monetary"
+                       options="{'currency_field': 'y_currency_id'}"/>
+
+                <field name="y_credit"
+                       string="Credit"
+                       sum="Total Credit"
+                       widget="monetary"
+                       options="{'currency_field': 'y_currency_id'}"/>
+
+                <field name="y_difference"
+                       string="Difference"
+                       sum="Total Difference"
+                       widget="monetary"
+                       options="{'currency_field': 'y_currency_id'}"/>
+
+                <field name="y_reconcile_status"/>
+                <field name="y_company" string="Company" optional="show"/>
+                <field name="y_operation_type" optional="show"  column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+<record id="view_change_inventory_report_search" model="ir.ui.view">
+    <field name="name">change.inventory.report.search</field>
+    <field name="model">change.inventory.report</field>
+    <field name="arch" type="xml">
+        <search string="Change Inventory Report">
+
+            <field name="y_reference"/>
+
+            <field name="y_company"/>
+
+<!--            <filter name="reconciled"-->
+<!--                    string="Reconciled"-->
+<!--                    domain="[('y_reconcile_status','=','reconciled')]"/>-->
+
+<!--            <filter name="partially_reconciled"-->
+<!--                    string="Partially Reconciled"-->
+<!--                    domain="[('y_reconcile_status','=','partially_reconciled')]"/>-->
+
+<!--            <filter name="unreconciled"-->
+<!--                    string="Unreconciled"-->
+<!--                    domain="[('y_reconcile_status','=','unreconciled')]"/>-->
+
+
+        </search>
+    </field>
+</record>
+    <record id="action_change_inventory_report_list" model="ir.actions.act_window">
+        <field name="name">Change In Inventory Report</field>
+        <field name="res_model">change.inventory.report</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="view_change_inventory_report_list"/>
+            <field name="search_view_id" ref="view_change_inventory_report_search"/>
+        <field name="target">current</field>
+    </record>
+</odoo>

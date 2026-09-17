@@ -1,0 +1,11 @@
+id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
+access_purchase_transaction_wizard,purchase.transaction.wizard,model_purchase_transaction_wizard,,1,1,1,1
+access_cha_charges,cha.charges,model_cha_charges,purchase.group_purchase_user,1,1,1,0
+access_shipment_tracking,shipment.tracking,model_shipment_tracking,purchase.group_purchase_user,1,1,1,0
+access_master_shipment,master.shipment,model_master_shipment,,1,1,1,0
+access_purchase_shipment,purchase_shipment,model_purchase_shipment,,1,1,1,1
+access_shipment_purchase_data,shipment.purchase.data,model_shipment_purchase_data,,1,1,1,1
+
+
+
+access_sub_activities,sub_activities,model_sub_activities,,1,1,1,1

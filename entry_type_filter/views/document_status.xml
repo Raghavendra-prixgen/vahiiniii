@@ -1,0 +1,30 @@
+<odoo>
+  <data>
+
+    <record id="product_category_form_inherit_is_bought_out" model="ir.ui.view">
+        <field name="name">product.category.form.is.bought.out.new</field>
+        <field name="model">product.category</field>
+        <field name="inherit_id" ref="product.product_category_form_view"/>
+        <field name="arch" type="xml">
+            <field name="parent_id" position="after">
+                <field name="y_is_bought_out" widget="boolean_toggle"/>
+            </field>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_move_line_tree_entry_type_filters">
+        <field name="name">account.move.line.entry.type.filters.tree</field>
+        <field name="model">account.move.line</field>
+        <field name="inherit_id" ref="account.view_move_line_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list[@name='move_line_tree']/field[@name='partner_id']" position="after">
+                <field name="y_valuation_reference" optional="hide"/>
+                <field name="y_entry_type" optional="hide"/>
+                <field name="y_type_of_transaction" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+
+  </data>
+</odoo>

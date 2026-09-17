@@ -1,0 +1,111 @@
+<odoo>
+  <data>
+    <record id="purchase.purchase_rfq" model="ir.actions.act_window">
+      <field name="domain">[('state','in',('sent', 'draft','cancel'))]</field>
+    </record>
+
+    <record id="purchase.purchase_form_action" model="ir.actions.act_window">
+      <field name="domain">[('state','in',('purchase', 'done','cancel'))]</field>
+    </record>
+    
+    <record id="view_purchase_order_doc_type" model="ir.ui.view">
+      <field name="name">view_purchase.order.form.doc.type</field>
+      <field name="model">res.partner</field>
+      <field name="inherit_id" ref="purchase.view_partner_property_form"/>
+      <field name="arch" type="xml">
+        <field name="property_purchase_currency_id" position="after">
+          <field name="parent_company_id" invisible="1"/>
+          <field name="y_purchase_doc_type_id" options="{'no_create': True,'no_open': True,'no_create_edit':True}"/>
+        </field>
+      </field>                   
+    </record>
+
+    
+    <record id="view_order_form" model="ir.ui.view">
+      <field name="name">purchase.order.inherit.view.form</field>
+      <field name="model">purchase.order</field>
+      <field name="inherit_id" ref="purchase.purchase_order_form"/>
+      <field name="arch" type="xml">
+        <field name="user_id" position="before">
+          <field name="y_quotation_number" readonly="True"/>
+          <field name="y_purchase_request_number" force_save="1" readonly="True"/>
+          <field name="parent_company_id" invisible="1"/>
+        </field>
+        <field name="date_order" position="before">
+          <field name="y_doc_type_id" options="{'no_create': True, 'no_open': True}"  required="state == 'purchase'" readonly="state == 'purchase'" domain="['|','|','|',('y_company_id', '=', False),('y_company_id', 'child_of', company_id),('y_company_id', '=', company_id),('y_company_id', '=', parent_company_id)]"/>
+        </field>
+      </field>
+    </record>
+
+    <record id="purchase_doc_teype_view_search_delete_button" model="ir.ui.view">
+      <field name="name">purchase.doc.type.search.view</field>
+      <field name="model">purchase.doc.type</field>
+      <field name="arch" type="xml">
+        <search>
+            <field name="y_name"/>
+            <filter name="active" string="Active" domain="[('active', '!=',False)]"/>
+            <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+        </search>          
+      </field>
+    </record>
+
+    <record id="purchase_doc_type_view_tree" model="ir.ui.view">
+      <field name="name">purchase.doc.type.view.list</field>
+      <field name="model">purchase.doc.type</field>
+      <field name="arch" type="xml">
+        <list>
+          <field name="y_name" required="True" />
+          <field name="y_description" />
+          <field name="y_sequence_id" required="True" options="{'no_create': 1, 'no_edit': 1, 'no_open': 1}"/>
+          <field name="y_company_id" options="{'no_create': 1, 'no_edit': 1, 'no_open': 1}" groups="base.group_multi_company"/>
+        </list>
+      </field>
+    </record>
+
+    <record id="purchase_doc_type_view_form" model="ir.ui.view">
+      <field name="name">purchase.doc.type.view.form</field>
+      <field name="model">purchase.doc.type</field>
+      <field name="arch" type="xml">
+        <form string="">
+          <sheet>
+            <group>
+              <group>
+              <field name="y_name" required="True"/>
+              <field name="y_description" string="Description"/>
+            </group>
+            <group>
+              <field name="y_sequence_id" required="True" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+              <field name="y_company_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}" groups="base.group_multi_company"/>
+            </group>
+            </group>
+          </sheet>
+          <chatter/>
+        </form>
+      </field>
+    </record>
+
+    <record model="ir.rule" id="document_record_restricted_company_rule">
+        <field name="name">Document Restricted Record: multi-company</field>
+        <field name="model_id" ref="model_purchase_doc_type"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">
+            ['|', ('y_company_id', '=', False), ('y_company_id', 'parent_of', company_ids)]
+        </field>
+    </record>
+
+    <record id="purchase_doc_type_action" model="ir.actions.act_window">
+      <field name="name">Document Type PO</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">purchase.doc.type</field>
+      <field name="view_mode">list,form</field>
+    </record>
+
+   
+    <menuitem id="menu_product_in_config_purchase_others" name="Others"
+            parent="purchase.menu_purchase_config" sequence="45"/>
+            
+    <menuitem id="purchase_doc_type_menu_act" name="Document Type PO" 
+    parent="purchase_base_18.menu_product_in_config_purchase_others" action="purchase_doc_type_action" sequence="111"/>
+    
+  </data>
+</odoo>

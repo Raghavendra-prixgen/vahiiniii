@@ -1,0 +1,1437 @@
+<odoo>
+    <data>
+        <record id="credit_debit_report_page_format" model="report.paperformat">
+            <field name="name">Debit Credit Invoice Paperformat</field>
+            <field name="default" eval="True" />
+            <field name="format">A4</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">50</field>
+            <field name="margin_bottom">35</field>
+            <field name="margin_left">5</field>
+            <field name="margin_right">5</field>
+            <field name="header_line" eval="False" />
+            <field name="header_spacing">40</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <record id="account_creditdebitnote_report" model="ir.actions.report">
+            <field name="name">Credit Note / Debit Note </field>
+            <field name="model">account.move</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">credit_debit_report.account_creditdebitnote_template</field>
+            <field name="report_file">credit_debit_report.account_creditdebitnote_template</field>
+            <field name="print_report_name">(object.move_type == 'out_refund')and'CreditNote-%s'%(object.name) or (object.move_type == 'in_refund')and'DebitNote-%s'%(object.name)</field>
+            <field name="binding_model_id" ref="account.model_account_move" />
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="credit_debit_report.credit_debit_report_page_format" />
+            <field name="domain" eval="[('move_type', 'in', ('out_refund', 'in_refund'))]"/>
+        </record>
+
+        <template id="account_creditdebitnote_template">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <t t-call="credit_debit_report.external_layout_standard_vahini_creditdebit">
+                        <table class="table-borderless table-sm m-0 p-0 " style="width:100%;font-size:12px;">
+                            <thead>
+                                <tr class="">
+                                    <td class="p-0" colspan="100%">
+                                        <div class="col-12 p-1 text-center fs-6" style="background:#fffdaf;border:1px solid black;">
+                                            <t t-if="doc.move_type == 'out_refund'">
+                                                <strong>CREDIT NOTE</strong>
+                                            </t>
+                                            <t t-if="doc.move_type == 'in_refund'">
+                                                <strong>DEBIT NOTE</strong>
+                                            </t>
+                                        </div>
+
+                                        <div class="col-12 p-1" style="border:1px solid black;border-top:0;">
+                                            <div class="col-12">
+                                                <span class="fw-bold">IRN :&#160;</span>
+                                                <span class="fw-bold" t-if="doc.Irn" t-esc="doc.Irn" />
+                                            </div>
+                                            <div class="col-12 d-flex">
+                                                <div class="col-6">
+                                                    <strong>Acknowledgement No :&#160;&#160; <span t-if="doc.AckNo" t-esc="doc.AckNo" />
+                                                    </strong>
+                                                </div>
+                                                <div class="col-6" style="text-align:left;">
+                                                    <strong>Acknowledgement Date :&#160;&#160; <span t-if="doc.AckDt" t-esc="doc.AckDt.strftime('%d-%m-%Y')" />
+                                                    </strong>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12 d-flex" style="border:1px solid black;border-top:0;">
+                                            <div class="col-6 p-1" style="border-right:1px solid black;">
+                                                <div class="d-flex">
+                                                    <div style="width:27%;">
+                                                        <span class="fw-bold">Recipient (Billed To)</span>
+                                                    </div>
+                                                    <div class="px-1" style="width:3%">
+                                                        <span>:</span>
+                                                    </div>
+                                                    <div style="width:70%;">
+                                                        <span t-field="doc.partner_id.name"/>
+                                                        <br/>
+                                                        <span t-field="doc.partner_id.contact_address_complete" />
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex">
+                                                    <div style="width:27%;">
+                                                        <t t-if="doc.move_type == 'in_refund'">
+                                                            <strong>Debit Note No</strong>
+                                                        </t>
+
+                                                        <t t-if="doc.move_type == 'out_refund'">
+                                                            <strong>Credit Note No</strong>
+                                                        </t>
+                                                    </div>
+                                                    <div class="px-1" style="width:3%">
+                                                        <span>:</span>
+                                                    </div>
+                                                    <div style="width:70%;">
+                                                        <span t-if="doc.name" t-field="doc.name" />
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex">
+                                                    <div style="width:27%;">
+                                                        <span class="fw-bold">Old Invoice No</span>
+                                                    </div>
+                                                    <div class="px-1" style="width:3%">
+                                                        <span>:</span>
+                                                    </div>
+                                                    <div style="width:70%;">
+                                                        <span t-if="doc.ref" t-field="doc.ref" />
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex">
+                                                    <div style="width:27%;">
+                                                        <span class="fw-bold">GSTIN</span>
+                                                    </div>
+                                                    <div class="px-1" style="width:3%">
+                                                        <span>:</span>
+                                                    </div>
+                                                    <div style="width:70%;">
+                                                        <span t-if="doc.partner_id.vat" t-field="doc.partner_id.vat" />
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex">
+                                                    <div style="width:27%;">
+                                                        <span class="fw-bold">Email</span>
+                                                    </div>
+                                                    <div class="px-1" style="width:3%">
+                                                        <span>:</span>
+                                                    </div>
+                                                    <div style="width:70%;">
+                                                        <span t-if="doc.partner_id.email" t-field="doc.partner_id.email" />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-6 p-1" style="">
+                                                <div class="d-flex">
+                                                    <div style="width:30%;">
+                                                        <span class="fw-bold">Consignee(Shipped To)</span>
+                                                    </div>
+                                                    <div class="px-1" style="width:3%">
+                                                        <span>:</span>
+                                                    </div>
+                                                    <div style="width:67%;">
+                                                        <span class="doc.partner_id.name"></span>
+                                                        <br/>
+                                                        <span t-field="doc.partner_shipping_id.contact_address_complete" />
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex">
+                                                    <div style="width:30%;">
+                                                        <t t-if="doc.move_type == 'in_refund'">
+                                                            <strong>Debit Note Date</strong>
+                                                        </t>
+
+                                                        <t t-if="doc.move_type == 'out_refund'">
+                                                            <strong>Credit Note Date</strong>
+                                                        </t>
+                                                    </div>
+                                                    <div class="px-1" style="width:3%">
+                                                        <span>:</span>
+                                                    </div>
+                                                    <div style="width:67%;">
+                                                        <span t-field="doc.invoice_date" />
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex">
+                                                    <div style="width:30%;">
+                                                        <span class="fw-bold">Old Invoice Date</span>
+                                                    </div>
+                                                    <div class="px-1" style="width:3%">
+                                                        <span>:</span>
+                                                    </div>
+                                                    <div style="width:67%;">
+                                                        <t t-if="doc.reversed_entry_id.invoice_date">
+                                                            <span t-esc="doc.reversed_entry_id.invoice_date.strftime('%d-%m-%Y')" />
+                                                        </t>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex">
+                                                    <div style="width:30%;">
+                                                        <span class="fw-bold">GSTIN</span>
+                                                    </div>
+                                                    <div class="px-1" style="width:3%">
+                                                        <span>:</span>
+                                                    </div>
+                                                    <div style="width:67%;">
+                                                        <span t-if="doc.partner_shipping_id.vat" t-field="doc.partner_shipping_id.vat" />
+                                                    </div>
+                                                </div>
+
+
+                                            </div>
+
+                                        </div>
+
+                                    </td>
+                                </tr>
+                                <tr style="">
+                                    <th class="text-center fw-bold" style="width:4%;border:1px solid black;">Sl No.</th>
+                                    <th class="text-center fw-bold" style="width:10%;border:1px solid black;">Product Code</th>
+                                    <th class="text-center fw-bold" style="width:12%;border:1px solid black;">Product Category</th>
+                                    <th class="text-center fw-bold" style="width:32%;border:1px solid black;">Description</th>
+                                    <th class="text-center fw-bold" style="width:8%;border:1px solid black;">HSN/SAC</th>
+                                    <th class="text-center fw-bold" style="width:6%;border:1px solid black;">Qty</th>
+                                    <th class="text-center fw-bold" style="width:6%;border:1px solid black;">UOM</th>
+                                    <th class="text-center fw-bold" style="width:9%;border:1px solid black;">MRP</th>
+                                    <th class="text-center fw-bold" style="width:13%;border:1px solid black;">Amount</th>
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+                                <t t-set="gross_amount" t-value="0"/>
+                                <t t-foreach="doc.invoice_line_ids" t-as="line">
+                                    <tr style="page-break-inside:avoid;">
+                                        <td class="p-0 px-1 text-center" style="border:1px solid black;">
+                                            <span t-esc="line_index + 1" />
+                                        </td>
+                                        <td class="p-0 px-1 text-center" style="border:1px solid black;">
+                                            <t t-if="line.product_id.default_code">
+                                                <span t-field="line.product_id.default_code" />
+                                            </t>
+                                        </td>
+                                        <td class="p-0 px-1 " style="border:1px solid black;">
+                                            <span t-field="line.y_category_id" />
+                                        </td>
+                                        <td class="p-0 px-1 " style="border:1px solid black;">
+                                            <span t-field="line.name" />
+                                        </td>
+                                        <td class="p-0 px-1 text-center" style="border:1px solid black;">
+                                            <t t-if="line.product_id.l10n_in_hsn_code">
+                                                <span t-field="line.product_id.l10n_in_hsn_code" />
+                                            </t>
+                                        </td>
+                                        <td class="p-0 px-1 text-center" style="border:1px solid black;">
+                                            <span t-field="line.quantity" t-options="{'widget': 'float', 'precision': 0}" />
+                                        </td>
+                                        <td class="p-0 px-1 text-center" style="border:1px solid black;">
+                                            <span t-field="line.product_uom_id" />
+                                        </td>
+                                        <td class="p-0 px-1 text-center" style="border:1px solid black;">
+                                            <span t-field="line.price_unit" />
+                                        </td>
+                                        <td class="p-0 px-1 text-end" style="border:1px solid black;">
+                                            <t t-set="amount_di" t-value="line.quantity * line.price_unit" />
+                                            <span t-if='amount_di' t-esc="'%.2f'%(amount_di)" />
+                                            <t t-set="gross_amount" t-value="gross_amount + amount_di"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                                <tr class="text-center" style="page-break-inside:avoid;">
+                                    <td colspan="8" class="text-end" style="border:1px solid black;">
+                                        <span >
+                                            <strong>Gross Total</strong>
+                                        </span>
+                                    </td>
+                                    <td class="text-end" style="border:1px solid black;">
+                                        <!-- <t t-set="inv_dis" t-value="sum(doc.y_invoice_dis_line_ids.mapped('y_amount'))" /> -->
+
+                                        <!-- <t t-set="gross_amount" t-value="mapped(line.quantity * line.price_unit)"/> -->
+                                        <t t-esc="'{0:,.2f}'.format(gross_amount)" />
+                                    </td>
+                                </tr>
+                                <!-- <t t-if="doc.currency_id.name != 'INR'">
+                                    <tr class="text-center" style="page-break-inside:avoid;">
+                                        <td class="text-end" style="border:1px solid black;">
+                                            <span>
+                                                <strong>Net Total</strong>
+                                            </span>
+                                        </td>
+                                        <td class="text-end" style="border:1px solid black;">
+                                            <span t-field="doc.amount_untaxed" />
+                                        </td>
+                                    </tr>
+                                </t>
+                                <t t-else="">
+
+                                </t> -->
+
+                                <table class="table table-borderless m-0 p-0" style="page-break-inside:avoid; width:100%;font-size:12px;">
+                                    <t>
+                                        <tr class="text-center" style="page-break-inside:avoid;">
+                                            <td colspan="100%" style="border:1px solid black;">
+                                                <strong>Packing and Total Qty Summary</strong>
+                                            </td>
+                                        </tr>
+                                        <tr class="text-center" style="page-break-inside:avoid;">
+                                            <td class="text-center p-0 px-1" style="width:20%;border:1px solid black;">
+                                                <strong>Total Length</strong>
+                                            </td>
+                                            <td class="text-center p-0 px-1" style="width:20%;border:1px solid black;">
+                                                <strong>Total Tanks</strong>
+                                            </td>
+                                            <td class="text-center p-0 px-1" style="width:20%;border:1px solid black;">
+                                                <strong>Total Bags/Box</strong>
+                                            </td>
+                                            <td class="text-center p-0 px-1" style="width:20%;border:1px solid black;">
+                                                <strong>Total Coil</strong>
+                                            </td>
+                                            <td class="text-center p-0 px-1" style="width:20%;border:1px solid black;">
+                                                <strong>Total Bundle</strong>
+                                            </td>
+                                        </tr>
+                                        <tr style="page-break-inside:avoid;">
+                                            <t t-set="bags_box" t-value="doc.get_packing_list_bags_box_data()" />
+                                            <t t-set="bundle" t-value="doc.get_packing_list_bundle_data()" />
+                                            <t t-set="water_tank" t-value="doc.get_packing_list_water_tank_data()" />
+                                            <t t-set="length" t-value="doc.get_packing_list_length_data()" />
+                                            <t t-set="roll" t-value="doc.get_packing_list_roll_data()" />
+
+                                            <td class="text-center" style="border:1px solid black;">
+                                                <t t-if="length">
+                                                    <t t-esc="length" />
+                                                </t>
+                                                <t t-else="">
+                                                    <t t-esc="0" />
+                                                </t>
+                                            </td>
+                                            <td class="text-center" style="border:1px solid black;">
+                                                <t t-if="water_tank">
+                                                    <t t-esc="water_tank" />
+                                                </t>
+                                                <t t-else="">
+                                                    <t t-esc="0" />
+                                                </t>
+                                            </td>
+                                            <td class="text-center" style="border:1px solid black;">
+                                                <t t-if="bags_box">
+                                                    <t t-esc="bags_box" />
+                                                </t>
+                                                <t t-else="">
+                                                    <t t-esc="0" />
+                                                </t>
+                                            </td>
+                                            <td class="text-center" style="border:1px solid black;">
+                                                <t t-if="roll">
+                                                    <t t-esc="roll" />
+                                                </t>
+                                                <t t-else="">
+                                                    <t t-esc="0" />
+                                                </t>
+                                            </td>
+                                            <td class="text-center" style="border:1px solid black;">
+                                                <t t-if="bundle">
+                                                    <t t-esc="bundle" />
+                                                </t>
+                                                <t t-else="">
+                                                    <t t-esc="0" />
+                                                </t>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </table>
+
+                                <!-- <table style="border:1px solid black;border-collapse: collapse; width: 100%;font-size:12px;" border="1">
+                                    <t t-set="line" t-value="doc.tax_calculation_gst()" />
+                                    <t t-if="line">
+                                        <t t-if="line and doc.currency_id.name == 'INR'">
+                                            <thead>
+                                                <tr style="page-break-inside:avoid;">
+                                                    <td colspan="100%" class="text-center" style="border:1px solid black;border-bottom:none;">
+                                                        <strong>Category,Discount and GST Summary</strong>
+                                                    </td>
+                                                </tr>
+                                                <tr style="border:1px solid black;page-break-inside:avoid;">
+                                                    <th rowspan="2" class="text-left" style="border-right:1px solid black;">
+                                                        <b>Category</b>
+                                                    </th>
+                                                    <th rowspan="2" class="text-center" style="border-right:1px solid black;">
+                                                        <b>Amount</b>
+                                                    </th>
+                                                    <th colspan="2" class="text-center" style="border-right:1px solid black;">
+                                                        <b>Trade Discount (%)</b>
+                                                    </th>
+                                                    <th colspan="2" class="text-center" style="border-right:1px solid black;">
+                                                        <b>Qty Discount (%)</b>
+                                                    </th>
+                                                    <th colspan="2" class="text-center" style="border-right:1px solid black;">
+                                                        <b>SPL Discount (%)</b>
+                                                    </th>
+                                                    <th rowspan="2" class="text-center" style="border-right:1px solid black;">
+                                                        <b>Taxable Amt</b>
+                                                    </th>
+                                                    <t t-if="doc.currency_id.name == 'INR'">
+                                                        <t t-set="liness" t-value="doc.tax_calculation_gst()" />
+                                                        <t t-foreach="liness['taxes']" t-as="tax" />
+                                                        <t t-if="tax['child_taxes'][0]['tax_group'] in ('SGST')">
+                                                            <th colspan="2" class="text-center" style="border-right:1px solid black;">
+                                                                <b>CGST</b>
+                                                            </th>
+                                                            <th colspan="2" class="text-center" style="border-right:1px solid black;">
+                                                                <b>SGST</b>
+                                                            </th>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <th colspan="2" class="text-center" style="border-right:1px solid black;">
+                                                                <b>IGST</b>
+                                                            </th>
+                                                        </t>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <th colspan="2" class="text-center" style="border-right:1px solid black;">
+                                                            <b>IGST</b>
+                                                        </th>
+                                                    </t>
+                                                    <th rowspan="2" class="text-center" style="border-right:1px solid black;">
+                                                        <b>Total Amount</b>
+                                                    </th>
+                                                </tr>
+                                                <tr style="page-break-inside:avoid;">
+                                                    <th class="text-center" style="border-right:1px solid black;">
+                                                        <b>Rate</b>
+                                                    </th>
+                                                    <th class="text-center" style="border-right:1px solid black;">
+                                                        <b>Amount</b>
+                                                    </th>
+                                                    <th class="text-center" style="border-right:1px solid black;">
+                                                        <b>Rate</b>
+                                                    </th>
+                                                    <th class="text-center" style="border-right:1px solid black;">
+                                                        <b>Amount</b>
+                                                    </th>
+                                                    <th class="text-center" style="border-right:1px solid black;">
+                                                        <b>Rate</b>
+                                                    </th>
+                                                    <th class="text-center" style="border-right:1px solid black;">
+                                                        <b>Amount</b>
+                                                    </th>
+                                                    <t t-if="doc.currency_id.name == 'INR'">
+                                                        <t t-set="liness" t-value="doc.tax_calculation_gst()" />
+                                                        <t t-foreach="liness['taxes']" t-as="tax" />
+
+                                                        <t t-if="tax['child_taxes'][0]['tax_group'] == 'SGST'">
+                                                            <th class="text-center" style="border-right:1px solid black;">
+                                                                <b>Rate</b>
+                                                            </th>
+                                                            <th class="text-center" style="border-right:1px solid black;">
+                                                                <b>Amount</b>
+                                                            </th>
+                                                            <th class="text-center" style="border-right:1px solid black;">
+                                                                <b>Rate</b>
+                                                            </th>
+                                                            <th class="text-center" style="border-right:1px solid black;">
+                                                                <b>Amount</b>
+                                                            </th>
+                                                        </t>
+
+                                                        <t t-else="">
+                                                            <th class="text-center" style="border-right:1px solid black;">
+                                                                <b>Rate</b>
+                                                            </th>
+                                                            <th class="text-center" style="border-right:1px solid black;">
+                                                                <b>Amount</b>
+                                                            </th>
+                                                        </t>
+
+
+                                                    </t>
+
+
+                                                    <t t-else="">
+                                                        <th class="text-center" style="border-right:1px solid black;">
+                                                            <b>Rate</b>
+                                                        </th>
+                                                        <th class="text-center" style="border-right:1px solid black;">
+                                                            <b>Amount</b>
+                                                        </th>
+                                                    </t>
+                                                </tr>
+                                            </thead>
+                                        </t>
+                                    </t>
+                                    <tbody>
+                                        <t t-if="doc.currency_id.name == 'INR'">
+                                            <t t-set="liness" t-value="doc.tax_calculation_gst()" />
+                                            <t t-foreach="liness['taxes']" t-as="tax">
+                                                <tr style="page-break-inside:avoid;">
+                                                    <td class="text-left" style="padding-left:3px;border:1px solid black;">
+                                                        <t t-esc="tax['y_category_id']" />
+                                                    </td>
+                                                    <td class="text-center" style="border:1px solid black;">
+                                                        <t t-set="gross_tot" t-value="[line for line in doc.y_invoice_dis_line_ids if line.y_category and line.y_category.y_name == tax.get('y_category_id')]" />
+                                                        <t t-if="gross_tot">
+                                                            <t t-esc="gross_tot[0].y_amount" />
+                                                        </t>
+                                                        <t t-else="">0.0</t>
+                                                    </td>
+
+                                                    <t t-set="trade_line" t-value="[line for line in doc.y_invoice_dis_line_ids if line.y_category and line.y_category.y_name == tax.get('y_category_id')]" />
+                                                    <t t-set="has_trade_line" t-value="trade_line and len(trade_line) > 0" />
+                                                    <td class="text-center" style="border:1px solid black;">
+                                                        <t t-if="has_trade_line">
+                                                            <t t-esc="trade_line[0].y_trade_discounts" />
+                                                        </t>
+                                                        <t t-else="">0.0</t>
+                                                    </td>
+                                                    <td class="text-center" style="border:1px solid black;">
+                                                        <t t-if="has_trade_line">
+                                                            <t t-esc="trade_line[0].y_trade_amount" />
+                                                        </t>
+                                                        <t t-else="">0.0</t>
+                                                    </td>
+
+                                                    <td class="text-center" style="border:1px solid black;">
+                                                        <t t-if="has_trade_line">
+                                                            <t t-esc="trade_line[0].y_quantity_discount" />
+                                                        </t>
+                                                        <t t-else="">0.0</t>
+                                                    </td>
+                                                    <td class="text-center" style="border:1px solid black;">
+                                                        <t t-if="has_trade_line">
+                                                            <t t-esc="trade_line[0].y_quantity_amount" />
+                                                        </t>
+                                                        <t t-else="">0.0</t>
+                                                    </td>
+
+                                                    <td class="text-center" style="border:1px solid black;">
+                                                        <t t-if="has_trade_line">
+                                                            <t t-esc="trade_line[0].y_special_discount" />
+                                                        </t>
+                                                        <t t-else="">0.0</t>
+                                                    </td>
+                                                    <td class="text-center" style="border:1px solid black;">
+                                                        <t t-if="has_trade_line">
+                                                            <t t-esc="trade_line[0].y_special_amount" />
+                                                        </t>
+                                                        <t t-else="">0.0</t>
+                                                    </td>
+
+                                                    <t t-set="total_discount" t-value="(trade_line[0].y_trade_amount if has_trade_line and trade_line[0].y_trade_amount else 0) + (trade_line[0].y_quantity_amount if has_trade_line and trade_line[0].y_quantity_amount else 0) + (trade_line[0].y_special_amount if has_trade_line and trade_line[0].y_special_amount else 0)" />
+                                                    <td class="text-center" style="border:1px solid black;">
+                                                        <t t-esc="'{0:,.2f}'.format(tax['parent_tax_amount'])" />
+                                                    </td>
+
+                                                    <t t-if="doc.currency_id.name == 'INR'">
+                                                        <t t-if="tax['child_taxes'][0]['tax_group'] == 'SGST'">
+                                                            <td class="text-center" style="text-align:center;border:1px solid black;">
+                                                                <t t-if="tax['child_taxes'] and len(tax['child_taxes']) > 0">
+                                                                    <t t-esc="tax['child_taxes'][0]['rate']" />
+                                                                </t>
+                                                                <t t-else="">
+                                                                    <t t-esc="0" />
+                                                                </t>
+                                                            </td>
+                                                            <td class="text-center" style="border:1px solid black;">
+                                                                <t t-if="tax['child_taxes'] and len(tax['child_taxes']) > 0">
+                                                                    <t t-esc="'{0:,.2f}'.format((tax['parent_tax_amount']) * (tax['child_taxes'][0]['rate']) / 100)" />
+                                                                </t>
+                                                                <t t-else="">
+                                                                    <t t-esc="'{0:,.2f}'.format(0)" />
+                                                                </t>
+                                                            </td>
+                                                            <td class="text-center" style="border:1px solid black;">
+                                                                <t t-if="tax['child_taxes'] and len(tax['child_taxes']) > 1">
+                                                                    <t t-esc="tax['child_taxes'][1]['rate']" />
+                                                                </t>
+                                                                <t t-else="">
+                                                                    <t t-esc="0" />
+                                                                </t>
+                                                            </td>
+                                                            <td class="text-center" style="border:1px solid black;">
+                                                                <t t-if="tax['child_taxes'] and len(tax['child_taxes']) > 1">
+                                                                    <t t-esc="'{0:,.2f}'.format((tax['parent_tax_amount']) * (tax['child_taxes'][1]['rate']) / 100)" />
+                                                                </t>
+                                                                <t t-else="">
+                                                                    <t t-esc="'{0:,.2f}'.format(0)" />
+                                                                </t>
+                                                            </td>
+                                                        </t>
+
+                                                        <t t-else="">
+                                                            <td class="text-center" style="border:1px solid black;">
+                                                                <t t-if="tax['child_taxes'] and len(tax['child_taxes']) > 0">
+                                                                    <t t-esc="tax['child_taxes'][0]['rate']" />
+                                                                </t>
+                                                                <t t-else="">
+                                                                    <t t-esc="0" />
+                                                                </t>
+                                                            </td>
+                                                            <td class="text-center" style="border:1px solid black;">
+                                                                <t t-if="tax['child_taxes'] and len(tax['child_taxes']) > 0">
+                                                                    <t t-esc="'{0:,.2f}'.format((tax['parent_tax_amount']) * (tax['child_taxes'][0]['rate']) / 100)" />
+                                                                </t>
+                                                                <t t-else="">
+                                                                    <t t-esc="'{0:,.2f}'.format(0)" />
+                                                                </t>
+                                                            </td>
+                                                        </t>
+
+
+                                                    </t>
+                                                    <t t-else="">
+                                                        <td class="text-center" style="border:1px solid black;">
+                                                            <t t-if="tax['child_taxes'] and len(tax['child_taxes']) > 0">
+                                                                <t t-esc="tax['child_taxes'][0]['rate']" />
+                                                            </t>
+                                                            <t t-else="">
+                                                                <t t-esc="0" />
+                                                            </t>
+                                                        </td>
+                                                        <td class="text-center" style="border:1px solid black;">
+                                                            <t t-if="tax['child_taxes'] and len(tax['child_taxes']) > 0">
+                                                                <t t-esc="'{0:,.2f}'.format((tax['parent_tax_amount']) * (tax['child_taxes'][0]['rate']) / 100)" />
+                                                            </t>
+                                                            <t t-else="">
+                                                                <t t-esc="'{0:,.2f}'.format(0)" />
+                                                            </t>
+                                                        </td>
+                                                    </t>
+
+                                                    <td class="text-end" style="text-align:right;border:1px solid black;">
+                                                        <t t-if="doc.currency_id.name == 'INR'">
+                                                            <t t-if="tax['child_taxes'][0]['tax_group'] == 'SGST'">
+
+                                                                <t t-set="net_amount" t-value="tax['parent_tax_amount']" />
+                                                                <t t-set="cgst_amount" t-value="(tax['child_taxes'][0]['rate'] / 100) if tax['child_taxes'] and len(tax['child_taxes']) > 0 else 0" />
+                                                                <t t-set="sgst_amount" t-value="(tax['child_taxes'][1]['rate'] / 100) if tax['child_taxes'] and len(tax['child_taxes']) > 1 else 0" />
+                                                                <t t-esc="'{0:,.2f}'.format(net_amount * cgst_amount + net_amount + net_amount * sgst_amount )" />
+                                                            </t>
+                                                            <t t-else="">
+                                                                <t t-set="net_amount" t-value="tax['parent_tax_amount']" />
+                                                                <t t-set="tax_rate" t-value="tax['child_taxes'][0]['rate'] if tax['child_taxes'] and len(tax['child_taxes']) > 0 else 0" />
+                                                                <t t-esc="'{0:,.2f}'.format(net_amount + ((net_amount * tax_rate) / 100))" />
+                                                            </t>
+
+                                                        </t>
+                                                        <t t-else="">
+                                                            <t t-set="net_amount" t-value="tax['parent_tax_amount']" />
+                                                            <t t-set="tax_rate" t-value="tax['child_taxes'][0]['rate'] if tax['child_taxes'] and len(tax['child_taxes']) > 0 else 0" />
+                                                            <t t-esc="'{0:,.2f}'.format(net_amount + ((net_amount * tax_rate) / 100))" />
+                                                        </t>
+                                                    </td>
+                                                </tr>
+                                            </t>
+
+
+                                            <tr style="page-break-inside:avoid;">
+                                                <td class="text-left" style="text-align:right;padding-right:3px;border:1px solid black;font-weight:bold;" colspan="1">Gross Total</td>
+
+
+                                                <td class="text-center" style="text-align:right;border:1px solid black; font-weight:bold;">
+                                                    <t t-set="total_amount" t-value="sum(line['parent_tax_amount'] + line['y_total_discount_amt'] for line in liness['taxes'])" />
+                                                    <t t-set="inv_dis" t-value="sum(doc.y_invoice_dis_line_ids.mapped('y_amount'))" />
+                                                    <t t-esc="'{0:,.2f}'.format(inv_dis)" />
+                                                </td>
+
+                                                <td colspan="6" class="fw-bold" style="text-align:right;padding-right:3px;border:1px solid black;">Taxable Amount Total</td>
+                                                <td class="text-center" style="border:1px solid black; font-weight:bold;">
+                                                    <t t-set="total_taxable_amount" t-value="0" />
+                                                    <t t-foreach="liness['taxes']" t-as="tax">
+                                                        <t t-set="trade_line" t-value="[line for line in doc.y_invoice_dis_line_ids if line.y_category and line.y_category.y_name == tax.get('y_category_id')]" />
+                                                        <t t-set="total_discount" t-value="(trade_line[0].y_trade_amount if trade_line and trade_line[0].y_trade_amount else 0) + (trade_line[0].y_quantity_amount if trade_line and trade_line[0].y_quantity_amount else 0) + (trade_line[0].y_special_amount if trade_line and trade_line[0].y_special_amount else 0)" />
+                                                        <t t-set="taxable" t-value="tax['parent_tax_amount']" />
+                                                        <t t-set="total_taxable_amount" t-value="total_taxable_amount + taxable" />
+                                                    </t>
+                                                    <t t-esc="'{0:,.2f}'.format(total_taxable_amount)" />
+                                                </td>
+
+                                                <t t-if="doc.currency_id.name == 'INR'">
+                                                    <t t-if="tax['child_taxes'][0]['tax_group'] == 'SGST'">
+                                                        <td colspan="1" style="border:1px solid black;"></td>
+                                                        <td class="text-center" style="border:1px solid black; font-weight:bold;">
+                                                            <t t-set="total_cgst" t-value="0" />
+                                                            <t t-foreach="liness['taxes']" t-as="tax">
+                                                                <t t-set="trade_line" t-value="[line for line in doc.y_invoice_dis_line_ids if line.y_category and line.y_category.y_name == tax.get('y_category_id')]" />
+                                                                <t t-set="total_discount" t-value="(trade_line[0].y_trade_amount if trade_line and trade_line[0].y_trade_amount else 0) + (trade_line[0].y_quantity_amount if trade_line and trade_line[0].y_quantity_amount else 0) + (trade_line[0].y_special_amount if trade_line and trade_line[0].y_special_amount else 0)" />
+                                                                <t t-set="taxable" t-value="tax['parent_tax_amount']" />
+                                                                <t t-set="cgst" t-value="taxable * (tax['child_taxes'][0]['rate'] / 100) if tax['child_taxes'] and len(tax['child_taxes']) > 0 else 0" />
+                                                                <t t-set="total_cgst" t-value="total_cgst + cgst" />
+                                                            </t>
+                                                            <t t-esc="'{0:,.2f}'.format(total_cgst)" />
+                                                        </td>
+                                                        <td colspan="1" style="border:1px solid black;"></td>
+                                                        <td class="text-center" style="border:1px solid black; font-weight:bold;">
+                                                            <t t-set="total_sgst" t-value="0" />
+                                                            <t t-foreach="liness['taxes']" t-as="tax">
+                                                                <t t-set="trade_line" t-value="[line for line in doc.y_invoice_dis_line_ids if line.y_category and line.y_category.y_name == tax.get('y_category_id')]" />
+                                                                <t t-set="total_discount" t-value="(trade_line[0].y_trade_amount if trade_line and trade_line[0].y_trade_amount else 0) + (trade_line[0].y_quantity_amount if trade_line and trade_line[0].y_quantity_amount else 0) + (trade_line[0].y_special_amount if trade_line and trade_line[0].y_special_amount else 0)" />
+                                                                <t t-set="taxable" t-value="tax['parent_tax_amount']" />
+                                                                <t t-set="sgst" t-value="taxable * (tax['child_taxes'][1]['rate'] / 100) if tax['child_taxes'] and len(tax['child_taxes']) > 1 else 0" />
+                                                                <t t-set="total_sgst" t-value="total_sgst + sgst" />
+                                                            </t>
+                                                            <t t-esc="'{0:,.2f}'.format(total_sgst)" />
+                                                        </td>
+                                                    </t>
+
+                                                    <t t-else="">
+                                                        <td colspan="1" style="border:1px solid black;"></td>
+                                                        <td class="text-center" style="border:1px solid black; font-weight:bold;">
+                                                            <t t-set="total_igst" t-value="0" />
+                                                            <t t-foreach="liness['taxes']" t-as="tax">
+                                                                <t t-set="trade_line" t-value="[line for line in doc.y_invoice_dis_line_ids if line.y_category and line.y_category.y_name == tax.get('y_category_id')]" />
+                                                                <t t-set="total_discount" t-value="(trade_line[0].y_trade_amount if trade_line and trade_line[0].y_trade_amount else 0) + (trade_line[0].y_quantity_amount if trade_line and trade_line[0].y_quantity_amount else 0) + (trade_line[0].y_special_amount if trade_line and trade_line[0].y_special_amount else 0)" />
+                                                                <t t-set="taxable" t-value="tax['parent_tax_amount']" />
+                                                                <t t-set="igst" t-value="taxable * (tax['child_taxes'][0]['rate'] / 100) if tax['child_taxes'] and len(tax['child_taxes']) > 0 else 0" />
+                                                                <t t-set="total_igst" t-value="total_igst + igst" />
+                                                            </t>
+                                                            <t t-esc="'{0:,.2f}'.format(total_igst)" />
+                                                        </td>
+                                                    </t>
+
+
+                                                </t>
+
+                                                <t t-else="">
+                                                    <td colspan="1" style="border:1px solid black;"></td>
+                                                    <td class="text-center" style="border:1px solid black; font-weight:bold;">
+                                                        <t t-set="total_igst" t-value="0" />
+                                                        <t t-foreach="liness['taxes']" t-as="tax">
+                                                            <t t-set="trade_line" t-value="[line for line in doc.y_invoice_dis_line_ids if line.y_category and line.y_category.y_name == tax.get('y_category_id')]" />
+                                                            <t t-set="total_discount" t-value="(trade_line[0].y_trade_amount if trade_line and trade_line[0].y_trade_amount else 0) + (trade_line[0].y_quantity_amount if trade_line and trade_line[0].y_quantity_amount else 0) + (trade_line[0].y_special_amount if trade_line and trade_line[0].y_special_amount else 0)" />
+                                                            <t t-set="taxable" t-value="tax['parent_tax_amount']" />
+                                                            <t t-set="igst" t-value="taxable * (tax['child_taxes'][0]['rate'] / 100) if tax['child_taxes'] and len(tax['child_taxes']) > 0 else 0" />
+                                                            <t t-set="total_igst" t-value="total_igst + igst" />
+                                                        </t>
+                                                        <t t-esc="'{0:,.2f}'.format(total_igst)" />
+                                                    </td>
+                                                </t>
+
+                                                <td style="text-align:right;border:1px solid black; font-weight:bold;">
+
+                                                    <t t-set="grand_total" t-value="0" />
+                                                    <t t-foreach="liness['taxes']" t-as="tax">
+                                                        <t t-set="trade_line" t-value="[line for line in doc.y_invoice_dis_line_ids if line.y_category and line.y_category.y_name == tax.get('y_category_id')]" />
+                                                        <t t-set="line" t-value="trade_line[0] if trade_line else None" />
+                                                        <t t-set="total_discount" t-value="(line.y_trade_amount if line and line.y_trade_amount else 0) + (line.y_quantity_amount if line and line.y_quantity_amount else 0) + (line.y_special_amount if line and line.y_special_amount else 0)" />
+                                                        <t t-set="taxable" t-value="tax['parent_tax_amount']" />
+                                                        <t t-set="tax_1_amount" t-value="taxable * (tax['child_taxes'][0]['rate'] / 100) if tax['child_taxes'] and len(tax['child_taxes']) > 0 else 0" />
+                                                        <t t-set="tax_2_amount" t-value="taxable * (tax['child_taxes'][1]['rate'] / 100) if tax['child_taxes'] and len(tax['child_taxes']) > 1 else 0" />
+                                                        <t t-if="tax['child_taxes'][0]['tax_group'] == 'SGST'">
+                                                            <t t-set="sgst_amount" t-value="tax_1_amount" />
+                                                            <t t-set="cgst_amount" t-value="tax_2_amount" />
+                                                            <t t-set="row_total" t-value="taxable + cgst_amount + sgst_amount" />
+                                                            <t t-set="grand_total" t-value="grand_total + row_total" />
+                                                        </t>
+                                                        <t t-else="">
+                                                            <t t-set="cgst_amount" t-value="tax_1_amount" />
+                                                            <t t-set="sgst_amount" t-value="tax_2_amount" />
+                                                            <t t-set="row_total" t-value="taxable  + sgst_amount" />
+                                                            <t t-set="grand_total" t-value="grand_total + row_total" />
+                                                        </t>
+                                                    </t>
+
+                                                    <t t-esc="'{0:,.2f}'.format(grand_total)" />
+                                                </td>
+                                            </tr>
+
+                                            <t t-if="doc.currency_id.name == 'INR'">
+                                                <t t-if="tax['child_taxes'][0]['tax_group'] == 'SGST'">
+                                                    <t>
+                                                        <tr style="padding:2px; page-break-inside:avoid;">
+                                                            <td colspan="13" class="text-end" style="padding:5px;text-align:right;border:1px solid black;width:85%">
+                                                                <strong>Rounding Off</strong>
+                                                            </td>
+                                                            <td colspan="1" class="text-end" style="padding:2px;border:1px solid black;width:15%;text-align:right;margin-right:2px">
+                                                                <span style="text-align:right" t-field="doc.currency_id.symbol" />
+                                                                <t t-set="roundoff_amount" t-value="doc.roundoff_amount()" />
+                                                                <span t-esc="roundoff_amount" />
+                                                            </td>
+                                                        </tr>
+                                                    </t>
+                                                    <tr style="padding:2px;page-break-inside:avoid;">
+
+                                                        <td colspan="13" class="text-end" style="padding:5px;text-align:right;border:1px solid black;width:85%;">
+                                                            <strong>Grand Total</strong>
+                                                        </td>
+                                                        <td colspan="1" class="text-end" style="padding:2px;width:15%;border-bottom:1px solid black;border-top:1px solid black;border-right:1px solid black;text-align:right;margin-right:2px">
+                                                            <span t-field="doc.amount_total" />
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                                <t t-else="">
+                                                    <t>
+                                                        <tr style="padding:2px; page-break-inside:avoid;">
+                                                            <td colspan="11" class="text-end" style="padding:5px;text-align:right;border:1px solid black;width:85%">
+                                                                <strong>Rounding Off</strong>
+                                                            </td>
+                                                            <td colspan="1" class="text-end" style="padding:2px;border:1px solid black;width:15%;text-align:right;margin-right:2px">
+                                                                <span style="text-align:right" t-field="doc.currency_id.symbol" />
+                                                                <t t-set="roundoff_amount" t-value="doc.roundoff_amount()" />
+                                                                <span t-esc="roundoff_amount" />
+                                                            </td>
+                                                        </tr>
+                                                    </t>
+                                                    <tr style="padding:2px;page-break-inside:avoid;">
+
+                                                        <td colspan="11" class="text-end" style="padding:5px;text-align:right;border:1px solid black;width:85%;">
+                                                            <strong>Grand Total</strong>
+                                                        </td>
+                                                        <td colspan="1" class="text-end" style="padding:2px;width:15%;border-bottom:1px solid black;border-top:1px solid black;border-right:1px solid black;text-align:right;margin-right:2px">
+                                                            <span t-field="doc.amount_total" />
+                                                        </td>
+                                                    </tr>
+                                                </t>
+
+                                                <tr style="page-break-inside:avoid;">
+                                                    <td colspan="100%" class="p-1" style="padding-left:5px;border-right:1px solid black;border-left:1px solid black;border-bottom:1px solid black;">
+                                                        <span>
+                                                            <strong>Invoice Amount in Words: </strong>
+                                                        </span>
+
+                                                        <t t-if="doc.currency_id.name == 'INR'">
+                                                            <t t-set="amountwords" t-value="doc.amount_in_words(doc.amount_total).title()" />
+                                                            <span t-esc="amountwords" />
+                                                        </t>
+                                                        <t t-else="">
+                                                            <span t-esc="doc.currency_id.amount_to_text(doc.amount_untaxed).replace('And', '').strip().title()" />
+                                                        </t>
+                                                    </td>
+                                                </tr>
+
+                                                <tr style="page-break-inside:avoid;">
+                                                    <td colspan="100%" class="p-1" style="width:100%;border-left:1px solid black;border-right:1px solid black;border-bottom:1px solid black;">
+                                                        <span class="fw-bold">Declaration:</span>
+                                                        <span class="fw-bold">Certified that all the
+                                                            particular given above are true and correct. The amount
+                                                            indicated represents the price actually charged and
+                                                            there is no flow of additional consideration directly or
+                                                            indirectly from the buyer or recipient.
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </t>
+                                        <t t-else="">
+                                            <t t-if="doc.currency_id.name == 'INR'">
+                                                <tr style="padding:2px;page-break-inside:avoid;">
+
+                                                    <td colspan="11" class="text-end" style="padding:5px;text-align:right;border:1px solid black;width:85%;border-top:none;">
+                                                        <strong>Grand Total</strong>
+                                                    </td>
+                                                    <td colspan="1" class="text-end" style="padding:2px;width:15%;border-right:1px solid black;text-align:right;margin-right:2px">
+                                                        <span t-field="doc.amount_untaxed" />
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                            <t t-if="doc.invoice_cash_rounding_id">
+                                                <tr style="padding:2px;page-break-inside:avoid;">
+
+                                                    <td colspan="11" class="text-end" style="padding:5px;text-align:right;border:1px solid black;width:85%">
+                                                        <strong>Rounding Off</strong>
+                                                    </td>
+                                                    <td colspan="1" class="text-end" style="padding:2px;border:1px solid black;width:15%;text-align:right;margin-right:2px">
+                                                        <span style="text-align:right" t-field="doc.currency_id.symbol" />
+                                                        <t t-set="roundoff_amount" t-value="doc.roundoff_amount()" />
+
+                                                        <span t-esc="roundoff_amount" />
+
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                            <t>
+                                                <tr style="padding:2px;page-break-inside:avoid;">
+
+                                                    <td colspan="11" class="text-end" style="padding:5px;text-align:right;border:1px solid black;width:85%;">
+                                                        <strong>Net Total</strong>
+                                                    </td>
+                                                    <td colspan="1" class="text-end" style="padding:2px;width:15%;border-bottom:1px solid black;border-top:1px solid black;border-right:1px solid black;text-align:right;margin-right:2px">
+                                                        <span t-field="doc.amount_total" />
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                            <tr style="width:100%;page-break-inside:avoid;">
+                                                <td colspan="12" class="text-left" style="padding-left:5px;border-right:1px solid black;border-left:1px solid black;border-bottom:1px solid black;">
+                                                    <span>
+                                                        <strong>Invoice Amount in Words: </strong>
+                                                    </span>
+                                                    <t t-if="doc.currency_id.name == 'INR'">
+                                                        <t t-set="amountwords" t-value="doc.amount_in_words(doc.amount_total).title()" />
+                                                        <span t-esc="amountwords" />
+                                                    </t>
+                                                    <t t-else="">
+                                                        <span t-esc="doc.currency_id.amount_to_text(doc.amount_untaxed).replace('And', '').strip().title()" />
+                                                    </t>
+                                                </td>
+                                            </tr>
+
+                                            <tr style="page-break-inside:avoid;">
+                                                <td colspan="12" style="width:100%;padding-left:5px;border-left:1px solid black;border-right:1px solid black;border-bottom:1px solid black;">
+                                                    <span class='fw-bold'>Declaration:</span>
+                                                    <span class="">
+                                                        Certified that all the
+                                                        particular given above are true and correct. The amount
+                                                        indicated represents the price actually charged and
+                                                        there is no flow of additional consideration directly or
+                                                        indirectly from the buyer or recipient.
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table> -->
+
+                                <t t-set="line" t-value="doc.tax_calculation_gst()" />
+                                <t >
+
+                                    <table style="border:1px solid black;border-collapse: collapse; width: 100%;font-size:12px;" border="1">
+                                        <thead>
+                                            <tr style="page-break-inside:avoid;">
+                                                <td colspan="100%" class="text-center" style="border:1px solid black;border-bottom:none;">
+                                                    <strong>Category,Discount and GST Summary</strong>
+                                                </td>
+                                            </tr>
+                                            <tr style="border:1px solid black;page-break-inside:avoid;">
+                                                <th rowspan="2" class="text-left" style="border-right:1px solid black;">
+                                                    <b>Category</b>
+                                                </th>
+                                                <th rowspan="2" class="text-center" style="border-right:1px solid black;">
+                                                    <b>Amount</b>
+                                                </th>
+                                                <th colspan="2" class="text-center" style="border-right:1px solid black;">
+                                                    <b>Trade Discount (%)</b>
+                                                </th>
+                                                <th colspan="2" class="text-center" style="border-right:1px solid black;">
+                                                    <b>Qty Discount (%)</b>
+                                                </th>
+                                                <th colspan="2" class="text-center" style="border-right:1px solid black;">
+                                                    <b>SPL Discount (%)</b>
+                                                </th>
+                                                <th rowspan="2" class="text-center" style="border-right:1px solid black;">
+                                                    <b>Taxable Amt</b>
+                                                </th>
+                                                <t t-if="doc.currency_id and doc.currency_id.name == 'INR'">
+                                                    <t t-set="liness" t-value="doc.tax_calculation_gst()" />
+                                                    <t t-if="liness and liness.get('taxes') and len(liness.get('taxes')) > 0">
+                                                        <t t-set="tax" t-value="liness['taxes'][0]" />
+                                                        <t t-if="tax and tax.get('child_taxes') and len(tax.get('child_taxes')) > 0 and tax['child_taxes'][0].get('tax_group') == 'SGST'">
+                                                            <th colspan="2" class="text-center" style="border-right:1px solid black;">
+                                                                <b>CGST</b>
+                                                            </th>
+                                                            <th colspan="2" class="text-center" style="border-right:1px solid black;">
+                                                                <b>SGST</b>
+                                                            </th>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <th colspan="2" class="text-center" style="border-right:1px solid black;">
+                                                                <b>IGST</b>
+                                                            </th>
+                                                        </t>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <th colspan="2" class="text-center" style="border-right:1px solid black;">
+                                                            <b>IGST</b>
+                                                        </th>
+                                                    </t>
+                                                </t>
+                                                <t t-else="">
+                                                    <th colspan="2" class="text-center" style="border-right:1px solid black;">
+                                                        <b>IGST</b>
+                                                    </th>
+                                                </t>
+                                                <th rowspan="2" class="text-center" style="border-right:1px solid black;">
+                                                    <b>Total Amount</b>
+                                                </th>
+                                            </tr>
+                                            <tr style="page-break-inside:avoid;">
+                                                <th class="text-center" style="border-right:1px solid black;border-bottom:1px solid black;">
+                                                    <b>Rate</b>
+                                                </th>
+                                                <th class="text-center" style="border-right:1px solid black;border-bottom:1px solid black;">
+                                                    <b>Amount</b>
+                                                </th>
+                                                <th class="text-center" style="border-right:1px solid black;border-bottom:1px solid black;">
+                                                    <b>Rate</b>
+                                                </th>
+                                                <th class="text-center" style="border-right:1px solid black;border-bottom:1px solid black;">
+                                                    <b>Amount</b>
+                                                </th>
+                                                <th class="text-center" style="border-right:1px solid black;border-bottom:1px solid black;">
+                                                    <b>Rate</b>
+                                                </th>
+                                                <th class="text-center" style="border-right:1px solid black;border-bottom:1px solid black;">
+                                                    <b>Amount</b>
+                                                </th>
+                                                <t t-if="doc.currency_id and doc.currency_id.name == 'INR'">
+                                                    <t t-set="liness" t-value="doc.tax_calculation_gst()" />
+                                                    <t t-if="liness and liness.get('taxes') and len(liness.get('taxes')) > 0">
+                                                        <t t-set="tax" t-value="liness['taxes'][0]" />
+                                                        <t t-if="tax and tax.get('child_taxes') and len(tax.get('child_taxes')) > 0 and tax['child_taxes'][0].get('tax_group') == 'SGST'">
+                                                            <th class="text-center" style="border-right:1px solid black;border-bottom:1px solid black;">
+                                                                <b>Rate</b>
+                                                            </th>
+                                                            <th class="text-center" style="border-right:1px solid black;border-bottom:1px solid black;">
+                                                                <b>Amount</b>
+                                                            </th>
+                                                            <th class="text-center" style="border-right:1px solid black;border-bottom:1px solid black;">
+                                                                <b>Rate</b>
+                                                            </th>
+                                                            <th class="text-center" style="border-right:1px solid black;border-bottom:1px solid black;">
+                                                                <b>Amount</b>
+                                                            </th>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <th class="text-center" style="border-right:1px solid black;border-bottom:1px solid black;">
+                                                                <b>Rate</b>
+                                                            </th>
+                                                            <th class="text-center" style="border-right:1px solid black;border-bottom:1px solid black;">
+                                                                <b>Amount</b>
+                                                            </th>
+                                                        </t>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <th class="text-center" style="border-right:1px solid black;border-bottom:1px solid black;">
+                                                            <b>Rate</b>
+                                                        </th>
+                                                        <th class="text-center" style="border-right:1px solid black;border-bottom:1px solid black;">
+                                                            <b>Amount</b>
+                                                        </th>
+                                                    </t>
+                                                </t>
+                                                <t t-else="">
+                                                    <th class="text-center" style="border-right:1px solid black;border-bottom:1px solid black;">
+                                                        <b>Rate</b>
+                                                    </th>
+                                                    <th class="text-center" style="border-right:1px solid black;border-bottom:1px solid black;">
+                                                        <b>Amount</b>
+                                                    </th>
+                                                </t>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-if="line and line.get('taxes')">
+                                                <t t-foreach="liness['taxes']" t-as="tax">
+                                                    <tr style="page-break-inside:avoid;">
+                                                        <td class="text-left" style="padding-left:3px;border:1px solid black;">
+                                                            <t t-if="tax and tax.get('y_category_id')" t-esc="tax['y_category_id']" />
+                                                        </td>
+                                                        <td class="text-center" style="border:1px solid black;">
+                                                            <t t-if="tax and tax.get('y_category_id') and doc.y_invoice_dis_line_ids">
+                                                                <t t-set="gross_tot" t-value="[line for line in doc.y_invoice_dis_line_ids if line.y_category and line.y_category.y_name == tax.get('y_category_id')]" />
+                                                                <t t-if="gross_tot and len(gross_tot) > 0">
+                                                                    <t t-esc="gross_tot[0].y_amount" />
+                                                                </t>
+                                                                <t t-else="">0.0</t>
+                                                            </t>
+                                                            <t t-else="">0.0</t>
+                                                        </td>
+
+                                                        <t t-if="tax and tax.get('y_category_id') and doc.y_invoice_dis_line_ids">
+                                                            <t t-set="trade_line" t-value="[line for line in doc.y_invoice_dis_line_ids if line.y_category and line.y_category.y_name == tax.get('y_category_id')]" />
+                                                            <t t-set="has_trade_line" t-value="trade_line and len(trade_line) > 0" />
+                                                        </t>
+                                                        <t t-else="">
+                                                            <t t-set="trade_line" t-value="[]" />
+                                                            <t t-set="has_trade_line" t-value="False" />
+                                                        </t>
+                                                        <td class="text-center" style="border:1px solid black;">
+                                                            <t t-if="has_trade_line and trade_line[0].y_trade_discounts is not False">
+                                                                <t t-esc="trade_line[0].y_trade_discounts" />
+                                                            </t>
+                                                            <t t-else="">0.0</t>
+                                                        </td>
+                                                        <td class="text-center" style="border:1px solid black;">
+                                                            <t t-if="has_trade_line and trade_line[0].y_trade_amount is not False">
+                                                                <t t-esc="trade_line[0].y_trade_amount" />
+                                                            </t>
+                                                            <t t-else="">0.0</t>
+                                                        </td>
+
+                                                        <td class="text-center" style="border:1px solid black;">
+                                                            <t t-if="has_trade_line and trade_line[0].y_quantity_discount is not False">
+                                                                <t t-esc="trade_line[0].y_quantity_discount" />
+                                                            </t>
+                                                            <t t-else="">0.0</t>
+                                                        </td>
+                                                        <td class="text-center" style="border:1px solid black;">
+                                                            <t t-if="has_trade_line and trade_line[0].y_quantity_amount is not False">
+                                                                <t t-esc="trade_line[0].y_quantity_amount" />
+                                                            </t>
+                                                            <t t-else="">0.0</t>
+                                                        </td>
+
+                                                        <td class="text-center" style="border:1px solid black;">
+                                                            <t t-if="has_trade_line and trade_line[0].y_special_discount is not False">
+                                                                <t t-esc="trade_line[0].y_special_discount" />
+                                                            </t>
+                                                            <t t-else="">0.0</t>
+                                                        </td>
+                                                        <td class="text-center" style="border:1px solid black;">
+                                                            <t t-if="has_trade_line and trade_line[0].y_special_amount is not False">
+                                                                <t t-esc="trade_line[0].y_special_amount" />
+                                                            </t>
+                                                            <t t-else="">0.0</t>
+                                                        </td>
+
+                                                        <t t-set="total_discount" t-value="(trade_line[0].y_trade_amount if has_trade_line and trade_line[0].y_trade_amount else 0) + 
+                                                          (trade_line[0].y_quantity_amount if has_trade_line and trade_line[0].y_quantity_amount else 0) + 
+                                                          (trade_line[0].y_special_amount if has_trade_line and trade_line[0].y_special_amount else 0)" />
+                                                        <td class="text-center" style="border:1px solid black;">
+                                                            <t t-if="tax and tax.get('parent_tax_amount')">
+                                                                <t t-esc="'{0:,.2f}'.format(tax['parent_tax_amount'])" />
+                                                            </t>
+                                                            <t t-else="">0.00</t>
+                                                        </td>
+
+                                                        <t t-if="doc.currency_id and doc.currency_id.name == 'INR'">
+                                                            <t t-if="tax and tax.get('child_taxes') and len(tax.get('child_taxes')) > 0 and tax['child_taxes'][0].get('tax_group') == 'SGST'">
+                                                                <td class="text-center" style="text-align:center;border:1px solid black;">
+                                                                    <t t-if="tax.get('child_taxes') and len(tax.get('child_taxes')) > 0">
+                                                                        <t t-esc="tax['child_taxes'][0]['rate']" />
+                                                                    </t>
+                                                                    <t t-else="">
+                                                                        <t t-esc="0" />
+                                                                    </t>
+                                                                </td>
+                                                                <td class="text-center" style="border:1px solid black;">
+                                                                    <t t-if="tax.get('child_taxes') and len(tax.get('child_taxes')) > 0 and tax.get('parent_tax_amount')">
+                                                                        <t t-esc="'{0:,.2f}'.format((tax['parent_tax_amount']) * (tax['child_taxes'][0]['rate']) / 100)" />
+                                                                    </t>
+                                                                    <t t-else="">
+                                                                        <t t-esc="'{0:,.2f}'.format(0)" />
+                                                                    </t>
+                                                                </td>
+                                                                <td class="text-center" style="border:1px solid black;">
+                                                                    <t t-if="tax.get('child_taxes') and len(tax.get('child_taxes')) > 1">
+                                                                        <t t-esc="tax['child_taxes'][1]['rate']" />
+                                                                    </t>
+                                                                    <t t-else="">
+                                                                        <t t-esc="0" />
+                                                                    </t>
+                                                                </td>
+                                                                <td class="text-center" style="border:1px solid black;">
+                                                                    <t t-if="tax.get('child_taxes') and len(tax.get('child_taxes')) > 1 and tax.get('parent_tax_amount')">
+                                                                        <t t-esc="'{0:,.2f}'.format((tax['parent_tax_amount']) * (tax['child_taxes'][1]['rate']) / 100)" />
+                                                                    </t>
+                                                                    <t t-else="">
+                                                                        <t t-esc="'{0:,.2f}'.format(0)" />
+                                                                    </t>
+                                                                </td>
+                                                            </t>
+                                                            <t t-else="">
+                                                                <td class="text-center" style="border:1px solid black;">
+                                                                    <t t-if="tax.get('child_taxes') and len(tax.get('child_taxes')) > 0">
+                                                                        <t t-esc="tax['child_taxes'][0]['rate']" />
+                                                                    </t>
+                                                                    <t t-else="">
+                                                                        <t t-esc="0" />
+                                                                    </t>
+                                                                </td>
+                                                                <td class="text-center" style="border:1px solid black;">
+                                                                    <t t-if="tax.get('child_taxes') and len(tax.get('child_taxes')) > 0 and tax.get('parent_tax_amount')">
+                                                                        <t t-esc="'{0:,.2f}'.format((tax['parent_tax_amount']) * (tax['child_taxes'][0]['rate']) / 100)" />
+                                                                    </t>
+                                                                    <t t-else="">
+                                                                        <t t-esc="'{0:,.2f}'.format(0)" />
+                                                                    </t>
+                                                                </td>
+                                                            </t>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <td class="text-center" style="border:1px solid black;">
+                                                                <t t-if="tax.get('child_taxes') and len(tax.get('child_taxes')) > 0">
+                                                                    <t t-esc="tax['child_taxes'][0]['rate']" />
+                                                                </t>
+                                                                <t t-else="">
+                                                                    <t t-esc="0" />
+                                                                </t>
+                                                            </td>
+                                                            <td class="text-center" style="border:1px solid black;">
+                                                                <t t-if="tax.get('child_taxes') and len(tax.get('child_taxes')) > 0 and tax.get('parent_tax_amount')">
+                                                                    <t t-esc="'{0:,.2f}'.format((tax['parent_tax_amount']) * (tax['child_taxes'][0]['rate']) / 100)" />
+                                                                </t>
+                                                                <t t-else="">
+                                                                    <t t-esc="'{0:,.2f}'.format(0)" />
+                                                                </t>
+                                                            </td>
+                                                        </t>
+
+                                                        <td class="text-end" style="text-align:right;border:1px solid black;">
+                                                            <t t-if="doc.currency_id and doc.currency_id.name == 'INR'">
+                                                                <t t-if="tax.get('child_taxes') and len(tax.get('child_taxes')) > 0 and tax['child_taxes'][0].get('tax_group') == 'SGST'">
+                                                                    <t t-set="net_amount" t-value="tax.get('parent_tax_amount') or 0" />
+                                                                    <t t-set="cgst_amount" t-value="(tax['child_taxes'][0].get('rate') / 100) if tax.get('child_taxes') and len(tax.get('child_taxes')) > 0 else 0" />
+                                                                    <t t-set="sgst_amount" t-value="(tax['child_taxes'][1].get('rate') / 100) if tax.get('child_taxes') and len(tax.get('child_taxes')) > 1 else 0" />
+                                                                    <t t-esc="'{0:,.2f}'.format(net_amount * cgst_amount + net_amount + net_amount * sgst_amount)" />
+                                                                </t>
+                                                                <t t-else="">
+                                                                    <t t-set="net_amount" t-value="tax.get('parent_tax_amount') or 0" />
+                                                                    <t t-set="tax_rate" t-value="tax['child_taxes'][0].get('rate') if tax.get('child_taxes') and len(tax.get('child_taxes')) > 0 else 0" />
+                                                                    <t t-esc="'{0:,.2f}'.format(net_amount + ((net_amount * tax_rate) / 100))" />
+                                                                </t>
+                                                            </t>
+                                                            <t t-else="">
+                                                                <t t-set="net_amount" t-value="tax.get('parent_tax_amount') or 0" />
+                                                                <t t-set="tax_rate" t-value="tax['child_taxes'][0].get('rate') if tax.get('child_taxes') and len(tax.get('child_taxes')) > 0 else 0" />
+                                                                <t t-esc="'{0:,.2f}'.format(net_amount + ((net_amount * tax_rate) / 100))" />
+                                                            </t>
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                                <tr style="page-break-inside:avoid;">
+                                                    <td class="text-left" style="text-align:right;padding-right:3px;border:1px solid black;font-weight:bold;" colspan="1">Gross Total</td>
+
+                                                    <td class="text-center" style="text-align:right;border:1px solid black; font-weight:bold;">
+                                                        <t t-if="liness and liness.get('taxes') and doc.y_invoice_dis_line_ids">
+                                                            <t t-set="inv_dis" t-value="sum(doc.y_invoice_dis_line_ids.mapped('y_amount'))" />
+                                                            <t t-esc="'{0:,.2f}'.format(inv_dis)" />
+                                                        </t>
+                                                        <t t-else="">0.00</t>
+                                                    </td>
+
+                                                    <td colspan="6" class="fw-bold" style="text-align:right;padding-right:3px;border:1px solid black;">Taxable Amount Total</td>
+                                                    <td class="text-center" style="border:1px solid black; font-weight:bold;">
+                                                        <t t-if="liness and liness.get('taxes')">
+                                                            <t t-set="total_taxable_amount" t-value="0" />
+                                                            <t t-foreach="liness['taxes']" t-as="tax">
+                                                                <t t-if="tax.get('y_category_id') and doc.y_invoice_dis_line_ids">
+                                                                    <t t-set="trade_line" t-value="[line for line in doc.y_invoice_dis_line_ids if line.y_category and line.y_category.y_name == tax.get('y_category_id')]" />
+                                                                    <t t-set="total_discount" t-value="(trade_line[0].y_trade_amount if trade_line and len(trade_line) > 0 and trade_line[0].y_trade_amount else 0) + 
+                                                                      (trade_line[0].y_quantity_amount if trade_line and len(trade_line) > 0 and trade_line[0].y_quantity_amount else 0) + 
+                                                                      (trade_line[0].y_special_amount if trade_line and len(trade_line) > 0 and trade_line[0].y_special_amount else 0)" />
+                                                                </t>
+                                                                <t t-set="taxable" t-value="tax.get('parent_tax_amount') or 0" />
+                                                                <t t-set="total_taxable_amount" t-value="total_taxable_amount + taxable" />
+                                                            </t>
+                                                            <t t-esc="'{0:,.2f}'.format(total_taxable_amount)" />
+                                                        </t>
+                                                        <t t-else="">0.00</t>
+                                                    </td>
+
+                                                    <t t-if="liness and liness.get('taxes') and len(liness.get('taxes')) > 0">
+                                                        <t t-set="tax" t-value="liness['taxes'][0]" />
+                                                        <t t-if="doc.currency_id and doc.currency_id.name == 'INR' and tax.get('child_taxes') and len(tax.get('child_taxes')) > 0 and tax['child_taxes'][0].get('tax_group') == 'SGST'">
+                                                            <td colspan="1" style="border:1px solid black;"></td>
+                                                            <td class="text-center" style="border:1px solid black; font-weight:bold;">
+                                                                <t t-set="total_cgst" t-value="0" />
+                                                                <t t-foreach="liness['taxes']" t-as="tax">
+                                                                    <t t-if="tax.get('y_category_id') and doc.y_invoice_dis_line_ids">
+                                                                        <t t-set="trade_line" t-value="[line for line in doc.y_invoice_dis_line_ids if line.y_category and line.y_category.y_name == tax.get('y_category_id')]" />
+                                                                        <t t-set="total_discount" t-value="(trade_line[0].y_trade_amount if trade_line and len(trade_line) > 0 and trade_line[0].y_trade_amount else 0) + 
+                                                                          (trade_line[0].y_quantity_amount if trade_line and len(trade_line) > 0 and trade_line[0].y_quantity_amount else 0) + 
+                                                                          (trade_line[0].y_special_amount if trade_line and len(trade_line) > 0 and trade_line[0].y_special_amount else 0)" />
+                                                                    </t>
+                                                                    <t t-set="taxable" t-value="tax.get('parent_tax_amount') or 0" />
+                                                                    <t t-set="cgst" t-value="taxable * (tax['child_taxes'][0].get('rate') / 100) if tax.get('child_taxes') and len(tax.get('child_taxes')) > 0 else 0" />
+                                                                    <t t-set="total_cgst" t-value="total_cgst + cgst" />
+                                                                </t>
+                                                                <t t-esc="'{0:,.2f}'.format(total_cgst)" />
+                                                            </td>
+                                                            <td colspan="1" style="border:1px solid black;"></td>
+                                                            <td class="text-center" style="border:1px solid black; font-weight:bold;">
+                                                                <t t-set="total_sgst" t-value="0" />
+                                                                <t t-foreach="liness['taxes']" t-as="tax">
+                                                                    <t t-if="tax.get('y_category_id') and doc.y_invoice_dis_line_ids">
+                                                                        <t t-set="trade_line" t-value="[line for line in doc.y_invoice_dis_line_ids if line.y_category and line.y_category.y_name == tax.get('y_category_id')]" />
+                                                                        <t t-set="total_discount" t-value="(trade_line[0].y_trade_amount if trade_line and len(trade_line) > 0 and trade_line[0].y_trade_amount else 0) + 
+                                                                          (trade_line[0].y_quantity_amount if trade_line and len(trade_line) > 0 and trade_line[0].y_quantity_amount else 0) + 
+                                                                          (trade_line[0].y_special_amount if trade_line and len(trade_line) > 0 and trade_line[0].y_special_amount else 0)" />
+                                                                    </t>
+                                                                    <t t-set="taxable" t-value="tax.get('parent_tax_amount') or 0" />
+                                                                    <t t-set="sgst" t-value="taxable * (tax['child_taxes'][1].get('rate') / 100) if tax.get('child_taxes') and len(tax.get('child_taxes')) > 1 else 0" />
+                                                                    <t t-set="total_sgst" t-value="total_sgst + sgst" />
+                                                                </t>
+                                                                <t t-esc="'{0:,.2f}'.format(total_sgst)" />
+                                                            </td>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <td colspan="1" style="border:1px solid black;"></td>
+                                                            <td class="text-center" style="border:1px solid black; font-weight:bold;">
+                                                                <t t-set="total_igst" t-value="0" />
+                                                                <t t-foreach="liness['taxes']" t-as="tax">
+                                                                    <t t-if="tax.get('y_category_id') and doc.y_invoice_dis_line_ids">
+                                                                        <t t-set="trade_line" t-value="[line for line in doc.y_invoice_dis_line_ids if line.y_category and line.y_category.y_name == tax.get('y_category_id')]" />
+                                                                        <t t-set="total_discount" t-value="(trade_line[0].y_trade_amount if trade_line and len(trade_line) > 0 and trade_line[0].y_trade_amount else 0) + 
+                                                                          (trade_line[0].y_quantity_amount if trade_line and len(trade_line) > 0 and trade_line[0].y_quantity_amount else 0) + 
+                                                                          (trade_line[0].y_special_amount if trade_line and len(trade_line) > 0 and trade_line[0].y_special_amount else 0)" />
+                                                                    </t>
+                                                                    <t t-set="taxable" t-value="tax.get('parent_tax_amount') or 0" />
+                                                                    <t t-set="igst" t-value="taxable * (tax['child_taxes'][0].get('rate') / 100) if tax.get('child_taxes') and len(tax.get('child_taxes')) > 0 else 0" />
+                                                                    <t t-set="total_igst" t-value="total_igst + igst" />
+                                                                </t>
+                                                                <t t-esc="'{0:,.2f}'.format(total_igst)" />
+                                                            </td>
+                                                        </t>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <td colspan="1" style="border:1px solid black;"></td>
+                                                        <td class="text-center" style="border:1px solid black; font-weight:bold;">0.00</td>
+                                                    </t>
+
+                                                    <td style="text-align:right;border:1px solid black; font-weight:bold;">
+                                                        <t t-if="liness and liness.get('taxes')">
+                                                            <t t-set="grand_total" t-value="0" />
+                                                            <t t-foreach="liness['taxes']" t-as="tax">
+                                                                <t t-if="tax.get('y_category_id') and doc.y_invoice_dis_line_ids">
+                                                                    <t t-set="trade_line" t-value="[line for line in doc.y_invoice_dis_line_ids if line.y_category and line.y_category.y_name == tax.get('y_category_id')]" />
+                                                                    <t t-set="line" t-value="trade_line[0] if trade_line and len(trade_line) > 0 else None" />
+                                                                    <t t-set="total_discount" t-value="(line.y_trade_amount if line and line.y_trade_amount else 0) + 
+                                                                      (line.y_quantity_amount if line and line.y_quantity_amount else 0) + 
+                                                                      (line.y_special_amount if line and line.y_special_amount else 0)" />
+                                                                </t>
+                                                                <t t-set="taxable" t-value="tax.get('parent_tax_amount') or 0" />
+                                                                <t t-set="tax_1_amount" t-value="taxable * (tax['child_taxes'][0]['rate'] / 100) if tax['child_taxes'] and len(tax['child_taxes']) > 0 else 0" />
+                                                                <t t-set="tax_2_amount" t-value="taxable * (tax['child_taxes'][1]['rate'] / 100) if tax['child_taxes'] and len(tax['child_taxes']) > 1 else 0" />
+                                                                <t t-if="tax['child_taxes'][0]['tax_group'] == 'SGST'">
+                                                                    <t t-set="sgst_amount" t-value="tax_1_amount" />
+                                                                    <t t-set="cgst_amount" t-value="tax_2_amount" />
+                                                                    <t t-set="row_total" t-value="taxable + cgst_amount + sgst_amount" />
+                                                                    <t t-set="grand_total" t-value="grand_total + row_total" />
+                                                                </t>
+                                                                <t t-else="">
+                                                                    <t t-set="cgst_amount" t-value="tax_1_amount" />
+                                                                    <t t-set="sgst_amount" t-value="tax_2_amount" />
+                                                                    <t t-set="row_total" t-value="taxable  + sgst_amount" />
+                                                                    <t t-set="grand_total" t-value="grand_total + row_total" />
+                                                                </t>
+                                                            </t>
+                                                        </t>
+
+                                                        <t t-esc="'{0:,.2f}'.format(grand_total)" />
+                                                    </td>
+                                                </tr>
+
+                                                <t t-if="tax['child_taxes'][0]['tax_group'] == 'SGST'">
+                                                    <t t-foreach="doc.tax_totals['subtotals'][0]['tax_groups']" t-as="tax_group">
+                                                        <!-- Skip SGST and CGST as they're handled differently -->
+                                                        <t t-if="tax_group['group_name'] not in ['SGST', 'CGST', 'IGST']">
+                                                            <tr style="padding:2px; page-break-inside:avoid;">
+                                                                <td colspan="13" class="text-end" style="padding:5px;text-align:right;border:1px solid black;width:85%">
+                                                                    <strong t-esc="tax_group['group_name']"/>
+                                                                </td>
+                                                                <td colspan="1" class="text-end" style="padding:2px;border:1px solid black;width:15%;text-align:right;margin-right:2px">
+                                                                    <span style="text-align:right" t-field="doc.currency_id.symbol" />
+                                                                    <span t-esc="tax_group['tax_amount_currency']" />
+                                                                </td>
+                                                            </tr>
+                                                        </t>
+                                                    </t>
+
+                                                    <tr style="padding:2px; page-break-inside:avoid;">
+                                                        <td colspan="13" class="text-end" style="padding:5px;text-align:right;border:1px solid black;width:85%">
+                                                            <strong>Round Off</strong>
+                                                        </td>
+                                                        <td colspan="1" class="text-end" style="padding:2px;border:1px solid black;width:15%;text-align:right;margin-right:2px">
+                                                            <span style="text-align:right" t-field="doc.currency_id.symbol" />
+                                                            <t t-set="roundoff_amount" t-value="doc.roundoff_amount()" />
+                                                            <span t-esc="roundoff_amount" />
+                                                        </td>
+                                                    </tr>
+                                                    <tr style="padding:2px;page-break-inside:avoid;">
+                                                        <td colspan="13" class="text-end" style="padding:5px;text-align:right;border:1px solid black;width:85%;">
+                                                            <strong>Grand Total</strong>
+                                                        </td>
+                                                        <td colspan="1" class="text-end" style="padding:2px;width:15%;border-bottom:1px solid black;border-top:1px solid black;border-right:1px solid black;text-align:right;margin-right:2px">
+                                                            <span t-field="doc.amount_total" />
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                                <t t-else="">
+                                                    <t t-foreach="doc.tax_totals['subtotals'][0]['tax_groups']" t-as="tax_group">
+                                                        <t t-if="tax_group['group_name'] not in ['SGST', 'CGST', 'IGST']">
+                                                            <tr style="padding:2px; page-break-inside:avoid;">
+                                                                <td colspan="11" class="text-end" style="padding:5px;text-align:right;border:1px solid black;width:85%">
+                                                                    <strong t-esc="tax_group['group_name']"/>
+                                                                </td>
+                                                                <td colspan="1" class="text-end" style="padding:2px;border:1px solid black;width:15%;text-align:right;margin-right:2px">
+                                                                    <span style="text-align:right" t-field="doc.currency_id.symbol" />
+                                                                    <span t-esc="tax_group['tax_amount_currency']" />
+                                                                </td>
+                                                            </tr>
+                                                        </t>
+                                                    </t>
+                                                    <tr style="padding:2px; page-break-inside:avoid;">
+                                                        <td colspan="11" class="text-end" style="padding:5px;text-align:right;border:1px solid black;width:85%">
+                                                            <strong>Round Off</strong>
+                                                        </td>
+                                                        <td colspan="1" class="text-end" style="padding:2px;border:1px solid black;width:15%;text-align:right;margin-right:2px">
+                                                            <span style="text-align:right" t-field="doc.currency_id.symbol" />
+                                                            <t t-set="roundoff_amount" t-value="doc.roundoff_amount()" />
+                                                            <span t-esc="roundoff_amount" />
+                                                        </td>
+                                                    </tr>
+                                                    <tr style="padding:2px;page-break-inside:avoid;">
+
+                                                        <td colspan="11" class="text-end" style="padding:5px;text-align:right;border:1px solid black;width:85%;">
+                                                            <strong>Grand Total</strong>
+                                                        </td>
+                                                        <td colspan="1" class="text-end" style="padding:2px;width:15%;border-bottom:1px solid black;border-top:1px solid black;border-right:1px solid black;text-align:right;margin-right:2px">
+                                                            <span t-field="doc.amount_total" />
+                                                        </td>
+                                                    </tr>
+                                                </t>
+
+                                                <tr style="page-break-inside:avoid;">
+                                                    <td colspan="100%" class="p-1" style="padding-left:5px;border-right:1px solid black;border-left:1px solid black;border-bottom:1px solid black;">
+                                                        <span>
+                                                            <strong>Invoice Amount in Words: </strong>
+                                                        </span>
+
+                                                        <t t-if="doc.currency_id.name == 'INR'">
+                                                            <t t-set="amountwords" t-value="doc.amount_in_words(doc.amount_total).title()" />
+                                                            <span t-esc="amountwords" />
+                                                        </t>
+                                                        <t t-else="">
+                                                            <span t-esc="doc.currency_id.amount_to_text(doc.amount_untaxed).replace('And', '').strip().title()" />
+                                                        </t>
+                                                    </td>
+                                                </tr>
+
+                                                <tr style="page-break-inside:avoid;">
+                                                    <td colspan="100%" class="p-1" style="width:100%;border-left:1px solid black;border-right:1px solid black;border-bottom:1px solid black;">
+                                                        <span class="fw-bold">Declaration:</span>
+                                                        <span class="fw-bold">Certified that all the
+                                                            particular given above are true and correct. The amount
+                                                            indicated represents the price actually charged and
+                                                            there is no flow of additional consideration directly or
+                                                            indirectly from the buyer or recipient.
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </t>
+
+                                <table class="table table-borderless" style="width:100; font-size:12px;">
+                                    <tbody>
+                                        <tr style="word-break: break-all;">
+                                            <td style="padding:1px;width:100%;padding-top:3px">
+                                                <span class="fw-bold p-1">Terms and Conditions : </span>
+                                                <br class="" />
+                                                <div class="row p-2" style="word-break: break-all;">
+                                                    <div style="width:98%;">
+                                                        <span style="word-break: break-all;" t-esc="doc.narration" />
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                            </tbody>
+
+                        </table>
+
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

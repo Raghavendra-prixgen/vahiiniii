@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_invoice_margin_report_line_tree" model="ir.ui.view">
+        <field name="name">invoice.margin.report.line.tree</field>
+        <field name="model">invoice.margin.report.line</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="y_invoice_name" optional="show"/>
+                <field name="y_invoice_date" optional="show"/>
+                <field name="y_partner_id" optional="show"/>
+                <field name="y_partner_categ_id" optional="hide"/>
+                <field name="y_product_code" optional="hide"/>
+                <field name="y_product_name" optional="hide"/>
+                <!-- <field name="y_product_id" optional="show"/> -->
+                <field name="y_account_id" optional="hide"/>
+                <field name="y_product_categ_id" optional="hide"/>
+
+                <field name="y_product_group_1" optional="hide"/>
+                <field name="y_product_group_2" optional="hide"/>
+                <field name="y_product_group_3" optional="hide"/>
+<!--                <field name="y_manufacturer_name_id" optional="hide"/>-->
+
+<!--                <field name="y_product_type_id" optional="hide"/>-->
+<!--                <field name="y_product_group_id" optional="hide"/>-->
+<!--                <field name="y_processing_method_id" optional="hide"/>-->
+<!--                <field name="y_product_features" optional="hide"/>-->
+<!--                <field name="y_colour_code" optional="hide"/>-->
+
+<!--                <field name="y_family_desc_id" optional="hide"/>-->
+<!--                <field name="y_group_desc_id" optional="hide"/>-->
+<!--                <field name="y_subgroup_desc_id" optional="hide"/>-->
+<!--                <field name="y_gsr_type_id" optional="hide"/>-->
+<!--                <field name="y_producer_name_id" optional="hide"/>-->
+<!--                <field name="y_lr_number" optional="hide"/>-->
+<!--                <field name="y_lr_date" optional="hide"/>-->
+                <field name="y_currency_id" optional="hide"/>
+                <field name="y_invoice_currency_rate" optional="hide"/>
+                <field name="y_location_id" optional="hide"/>
+                <field name="y_lot_ids" optional="hide" widget="many2many_tags"/>
+                <field name="y_lot_create_date" optional="hide"/>
+
+                <field name="y_payment_term_id" optional="hide"/>
+<!--                <field name="y_delivery_terms" optional="hide"/>-->
+                <field name="y_invoiced_qty" optional="show"/>
+                <field name="y_unit_price" optional="show"/>
+                <field name="y_invoiced_amount" optional="show"/>
+                <field name="y_cogs" optional="show"/>
+                <field name="y_weight" optional="show"/>
+                <field name="y_transportation_cost" optional="show"/>
+                <field name="y_return_qty" optional="hide"/>
+                <field name="y_return_amount" optional="show"/>
+                <field name="y_margin" optional="show"/>
+                <field name="y_margin_percentage" optional="show"/>
+                <field name="y_margin_2" optional="show"/>
+                <field name="y_margin2_percentage" optional="show"/>
+                <field name="y_sales_person_id" optional="hide"/>
+                <field name="y_company_id" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="invoice_margin_report_line_search_view" model="ir.ui.view">
+      <field name="name">Invoice margin report search view</field>
+      <field name="model">invoice.margin.report.line</field>
+      <field name="arch" type="xml">
+        <search string="Search invoice margin Report">
+          <field name="y_product_id"/>
+            <field name="y_partner_id"/>
+          <field name="y_product_categ_id"/>
+          <field name="y_invoice_id"/>
+          <field name="y_sales_person_id"/>
+          <field name="y_company_id"/>
+        </search>
+      </field>
+    </record>
+
+    <!-- Add an action to view the report -->
+    <record id="action_invoice_margin_report_line" model="ir.actions.act_window">
+        <field name="name">Invoice Margin Report</field>
+        <field name="res_model">invoice.margin.report.line</field>
+        <field name="view_mode">list,pivot</field>
+        <field name="help" type="html">
+            <p>
+                This view displays the invoice margin report data automatically without manual input.
+            </p>
+        </field>
+    </record>
+
+
+</odoo>
+

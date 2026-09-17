@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="view_picking_form__inherit_serial_no" model="ir.ui.view">
+            <field name="name">stock.picking.inherit.serial.no.view</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='product_id']" position="before">
+                    <field name='y_serial_no' readonly="1" style="width:1%%"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_view_stock_move_line_detailed_operation_tree_inherit_serial_no" model="ir.ui.view">
+            <field name="name">stock.move.line.inherit.serial.no.view</field>
+            <field name="model">stock.move.line</field>
+            <field name="inherit_id" ref="stock.view_stock_move_line_detailed_operation_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='product_id']" position="before">
+                    <field name='y_serial_no' readonly="1" width="0"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="product_uom_categ_form_view_inherit_y_weight_uom" model="ir.ui.view">
+            <field name="name">uom.category.form.view.inherit</field>
+            <field name="model">uom.category</field>
+            <field name="inherit_id" ref="uom.product_uom_categ_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='uom_ids']/list/field[@name='uom_type']" position="before">
+                    <field name="y_weight_uom"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>        

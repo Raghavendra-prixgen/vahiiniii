@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="material_request_production_tree_view_inherit" model="ir.ui.view">
+      <field name="name">mrp.production.list.view.inherit.mr.request</field>
+      <field name="model">mrp.production</field>
+      <field name="arch" type="xml">
+        <list create="0" edit="0">
+          <field name="product_uom_category_id" column_invisible="True"/>
+          <field name="priority" optional="show" widget="priority" nolabel="1"  column_invisible="True"/>
+          <field name="message_needaction" column_invisible="True"/>
+          <field name="name" decoration-bf="1"/>
+          <field name="date_start" optional="show" widget="remaining_days"/>
+          <field name="date_deadline" widget="remaining_days" invisible="state in ['done', 'cancel']" optional="hide"/>
+          <field name="product_id" readonly="1" optional="show"/>
+          <field name="lot_producing_id" optional="hide"/>
+          <field name="bom_id" readonly="1" optional="hide"/>
+          <field name="activity_ids" string="Next Activity" widget="list_activity" optional="show"/>
+          <field name="origin" optional="show"/>
+          <field name="user_id" optional="hide" widget="many2one_avatar_user"/>
+          <field name="components_availability_state" column_invisible="True" options="{&quot;lazy&quot;: true}"/>
+          <field name="components_availability" options='{"lazy": true}'
+          invisible="state not in ['confirmed', 'progress']"
+          optional="show"
+          decoration-success="reservation_state == 'assigned' or components_availability_state == 'available'"
+          decoration-warning="reservation_state != 'assigned' and components_availability_state in ('expected', 'available')"
+          decoration-danger="reservation_state != 'assigned' and components_availability_state in ('late', 'unavailable')"/>                <field name="reservation_state" optional="hide" decoration-danger="reservation_state == 'confirmed'" decoration-success="reservation_state == 'assigned'"/>
+          <field name="product_qty" sum="Total Qty" string="Quantity" readonly="1" optional="show"/>
+          <field name="product_uom_id" string="UoM" readonly="1" options="{'no_open':True,'no_create':True}" groups="uom.group_uom" optional="show"/>
+          <field name="duration_expected" invisible="duration_expected == 0" groups="mrp.group_mrp_routings" widget="float_time" sum="Total expected duration" optional="show"/>
+          <field name="duration" invisible="duration == 0" groups="mrp.group_mrp_routings" widget="float_time" sum="Total real duration" optional="show"/>
+          <field name="company_id" readonly="1" groups="base.group_multi_company" optional="show"/>
+          <field name="state" decoration-success="state in ('done', 'to_close')" decoration-warning="state == 'progress'" decoration-info="state == 'confirmed'" decoration-danger="state == 'cancel'" decoration-muted="state == 'draft'" optional="show" widget="badge" class="text-dark"/>
+          <field name="activity_exception_decoration" widget="activity_exception"/>
+          <field name="delay_alert_date" column_invisible="True"/>
+        </list>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="material_request_form_inherit_view">
+      <field name="name">material_request_form_inherit_viewm</field>
+      <field name="model">material.request</field>
+      <field name="inherit_id" ref="material_request.material_request_form"/>
+      <field name="arch" type="xml">
+        <xpath expr="//notebook/page[1]" position="after" >
+          <page string="Manufacturing Orders">
+            <field name="y_mrp_ids"
+              domain="[('state','in',['confirmed','to_close','progress']),('company_id','=',y_company_id),('y_is_material_requested','=',False)]"
+            context="{'list_view_ref':'material_request_addons_mrp.material_request_production_tree_view_inherit'}">
+            </field>
+          </page>
+          </xpath>
+      </field>
+    </record>
+
+    <record id="material_request_filter_inherit_search" model="ir.ui.view">
+      <field name="name">material_request_filter_inherit_search</field>
+      <field name="model">material.request</field>
+      <field name="inherit_id" ref="material_request.view_material_request_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search/field[@name='y_name']" position="before">
+            <field name="y_mrp_ids" string="Manufacturing Orders" filter_domain="[('y_mrp_ids.name', 'ilike', self)]"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="material_request_mrp_production_form_view" model="ir.ui.view">
+      <field name="name">material.request.mrp.production.form</field>
+      <field name="model">mrp.production</field>
+      <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+      <field name="arch" type="xml">
+        <xpath expr="//div[@name='button_box']" position="inside">
+          <field name="y_is_material_requested" invisible="1"/>
+          <button name="action_view_material_request" class="oe_stat_button"
+          type="object" invisible="not y_is_material_requested">
+            <div class="o_form_field o_stat_info">
+              <span class="o_stat_text">Material</span>
+              <span class="o_stat_text">Request</span>
+            </div>
+          </button>
+        </xpath>
+      </field>
+    </record>
+    
+    <record model="ir.actions.server" id="action_matetial_request_mrp">
+      <field name="name">Material Request</field>
+      <field name="model_id" ref="mrp.model_mrp_production"/>
+      <field name="binding_model_id" ref="mrp.model_mrp_production"/>
+      <field name="binding_view_types">list,form</field>
+      <field name="state">code</field>
+      <field name="code">
+            if records:
+                action = records.mrp_materal_request_action()
+      </field>
+    </record>
+  
+</odoo>

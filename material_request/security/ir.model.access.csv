@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_material_request,material_request,model_material_request,base.group_user,1,1,1,0
+access_material_request_line,material_request_line,model_material_request_line,base.group_user,1,1,1,1
+access_material_purchase_request_wizard,material_purchase_request_wizard,model_material_purchase_request_wizard,,1,1,1,1
+
+

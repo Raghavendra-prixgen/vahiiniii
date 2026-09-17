@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+  <record id="purchase_order_form_inherit" model="ir.ui.view">
+    <field name="name">Purchase Order Form Inherit</field>
+    <field name="model">purchase.order</field>
+    <field name="inherit_id" ref="purchase.purchase_order_form"/>
+    <field name="arch" type="xml">
+      <field name="fiscal_position_id" position="before">
+        <field name="y_is_maintenance_request" invisible="1"/>
+
+        <field name="y_maintenance_request" 
+            widget="many2many_tags" 
+            options="{'no_create': True, 'no_create_edit': True}"
+            required="y_is_maintenance_request"/>
+      </field>
+    </field>
+  </record>
+
+  <record id="view_purchase_requisition_form" model="ir.ui.view">
+    <field name="name">Purchase Requisition Form Inherit</field>
+    <field name="model">purchase.requisition</field>
+    <field name="inherit_id" ref="purchase_requisition.view_purchase_requisition_form"/>
+    <field name="arch" type="xml">
+      <field name="reference" position="after">
+        <field name="y_maintenance_request" widget="many2many_tags" options="{'no_create': True, 'no_create_edit':True}"/>
+      </field>
+      <!-- <xpath expr="//group[@name='other_info_group1']" position="inside">
+            <field name="y_maintenance_request" widget="many2many_tags" options="{'no_create': True, 'no_create_edit':True}"/>
+      </xpath> -->
+    </field>
+  </record>
+
+</odoo>

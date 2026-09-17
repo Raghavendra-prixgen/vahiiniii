@@ -1,0 +1,249 @@
+<odoo>
+  <data>
+
+    <record model="ir.actions.server" id="action_generate_purchase_requeset_form_wizard">
+      <field name="name">Purchase Request</field>
+      <field name="model_id" ref="material_request.model_material_request"/>
+      <field name="binding_model_id" ref="material_request.model_material_request"/>
+      <field name="binding_view_types">form</field>
+      <field name="state">code</field>
+      <field name="code">
+        if records:
+          action = records.generate_purchase_requeset_form_wizard()
+      </field>
+    </record>
+
+    <record id="material_purchase_request_wizard_form_view" model="ir.ui.view">
+      <field name="name">material.purchase.request.wizard.form</field>
+      <field name="model">material.purchase.request.wizard</field>
+      <field name="type">form</field>
+      <field name="arch" type="xml">
+        <form create="0" edit="0">
+          <group>
+              <group>
+                  <field name="y_material_request_id" invisible="1" />
+                  <field name="y_purchase_request_type_id" options="{'no_create': True, 'no_open': True}" string="Purchase Request Type" required="1"/>
+              </group>
+          </group>
+          <field name="y_material_request_line_ids" domain="[('y_material_request_id','=',y_material_request_id)]" string="Material Lines">
+              <list editable="bottom" create="0" >
+                  <field name="y_product_id" optional="show"
+                  options="{'no_create': True, 'no_create_edit':True}" readonly="1"/>
+                  <field name="y_available_qty" optional="hide" readonly="1"/>
+                  <field name="y_forcast_qty" optional="hide" readonly="1"/> 
+                  <field name="y_planned_qty" optional="show" readonly="1"/>
+                  <field name="y_purchase_request_pending_qty" string="Request Qty"/>
+              </list>
+          </field>           
+          <footer>
+              <group>
+                  <button class="btn btn-primary" type="object" name="button_create_purchase_request" string="Process"/>
+              </group>
+          </footer>
+        </form>
+      </field>
+    </record>
+
+
+    <record model="ir.ui.view" id="material_request_list">
+      <field name="name">material_request list</field>
+      <field name="model">material.request</field>
+      <field name="arch" type="xml">
+        <list>
+          <field name="y_name"/>
+          <field name="activity_ids" widget="list_activity"/>
+          <field name="create_uid" string="Requested By"/>
+          <field name="create_date" string="Date"/>
+          <field name="y_responsible_id"/>
+          <field name="y_state" widget="badge" decoration-success="y_state == 'closed'" decoration-warning="y_state == 'to_approve'" decoration-info="y_state == 'draft'"/>
+          <field name="y_company_id" options="{'no_create': True, 'no_create_edit':True}"/>
+        </list>
+      </field>
+    </record>
+
+    <record id="view_material_request_filter" model="ir.ui.view">
+      <field name="name">material.request.select</field>
+      <field name="model">material.request</field>
+      <field name="arch" type="xml">
+          <search string="Search Material Request">
+              <field name="y_name" string="Material Request" />
+              <field name="y_picking_type_id" string="Operation Type"/>
+              <field name="create_uid" string="Created By"/>              
+         </search>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="material_request_form">
+      <field name="name">material_request form</field>
+      <field name="model">material.request</field>
+      <field name="arch" type="xml">
+        <form>
+          <header>
+            <button type="object" name="request_material" string="Process" invisible="y_state != 'approved'"  class="oe_highlight" />
+            <button type="object" name="approved" string="Approve" class="oe_highlight" invisible="y_state != 'to_approve'" groups="material_request.material_request_new_group"/>
+            <button type="object" name="request_approve_button" string="Request for Approval" class="oe_highlight" invisible="y_state != 'draft'"/>
+            <button type="object" name="close" string="Close" class="oe_highlight" invisible="y_state != 'approved'"/>
+            <button type="object" name="reset" invisible="y_state != 'closed'" icon="fa-unlock"/>
+            <field name="y_state" widget="statusbar" statusbar_visible="draft,to_approve,approved,closed"/>
+            <button type="object" name="button_cancel" string="Cancel" invisible="y_state == 'cancel'"/>
+          </header>
+          <sheet>
+            <div class="oe_button_box" name="button_box">
+              <button name="action_mr_picking" class="oe_stat_button" icon="fa-truck"
+                type="object" help="List view of picking operations" context="{'y_material_request_id': id, 'create':False}" invisible="y_picking_count == 0">
+                <div class="o_form_field o_stat_info">
+                  <span class="o_stat_text">Transfers</span>
+                </div>
+                <field name="y_picking_count" invisible="1"/>
+              </button>
+              
+              <button name="action_mr_purchase" class="oe_stat_button" icon="fa-sign-in"
+                type="object" help="List view of purchase operations" context="{'y_material_request_id': id, 'create':False}" invisible="y_purchase_count == 0">
+                <div class="o_form_field o_stat_info">
+                  <span class="o_stat_text">Purchase</span>
+                  <span class="o_stat_text">Requests</span>
+                </div>
+                <field name="y_purchase_count" invisible="1"/>
+              </button>
+            </div>
+
+            <h1>
+              <field name="y_name" readonly="1"/>
+              <field name="y_request_material_boolean" invisible="1"/>
+            </h1>
+            <group>
+              <group>
+                <field name="y_picking_type_id"
+                  options="{'no_create': True, 'no_create_edit':True}" 
+                   domain="[('code','=','internal')]"/>
+                <field name="y_source_location_id"
+                  options="{'no_create': True, 'no_create_edit':True}"
+                 />
+                <field name="y_dest_location_id"
+                  options="{'no_create': True, 'no_create_edit':True}"
+                  />
+                <field name="y_purchase_request_type_id" options="{'no_open': True,'no_create_edit': True,'no_quick_create':True,'no_create': True}" invisible="1"/>
+                <field name="y_responsible_id" options="{'no_create': True, 'no_create_edit':True}"/>
+              </group>
+              <group>
+                <field name="create_uid" string="Requested By" readonly="1"/>
+                <field name="create_date" string="Date" readonly="1"/>
+                
+                <field name="y_approved_date" string="Approved Date" readonly="1"/>
+                <field name="y_company_id" options="{'no_create': True, 'no_create_edit':True}"/>
+              </group>
+            </group>
+            <notebook>
+              <page string="Materials">
+                <field name="y_material_request_line_ids" >
+                  <list editable="bottom" decoration-danger="y_available_qty == 0">
+                    <field name="y_request_type" required="1" optional="show" column_invisible="True"/>
+                    <field name="y_purchase_request_type_id"                     
+                    options="{'no_open': True,'no_create_edit': True,'no_quick_create':True,'no_create': True}" 
+                      readonly="y_request_type != 'purchase'"
+                      optional="hide" column_invisible="True"/>
+                    <field name="y_picking_type_id"
+                      options="{'no_create': True, 'no_create_edit':True}"
+                      optional="hide" domain="[('code','=','internal')]"/>
+                    <field name="y_source_location_id"
+                      options="{'no_create': True, 'no_create_edit':True}"
+                      optional="hide"/>
+                    <field name="y_dest_location_id"
+                      options="{'no_create': True, 'no_create_edit':True}"
+                      optional="hide"/>
+                    <field name="y_product_id" optional="show"
+                    options="{'no_create': True, 'no_create_edit':True}" required="1"/>
+                    <!-- <field name="y_mo_stock_move_id"/> -->
+                    <field name="y_available_qty" optional="hide"/>
+                    <field name="y_forcast_qty" optional="hide"/> 
+                    <field name="y_planned_qty" optional="show" readonly="y_requested_qty > 0"/>
+                    <field name="y_request_qty" optional="show"/>
+                    <field name="y_requested_qty" optional="hide"/>
+                    <field name="y_purchase_requested_qty" readonly="1" optional="hide"/>
+                    <field name="y_transfer_order_ids" optional="hide" widget="many2many_tags"/>
+                    <field name="y_purchase_request_ids" optional="hide" widget="many2many_tags"/>
+                  </list>
+                  <form>                  
+                  </form>
+                </field>
+              </page>
+            </notebook>
+          </sheet>
+          <chatter/>
+        </form>
+      </field>
+    </record>
+
+    <record model="ir.actions.server" id="action_process_all">
+      <field name="name">Process All</field>
+      <field name="model_id" ref="material_request.model_material_request"/>
+      <field name="binding_model_id" ref="material_request.model_material_request"/>
+      <field name="state">code</field>
+      <field name="code">
+            if records:
+              action = records.process_all()
+      </field>
+    </record>
+
+    <record model="ir.rule" id="material_request_record_restricted_company_rule">
+      <field name="name">Material Request Restricted Record: multi-company</field>
+      <field name="model_id" ref="model_material_request"/>
+      <field name="global" eval="True"/>
+      <field name="domain_force">
+          ['|', ('y_company_id', '=', False), ('y_company_id', 'parent_of', company_ids)]
+      </field>
+    </record>
+
+
+    <record model="ir.actions.act_window" id="material_request_action_window">
+      <field name="name">Material Request</field>
+      <field name="res_model">material.request</field>
+      <field name="view_mode">list,form,search</field>
+    </record>
+
+    <menuitem name="Material Requisition" id="material_request_menu"
+              action="material_request_action_window" parent="stock.menu_stock_root"/>
+    
+    <record id="res_config_settings_view_form_new" model="ir.ui.view">
+      <field name="name">res.config.settings.view.form.inherit.mr</field>
+      <field name="model">res.config.settings</field>
+      <field name="inherit_id" ref="stock.res_config_settings_view_form"/>
+      <field name="arch" type="xml">
+        <xpath expr="//setting[@id='warning_info']" position="after">
+          <div class="col-12 col-lg-6 o_setting_box" id="mr_seq">
+            <div class="o_setting_right_pane">
+              <label for="y_mr_sequence"/>
+            </div>
+            <div class="o_setting_right_pane">
+              <field name="y_mr_sequence" options="{'no_create': 1, 'no_edit': 1, 'no_open': 1}"/>
+            </div>
+          </div>
+        </xpath>
+      </field>
+    </record>
+
+    <record id="view_picking_form_mr" model="ir.ui.view">
+      <field name="name">Picking Form for MR</field>
+      <field name="model">stock.picking</field>
+      <field name="inherit_id" ref="stock.view_picking_form"/>
+      <field name="arch" type="xml">
+        <field name="origin" position="after">
+          <field name="y_material_request_id" options="{'no_create': True, 'no_create_edit':True}" invisible="picking_type_code != 'internal'"/>
+          <field name="picking_type_code" invisible="1"/>
+        </field>
+      </field>
+    </record>
+
+    <record id="view_picking_internal_search_mr" model="ir.ui.view">
+      <field name="name">Picking Search for MR</field>
+      <field name="model">stock.picking</field>
+      <field name="inherit_id" ref="stock.view_picking_internal_search"/>
+      <field name="arch" type="xml">
+        <field name="name" position="after">
+          <field name="y_material_request_id"  options="{'no_create': True, 'no_create_edit':True}"/>
+        </field>
+      </field>
+    </record>
+
+  </data>
+</odoo>

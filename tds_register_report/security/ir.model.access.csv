@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_tds_register_report_tree,tds.register.report.tree,model_tds_register_report_tree,base.group_system,1,1,1,0
+access_tds_report_view,tds.report.view,model_tds_report_view,base.group_system,1,1,1,1

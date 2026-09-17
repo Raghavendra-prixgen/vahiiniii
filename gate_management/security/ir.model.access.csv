@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_settingup_gate_management,settingup_gate_management,model_settingup_gate_management,,1,1,1,0
+access_gate_management,gate_management,model_gate_management,base.group_user,1,1,1,1
+access_gate_user_login,gate_user_login,model_gate_user_login,base.group_user,1,1,1,1
+access_gate_user_registration,gate_user_registration,model_gate_user_registration,base.group_user,1,1,1,1
+access_gate_management_line,gate_management_line,model_gate_management_line,base.group_user,1,1,1,1
+access_gate_management_type,gate_management_type,model_gate_management_type,base.group_user,1,1,1,1
+
+access_gate_station,gate_station,model_gate_station,,1,1,1,1

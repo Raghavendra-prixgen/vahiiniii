@@ -1,0 +1,13 @@
+<odoo>
+    <record model="ir.ui.view" id="uom_category_form_inherit_log">
+        <field name="name">uom.category.form.inherit.log</field>
+        <field name="model">uom.category</field>
+        <field name="inherit_id" ref="uom.product_uom_categ_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form//sheet" position="after">        
+                <chatter/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <record id="view_equipment_allocation_tree" model="ir.ui.view">
+        <field name="name">equipment.allocation.tree</field>
+        <field name="model">equipment.allocation</field>
+        <field name="arch" type="xml">
+            <list string="Equipment Allocation">
+                <field name="y_name"/>
+                <field name="y_equipment_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                <!--                <field name="y_qty"/>-->
+                <field name="y_company_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+            </list>
+        </field>
+    </record>
+
+
+    <record id="view_equipment_allocation_form" model="ir.ui.view">
+        <field name="name">equipment.allocation.form</field>
+        <field name="model">equipment.allocation</field>
+        <field name="arch" type="xml">
+            <form string="Equipment Allocation">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="y_name" readonly="1" placeholder="New"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="y_active" invisible="1"/>
+                            <field name="y_equipment_id"
+                                   options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <!--                            <field name="y_qty"/>-->
+                        </group>
+                        <group>
+                            <!--                            <field name="y_name"/>-->
+                            <field name="y_company_id" groups="base.group_multi_company"
+                                   options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Equipment">
+                            <field name="y_line_ids">
+                                <list editable="bottom">
+                                    <field name="y_sequence" widget="handle"/>
+                                    <field name="y_equipment_id"
+                                           options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                                    <field name="y_qty"/>
+                                    <field name="y_company_id" column_invisible="True"
+                                           options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Notes">
+                            <field name="y_note"/>
+                        </page>
+                    </notebook>
+
+                </sheet>
+<chatter/>
+            </form>
+        </field>
+    </record>
+
+
+    <!-- SEARCH VIEW -->
+
+    <record id="view_equipment_allocation_search" model="ir.ui.view">
+        <field name="name">equipment.allocation.search</field>
+        <field name="model">equipment.allocation</field>
+        <field name="arch" type="xml">
+            <search>
+
+                <field name="y_name"/>
+                <field name="y_equipment_id"/>
+
+                <group expand="0" string="Group By">
+                    <filter string="Equipment" name="group_equipment" context="{'group_by':'y_equipment_id'}"/>
+                    <filter string="Company" name="group_company" context="{'group_by':'y_company_id'}"/>
+                </group>
+
+            </search>
+        </field>
+    </record>
+
+
+    <!-- ACTION -->
+
+    <record id="action_equipment_allocation" model="ir.actions.act_window">
+        <field name="name">Equipment Allocation</field>
+        <field name="res_model">equipment.allocation</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_equipment_allocation_search"/>
+    </record>
+
+
+    <!-- MENU -->
+
+    <menuitem id="menu_equipment_allocation_root"
+              name="Equipment Allocation"
+              parent="maintenance.menu_equipment_form"
+              action="action_equipment_allocation"
+              sequence="4"/>
+
+</odoo>
